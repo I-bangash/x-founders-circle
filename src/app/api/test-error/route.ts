@@ -1,5 +1,3 @@
-// app/api/test-error/route.js
-
 import { getPostHogServer } from "@/lib/posthog-server";
 
 const posthog = getPostHogServer();
