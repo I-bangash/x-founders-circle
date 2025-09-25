@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { type Icon } from "@tabler/icons-react"
+import { IconBrightness, type Icon } from "@tabler/icons-react"
 
 import {
   SidebarGroup,
@@ -10,6 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { ModeToggle } from "@/components/mode-toggle"
 
 export function NavSecondary({
   items,
@@ -35,6 +36,15 @@ export function NavSecondary({
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <label>
+                <IconBrightness />
+                Dark Mode
+                <span className="ml-auto"><ModeToggle/></span>
+              </label>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
