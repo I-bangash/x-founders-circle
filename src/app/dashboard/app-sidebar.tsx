@@ -1,31 +1,24 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import Link from "next/link";
+
 import {
-  IconCamera,
-  IconChartBar,
   IconDashboard,
   IconDatabase,
-  IconMessageCircle,
-  IconFileAi,
-  IconFileDescription,
   IconFileWord,
-  IconFolder,
   IconHelp,
-  IconInnerShadowTop,
-  IconListDetails,
   IconReport,
   IconSearch,
   IconSettings,
-  IconUsers,
   IconSparkles,
-  IconBrandOpenai,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
 
-import { NavDocuments } from "@/app/dashboard/nav-documents"
-import { NavMain } from "@/app/dashboard/nav-main"
-import { NavSecondary } from "@/app/dashboard/nav-secondary"
-import { NavUser } from "@/app/dashboard/nav-user"
+import { NavDocuments } from "@/app/dashboard/nav-documents";
+import { NavMain } from "@/app/dashboard/nav-main";
+import { NavSecondary } from "@/app/dashboard/nav-secondary";
+import { NavUser } from "@/app/dashboard/nav-user";
+import { ChatMaxingIconColoured } from "@/components/logo";
+import { Badge } from "@/components/ui/badge";
 import {
   Sidebar,
   SidebarContent,
@@ -34,10 +27,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import { ChatMaxingIconColoured } from "@/components/logo"
-import { Badge } from "@/components/ui/badge"
-import Link from "next/link"
+} from "@/components/ui/sidebar";
 
 const data = {
   navMain: [
@@ -86,7 +76,7 @@ const data = {
       icon: IconFileWord,
     },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -101,7 +91,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <Link href="/">
                 <ChatMaxingIconColoured className="!size-6" />
                 <span className="text-base font-semibold">Starter DIY</span>
-                <Badge variant="outline" className="text-muted-foreground  text-xs">Demo</Badge>
+                <Badge
+                  variant="outline"
+                  className="text-muted-foreground text-xs"
+                >
+                  Demo
+                </Badge>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -116,5 +111,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavUser />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

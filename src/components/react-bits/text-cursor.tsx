@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useEffect, useRef, useState } from "react";
+
+import { AnimatePresence, motion } from "framer-motion";
 
 interface TextCursorProps {
   text: string;
@@ -111,8 +112,8 @@ const TextCursor: React.FC<TextCursorProps> = ({
   }, [removalInterval]);
 
   return (
-    <div ref={containerRef} className="w-full h-full relative">
-      <div className="absolute inset-0 pointer-events-none">
+    <div ref={containerRef} className="relative h-full w-full">
+      <div className="pointer-events-none absolute inset-0">
         <AnimatePresence>
           {trail.map((item) => (
             <motion.div
@@ -155,7 +156,7 @@ const TextCursor: React.FC<TextCursorProps> = ({
                   },
                 }),
               }}
-              className="absolute select-none whitespace-nowrap text-3xl"
+              className="absolute text-3xl whitespace-nowrap select-none"
               style={{ left: item.x, top: item.y }}
             >
               {text}

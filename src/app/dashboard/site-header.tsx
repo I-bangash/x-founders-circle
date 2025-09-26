@@ -1,24 +1,25 @@
-"use client"
+"use client";
 
-import { usePathname } from "next/navigation"
-import { Separator } from "@/components/ui/separator"
-import { SidebarTrigger } from "@/components/ui/sidebar"
+import { usePathname } from "next/navigation";
+
+import { Separator } from "@/components/ui/separator";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 function getPageTitle(pathname: string): string {
   // Handle exact matches first
   switch (pathname) {
     case "/dashboard":
-      return "Dashboard"
+      return "Dashboard";
     case "/dashboard/payment-gated":
-      return "Payment gated"
+      return "Payment gated";
     default:
-      return "Page"
+      return "Page";
   }
 }
 
 export function SiteHeader() {
-  const pathname = usePathname()
-  const pageTitle = getPageTitle(pathname)
+  const pathname = usePathname();
+  const pageTitle = getPageTitle(pathname);
 
   return (
     <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
@@ -31,5 +32,5 @@ export function SiteHeader() {
         <h1 className="text-base font-medium">{pageTitle}</h1>
       </div>
     </header>
-  )
+  );
 }

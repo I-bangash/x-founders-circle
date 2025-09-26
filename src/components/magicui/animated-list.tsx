@@ -1,13 +1,15 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { AnimatePresence, motion } from "motion/react";
 import React, {
   ComponentPropsWithoutRef,
   useEffect,
   useMemo,
   useState,
 } from "react";
+
+import { AnimatePresence, motion } from "motion/react";
+
+import { cn } from "@/lib/utils";
 
 export function AnimatedListItem({ children }: { children: React.ReactNode }) {
   const animations = {
@@ -34,7 +36,7 @@ export const AnimatedList = React.memo(
     const [index, setIndex] = useState(0);
     const childrenArray = useMemo(
       () => React.Children.toArray(children),
-      [children],
+      [children]
     );
 
     useEffect(() => {
@@ -66,7 +68,7 @@ export const AnimatedList = React.memo(
         </AnimatePresence>
       </div>
     );
-  },
+  }
 );
 
 AnimatedList.displayName = "AnimatedList";

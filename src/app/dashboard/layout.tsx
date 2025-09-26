@@ -1,15 +1,12 @@
-import { AppSidebar } from "@/app/dashboard/app-sidebar"
-import { SiteHeader } from "@/app/dashboard/site-header"
-import { LoadingBar } from "@/app/dashboard/loading-bar"
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@/components/ui/sidebar"
+import { AppSidebar } from "@/app/dashboard/app-sidebar";
+import { LoadingBar } from "@/app/dashboard/loading-bar";
+import { SiteHeader } from "@/app/dashboard/site-header";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <SidebarProvider
@@ -34,5 +31,5 @@ export default function DashboardLayout({
         </div>
       </SidebarInset>
     </SidebarProvider>
-  )
-} 
+  );
+}

@@ -1,26 +1,27 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { IconBrightness, type Icon } from "@tabler/icons-react"
+import * as React from "react";
 
+import { type Icon, IconBrightness } from "@tabler/icons-react";
+
+import { ModeToggle } from "@/components/mode-toggle";
 import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import { ModeToggle } from "@/components/mode-toggle"
+} from "@/components/ui/sidebar";
 
 export function NavSecondary({
   items,
   ...props
 }: {
   items: {
-    title: string
-    url: string
-    icon: Icon
-  }[]
+    title: string;
+    url: string;
+    icon: Icon;
+  }[];
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   return (
     <SidebarGroup {...props}>
@@ -41,12 +42,14 @@ export function NavSecondary({
               <label>
                 <IconBrightness />
                 Dark Mode
-                <span className="ml-auto"><ModeToggle/></span>
+                <span className="ml-auto">
+                  <ModeToggle />
+                </span>
               </label>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
-  )
+  );
 }

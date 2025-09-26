@@ -1,4 +1,5 @@
-'use client'
+"use client";
+
 import { useEffect, useRef } from "react";
 import { JSX } from "react";
 
@@ -189,7 +190,7 @@ export default function PixelCard({
   );
   const timePreviousRef = useRef(performance.now());
   const reducedMotion = useRef(
-    typeof window !== "undefined" 
+    typeof window !== "undefined"
       ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
       : false
   ).current;
@@ -307,14 +308,14 @@ export default function PixelCard({
   return (
     <div
       ref={containerRef}
-      className={` relative overflow-hidden grid place-items-center  border rounded-[25px] isolate transition-colors duration-200 ease-[cubic-bezier(0.5,1,0.89,1)] select-none ${className}`}
+      className={`relative isolate grid place-items-center overflow-hidden rounded-[25px] border transition-colors duration-200 ease-[cubic-bezier(0.5,1,0.89,1)] select-none ${className}`}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onFocus={finalNoFocus ? undefined : onFocus}
       onBlur={finalNoFocus ? undefined : onBlur}
       tabIndex={finalNoFocus ? -1 : 0}
     >
-      <canvas className="w-full h-full block" ref={canvasRef} />
+      <canvas className="block h-full w-full" ref={canvasRef} />
       {children}
     </div>
   );
