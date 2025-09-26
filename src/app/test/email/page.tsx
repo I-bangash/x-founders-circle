@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import React from "react";
 
 const EmailPage = () => {
   const handleSendEmail = async () => {
@@ -10,7 +9,7 @@ const EmailPage = () => {
   };
 
   return (
-    <div className="flex flex-col p-10 h-screen">
+    <div className="flex h-screen flex-col p-10">
       <Button onClick={handleSendEmail}>Send Email</Button>
     </div>
   );

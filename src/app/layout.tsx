@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { ThemeProvider } from "@/providers/theme-provider";
 
 import { ClerkProvider } from "@clerk/nextjs";
+
+import "@/app/globals.css";
+import { Toaster } from "@/components/ui/sonner";
 import ConvexClientProvider from "@/providers/convex-provider";
 import { PostHogProvider } from "@/providers/posthog-provider";
-import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/providers/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased overscroll-none`}
+        className={`${geistSans.variable} ${geistMono.variable} overscroll-none antialiased`}
       >
         <PostHogProvider>
           <ThemeProvider
