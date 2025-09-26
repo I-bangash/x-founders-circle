@@ -1,8 +1,9 @@
-import { httpRouter } from "convex/server";
-import { httpAction } from "./_generated/server";
-import { internal } from "./_generated/api";
 import type { WebhookEvent } from "@clerk/backend";
+import { httpRouter } from "convex/server";
 import { Webhook } from "svix";
+
+import { internal } from "./_generated/api";
+import { httpAction } from "./_generated/server";
 import { transformWebhookData } from "./paymentAttemptTypes";
 
 const http = httpRouter();
@@ -36,9 +37,7 @@ http.route({
         });
         break;
       }
-      
 
-      
       default:
         console.log("Ignored webhook event", (event as any).type);
     }

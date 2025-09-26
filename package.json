@@ -7,9 +7,13 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "format": "prettier src/ --write"
+    "format": "prettier src/ --write",
+    "clean": "rm -rf .next",
+    "typecheck": "tsc --noEmit",
+    "nuke": "rm -rf .next && rm -rf node_modules && rm -rf pnpm-lock.yaml"
   },
   "dependencies": {
+    "@clerk/backend": "^2.15.0",
     "@clerk/nextjs": "^6.32.2",
     "@clerk/themes": "^2.4.21",
     "@dnd-kit/core": "^6.3.1",
