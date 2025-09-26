@@ -90,7 +90,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <Link href="/">
                 <ChatMaxingIconColoured className="!size-6" />
-                <span className="text-base font-semibold">Starter DIY</span>
+                <span className="text-base font-semibold">Launch Day</span>
                 <Badge
                   variant="outline"
                   className="text-muted-foreground text-xs"

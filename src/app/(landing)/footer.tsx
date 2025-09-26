@@ -39,7 +39,7 @@ export default function FooterSection() {
           className="mx-auto flex size-fit items-center gap-2"
         >
           <ChatMaxingIconColoured />
-          <span className="text-xl font-medium">Starter.diy</span>
+          <span className="text-xl font-medium">Lnch.day</span>
         </Link>
 
         <div className="my-8 flex flex-wrap justify-center gap-6 text-sm">
@@ -182,7 +182,7 @@ export default function FooterSection() {
         </div>
         <span className="text-muted-foreground block text-center text-sm">
           {" "}
-          © {new Date().getFullYear()} Starter.diy, All rights reserved
+          © {new Date().getFullYear()} Lnch.day, All rights reserved
         </span>
       </div>
     </footer>

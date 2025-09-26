@@ -58,7 +58,7 @@ export const HeroHeader = () => {
                 className="flex items-center space-x-2"
               >
                 <ChatMaxingIconColoured />
-                <span className="text-xl font-medium">Starter.diy</span>
+                <span className="text-xl font-medium">Lnch.day</span>
                 <Badge
                   variant="outline"
                   className="text-muted-foreground text-xs"
