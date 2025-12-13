@@ -15,7 +15,7 @@ import { Magnet } from "lucide-react";
 import { motion, useAnimation } from "motion/react";
 
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn } from "@/libs/utils";
 
 interface AttractButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {

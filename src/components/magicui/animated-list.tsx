@@ -9,7 +9,7 @@ import React, {
 
 import { AnimatePresence, motion } from "motion/react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/libs/utils";
 
 export function AnimatedListItem({ children }: { children: React.ReactNode }) {
   const animations = {

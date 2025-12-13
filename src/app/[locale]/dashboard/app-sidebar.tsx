@@ -13,10 +13,10 @@ import {
   IconSparkles,
 } from "@tabler/icons-react";
 
-import { NavDocuments } from "@/app/dashboard/nav-documents";
-import { NavMain } from "@/app/dashboard/nav-main";
-import { NavSecondary } from "@/app/dashboard/nav-secondary";
-import { NavUser } from "@/app/dashboard/nav-user";
+import { NavDocuments } from "@/app/[locale]/dashboard/nav-documents";
+import { NavMain } from "@/app/[locale]/dashboard/nav-main";
+import { NavSecondary } from "@/app/[locale]/dashboard/nav-secondary";
+import { NavUser } from "@/app/[locale]/dashboard/nav-user";
 import { ChatMaxingIconColoured } from "@/components/logo";
 import { Badge } from "@/components/ui/badge";
 import {

@@ -1,4 +1,4 @@
-import { redis } from "@/lib/redis";
+import { redis } from "@/libs/redis";
 
 export const GET = async () => {
   await redis.incr("count");

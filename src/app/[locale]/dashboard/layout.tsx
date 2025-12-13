@@ -1,6 +1,6 @@
-import { AppSidebar } from "@/app/dashboard/app-sidebar";
-import { LoadingBar } from "@/app/dashboard/loading-bar";
-import { SiteHeader } from "@/app/dashboard/site-header";
+import { AppSidebar } from "@/app/[locale]/dashboard/app-sidebar";
+import { LoadingBar } from "@/app/[locale]/dashboard/loading-bar";
+import { SiteHeader } from "@/app/[locale]/dashboard/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default function DashboardLayout({

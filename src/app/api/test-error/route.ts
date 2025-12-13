@@ -1,4 +1,4 @@
-import { getPostHogServer } from "@/lib/posthog-server";
+import { getPostHogServer } from "@/libs/posthog-server";
 
 const posthog = getPostHogServer();
 

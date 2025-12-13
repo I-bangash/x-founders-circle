@@ -1,5 +1,5 @@
 import { EmailTemplate } from "@/components/email-template";
-import { resend } from "@/lib/resend";
+import { resend } from "@/libs/resend";
 
 export async function GET() {
   try {

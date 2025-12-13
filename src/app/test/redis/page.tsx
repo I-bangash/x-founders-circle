@@ -1,4 +1,4 @@
-import { redis } from "@/lib/redis";
+import { redis } from "@/libs/redis";
 
 // 👇 server component
 const Page = async () => {
