@@ -43,7 +43,7 @@ export default async function proxy(
 ) {
   // Verify the request with Arcjet
   // Use `process.env` instead of Env to reduce bundle size in middleware
-  if (process.env.ARCJET_KEY) {
+  if (process.env.ARCJET_KEY && !request.nextUrl.pathname.includes('/api/arcjet')) {
     const decision = await aj.protect(request);
 
     if (decision.isDenied()) {
