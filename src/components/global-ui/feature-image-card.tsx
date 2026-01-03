@@ -1,4 +1,4 @@
-import { cn } from "@/libs/utils";
+import { cn } from "@/utils/utils";
 
 interface FeatureImageCardProps {
   backgroundImage: string;

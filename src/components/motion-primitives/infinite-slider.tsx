@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { animate, motion, useMotionValue } from "motion/react";
 import useMeasure from "react-use-measure";
 
-import { cn } from "@/libs/utils";
+import { cn } from "@/utils/utils";
 
 export type InfiniteSliderProps = {
   children: React.ReactNode;

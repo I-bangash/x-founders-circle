@@ -12,7 +12,7 @@ import { useTheme } from "next-themes";
 import { ChatMaxingIconColoured } from "@/components/logo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/libs/utils";
+import { cn } from "@/utils/utils";
 
 const menuItems = [
   { name: "Features", href: "#link" },

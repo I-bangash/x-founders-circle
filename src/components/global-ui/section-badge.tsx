@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { type VariantProps, cva } from "class-variance-authority";
 
-import { cn } from "@/libs/utils";
+import { cn } from "@/utils/utils";
 
 const sectionBadgeVariants = cva(
   "inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest font-geist border backdrop-blur-md transition-colors",

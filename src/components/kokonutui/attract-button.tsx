@@ -15,10 +15,9 @@ import { Magnet } from "lucide-react";
 import { motion, useAnimation } from "motion/react";
 
 import { Button } from "@/components/ui/button";
-import { cn } from "@/libs/utils";
+import { cn } from "@/utils/utils";
 
-interface AttractButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface AttractButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   particleCount?: number;
   attractRadius?: number;
 }
