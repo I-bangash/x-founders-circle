@@ -1,43 +1,47 @@
-import { SpotlightCard } from "./spotlight-card"
-import { SectionHeader } from "@/components/global-ui/section-header"
+import { SectionHeader } from "@/components/global-ui/section-header";
+
+import { SpotlightCard } from "./spotlight-card";
 
 export function ProcessSection() {
   return (
-    <SpotlightCard className="sm:mx-6 xl:ml-auto xl:mr-auto max-w-7xl rounded-[40px] mt-4 mr-3 ml-3">
-      <div className="sm:p-12 lg:p-16 overflow-hidden bg-card rounded-[40px] pt-8 pr-8 pb-8 pl-8 relative">
+    <SpotlightCard className="mt-4 mr-3 ml-3 max-w-7xl rounded-[40px] sm:mx-6 xl:mr-auto xl:ml-auto">
+      <div className="bg-card relative overflow-hidden rounded-[40px] pt-8 pr-8 pb-8 pl-8 sm:p-12 lg:p-16">
         {/* Background Decor */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-500/5 blur-[120px] rounded-full pointer-events-none mix-blend-screen" />
+        <div className="pointer-events-none absolute top-0 right-0 h-[500px] w-[500px] rounded-full bg-emerald-500/5 mix-blend-screen blur-[120px]" />
 
-        <div className="absolute top-8 right-8 z-20 pointer-events-none opacity-50">
-          <span className="font-mono text-sm font-bold text-gray-400 dark:text-gray-600 tracking-widest font-geist">
+        <div className="pointer-events-none absolute top-8 right-8 z-20 opacity-50">
+          <span className="font-geist font-mono text-sm font-bold tracking-widest text-gray-400 dark:text-gray-600">
             04
           </span>
         </div>
 
-        <div className="grid lg:grid-cols-2 lg:gap-24 z-10 relative gap-x-12 gap-y-12 items-center">
-
+        <div className="relative z-10 grid items-center gap-x-12 gap-y-12 lg:grid-cols-2 lg:gap-24">
           {/* Left Column: Content */}
           <div className="order-2 lg:order-1">
             <SectionHeader
               title={
                 <>
-                  The Essence of <span className="text-emerald-600 dark:text-emerald-500 font-geist">Hanoi</span>
+                  Beautiful and fast. You{" "}
+                  <span className="font-geist text-emerald-600 dark:text-emerald-500">
+                    shouldn't have to choose.
+                  </span>
                 </>
               }
-              description="We bring together the four pillars of Vietnamese cuisine: Fresh Greens, Ocean Seafood, Wok Fire, and Family Tradition."
+              description="Most boilerplates focus on features. Remarkable focuses on feelings. We've obsessed over every pixel and every millisecond so your users don't have to."
               align="left"
               titleClassName="text-3xl sm:text-4xl lg:text-5xl leading-[1.1]"
-              className="mb-8 mx-0 max-w-none"
+              className="mx-0 mb-8 max-w-none"
             />
 
-            <p className="text-gray-500 text-base leading-relaxed max-w-md mb-8 font-geist">
-              Our Bánh Mì Chảo sizzles with savory beef and eggs, while our sushi rolls are crafted with delicate
-              precision. Every dish is a balance of sweet, sour, salty, and spicy.
+            <p className="font-geist mb-8 max-w-md text-base leading-relaxed text-gray-500">
+              Design is a competitive advantage. Performance is a feature. We
+              combine world-class aesthetics with the fastest stack on the
+              planet.
             </p>
 
             <div className="flex flex-wrap items-center gap-4">
-              <button className="px-5 py-2.5 rounded-full bg-black dark:bg-white text-white dark:text-black text-sm font-bold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors flex items-center gap-2 font-geist">
-                Taste It
+              <button className="font-geist flex items-center gap-2 rounded-full bg-black px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200">
+                Build Something Remarkable
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -53,25 +57,25 @@ export function ProcessSection() {
                   <path d="m12 5 7 7-7 7" />
                 </svg>
               </button>
-              <div className="text-sm text-gray-500 flex items-center gap-2 font-geist">
-                <span className="w-2 h-2 rounded-full bg-amber-500" />
-                Cooked to Order
+              <div className="font-geist flex items-center gap-2 text-sm text-gray-500">
+                <span className="h-2 w-2 rounded-full bg-amber-500" />
+                Production Grade
               </div>
             </div>
           </div>
 
           {/* Right Column: Visual Diagram */}
-          <div className="order-1 lg:order-2 relative w-full flex flex-col items-center select-none pointer-events-none">
+          <div className="pointer-events-none relative order-1 flex w-full flex-col items-center select-none lg:order-2">
             {/* Diagram Header Labels */}
-            <div className="w-full flex justify-between text-xs uppercase tracking-widest text-gray-400 dark:text-gray-600 font-bold font-mono mb-2 px-12 opacity-50 max-w-[400px]">
-              <span className="font-geist">Ingredients</span>
-              <span className="font-geist">The Kitchen</span>
+            <div className="mb-2 flex w-full max-w-[400px] justify-between px-12 font-mono text-xs font-bold tracking-widest text-gray-400 uppercase opacity-50 dark:text-gray-600">
+              <span className="font-geist">Inputs</span>
+              <span className="font-geist">The Core</span>
             </div>
 
             {/* Icons Row (Sources) */}
-            <div className="relative z-10 flex justify-center w-full max-w-[400px] mb-8 gap-8">
+            <div className="relative z-10 mb-8 flex w-full max-w-[400px] justify-center gap-8">
               {/* Icon 1 - Sprout (Emerald) */}
-              <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-[#151515] border border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.15)] z-20">
+              <div className="z-20 flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-500/30 bg-gray-100 text-emerald-600 shadow-[0_0_15px_rgba(16,185,129,0.15)] dark:bg-[#151515] dark:text-emerald-500">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
@@ -90,7 +94,7 @@ export function ProcessSection() {
                 </svg>
               </div>
               {/* Icon 2 - Fish (Blue) */}
-              <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-[#151515] border border-blue-500/30 flex items-center justify-center text-blue-500 dark:text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.15)] z-20">
+              <div className="z-20 flex h-10 w-10 items-center justify-center rounded-xl border border-blue-500/30 bg-gray-100 text-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.15)] dark:bg-[#151515] dark:text-blue-400">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
@@ -106,7 +110,7 @@ export function ProcessSection() {
                 </svg>
               </div>
               {/* Icon 3 - Beef (Red) */}
-              <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-[#151515] border border-red-500/30 flex items-center justify-center text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.15)] z-20">
+              <div className="z-20 flex h-10 w-10 items-center justify-center rounded-xl border border-red-500/30 bg-gray-100 text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.15)] dark:bg-[#151515]">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
@@ -123,7 +127,7 @@ export function ProcessSection() {
                 </svg>
               </div>
               {/* Icon 4 - Flame (Amber) */}
-              <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-[#151515] border border-amber-500/30 flex items-center justify-center text-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.15)] z-20">
+              <div className="z-20 flex h-10 w-10 items-center justify-center rounded-xl border border-amber-500/30 bg-gray-100 text-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.15)] dark:bg-[#151515]">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
@@ -141,10 +145,38 @@ export function ProcessSection() {
             </div>
 
             {/* Animated Connection Diagram */}
-            <div className="relative w-full max-w-[400px] flex flex-col items-center">
+            <div className="relative flex w-full max-w-[400px] flex-col items-center">
+              <div className="pointer-events-none absolute top-1/2 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-center">
+                <div className="mb-0.5 text-lg font-bold text-emerald-600 dark:text-emerald-400">
+                  Remarkable
+                </div>
+                <div className="text-[10px] font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500">
+                  Difference
+                </div>
+              </div>
+
+              {/* Nodes */}
+              <div className="absolute top-0 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2">
+                <IngredientNode name="Design" color="emerald" isActive />
+              </div>
+              <div className="absolute bottom-0 left-1/2 z-20 -translate-x-1/2 translate-y-1/2">
+                <IngredientNode name="Speed" color="emerald" isActive />
+              </div>
+              <div className="absolute top-1/2 left-0 z-20 -translate-x-1/2 -translate-y-1/2">
+                <IngredientNode name="Quality" color="emerald" isActive />
+              </div>
+              <div className="absolute top-1/2 right-0 z-20 translate-x-1/2 -translate-y-1/2">
+                <IngredientNode name="Simplicity" color="emerald" isActive />
+              </div>
+
               {/* Vertical Flow Lines SVG */}
-              <div className="absolute inset-0 z-0 pointer-events-none">
-                <svg className="w-full h-full" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <div className="pointer-events-none absolute inset-0 z-0">
+                <svg
+                  className="h-full w-full"
+                  viewBox="0 0 400 400"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   {/* Background Lines connecting sources to main flow */}
                   {/* Line 1 - Sprout */}
                   <path
@@ -230,19 +262,47 @@ export function ProcessSection() {
                   />
 
                   <defs>
-                    <linearGradient id="grad_green" x1="92" y1="0" x2="200" y2="100" gradientUnits="userSpaceOnUse">
+                    <linearGradient
+                      id="grad_green"
+                      x1="92"
+                      y1="0"
+                      x2="200"
+                      y2="100"
+                      gradientUnits="userSpaceOnUse"
+                    >
                       <stop stopColor="#10b981" stopOpacity="0.8" />
                       <stop offset="1" stopColor="#10b981" stopOpacity="0" />
                     </linearGradient>
-                    <linearGradient id="grad_blue" x1="164" y1="0" x2="200" y2="100" gradientUnits="userSpaceOnUse">
+                    <linearGradient
+                      id="grad_blue"
+                      x1="164"
+                      y1="0"
+                      x2="200"
+                      y2="100"
+                      gradientUnits="userSpaceOnUse"
+                    >
                       <stop stopColor="#3b82f6" stopOpacity="0.8" />
                       <stop offset="1" stopColor="#3b82f6" stopOpacity="0" />
                     </linearGradient>
-                    <linearGradient id="grad_red" x1="236" y1="0" x2="200" y2="100" gradientUnits="userSpaceOnUse">
+                    <linearGradient
+                      id="grad_red"
+                      x1="236"
+                      y1="0"
+                      x2="200"
+                      y2="100"
+                      gradientUnits="userSpaceOnUse"
+                    >
                       <stop stopColor="#ef4444" stopOpacity="0.8" />
                       <stop offset="1" stopColor="#ef4444" stopOpacity="0" />
                     </linearGradient>
-                    <linearGradient id="grad_amber" x1="308" y1="0" x2="200" y2="100" gradientUnits="userSpaceOnUse">
+                    <linearGradient
+                      id="grad_amber"
+                      x1="308"
+                      y1="0"
+                      x2="200"
+                      y2="100"
+                      gradientUnits="userSpaceOnUse"
+                    >
                       <stop stopColor="#f59e0b" stopOpacity="0.8" />
                       <stop offset="1" stopColor="#f59e0b" stopOpacity="0" />
                     </linearGradient>
@@ -251,10 +311,10 @@ export function ProcessSection() {
               </div>
 
               {/* Node 1: The Kitchen Trigger */}
-              <div className="relative z-10 mt-[80px] w-64 bg-gray-100 dark:bg-[#1E1E1E] rounded-2xl p-4 border border-amber-500/50 shadow-[0_0_30px_-10px_rgba(245,158,11,0.3)]">
-                <div className="flex items-center justify-between mb-3">
+              <div className="relative z-10 mt-[80px] w-64 rounded-2xl border border-amber-500/50 bg-gray-100 p-4 shadow-[0_0_30px_-10px_rgba(245,158,11,0.3)] dark:bg-[#1E1E1E]">
+                <div className="mb-3 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded bg-amber-500 flex items-center justify-center text-white">
+                    <div className="flex h-8 w-8 items-center justify-center rounded bg-amber-500 text-white">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
@@ -271,44 +331,63 @@ export function ProcessSection() {
                       </svg>
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider font-geist">
-                        Preparation
+                      <div className="font-geist text-xs font-bold tracking-wider text-gray-900 uppercase dark:text-white">
+                        Optimization
                       </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-300 font-geist">Wok &amp; Grill</div>
+                      <div className="font-geist text-sm text-gray-600 dark:text-gray-300">
+                        Bundle &amp; Assets
+                      </div>
                     </div>
                   </div>
-                  <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.8)]" />
+                  <div className="h-2 w-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.8)]" />
                 </div>
 
                 {/* Recipe Details Preview */}
-                <div className="bg-white dark:bg-[#111] rounded-lg p-3 font-mono text-[10px] text-gray-500 leading-relaxed border border-black/5 dark:border-white/5 relative overflow-hidden">
+                <div className="relative overflow-hidden rounded-lg border border-black/5 bg-white p-3 font-mono text-[10px] leading-relaxed text-gray-500 dark:border-white/5 dark:bg-[#111]">
                   <div className="absolute top-0 right-0 p-1">
-                    <span className="text-[8px] text-amber-600 dark:text-amber-400 bg-amber-500/10 px-1 rounded font-geist">
+                    <span className="font-geist rounded bg-amber-500/10 px-1 text-[8px] text-amber-600 dark:text-amber-400">
                       RECIPE
                     </span>
                   </div>
                   <p className="font-geist">
-                    <span className="text-purple-600 dark:text-purple-400 font-geist">"dish"</span>:{" "}
-                    <span className="text-green-600 dark:text-green-400 font-geist">"Xào Sả Ớt"</span>,
+                    <span className="font-geist text-purple-600 dark:text-purple-400">
+                      "performance"
+                    </span>
+                    :{" "}
+                    <span className="font-geist text-green-600 dark:text-green-400">
+                      "100/100"
+                    </span>
+                    ,
                   </p>
                   <p className="font-geist">
-                    <span className="text-purple-600 dark:text-purple-400 font-geist">"spice"</span>:{" "}
-                    <span className="text-green-600 dark:text-green-400 font-geist">"High"</span>,
+                    <span className="font-geist text-purple-600 dark:text-purple-400">
+                      "aesthetics"
+                    </span>
+                    :{" "}
+                    <span className="font-geist text-green-600 dark:text-green-400">
+                      "Premium"
+                    </span>
+                    ,
                   </p>
                   <p className="font-geist">
-                    <span className="text-purple-600 dark:text-purple-400 font-geist">"serve"</span>:{" "}
-                    <span className="text-blue-600 dark:text-blue-400 font-geist">"Hot"</span>
+                    <span className="font-geist text-purple-600 dark:text-purple-400">
+                      "status"
+                    </span>
+                    :{" "}
+                    <span className="font-geist text-blue-600 dark:text-blue-400">
+                      "Ready"
+                    </span>
                   </p>
                 </div>
               </div>
 
               {/* Connection Bead */}
-              <div className="w-1 h-8 bg-gradient-to-b from-amber-500/50 to-transparent w-px my-0" />
+              <div className="my-0 h-8 w-1 w-px bg-gradient-to-b from-amber-500/50 to-transparent" />
 
               {/* Node 2: The Plate */}
-              <div className="relative z-10 w-64 bg-gray-100 dark:bg-[#1E1E1E] rounded-2xl p-4 border border-black/5 dark:border-white/10 hover:border-black/20 dark:hover:border-white/20 transition-colors">
+              <div className="relative z-10 w-64 rounded-2xl border border-black/5 bg-gray-100 p-4 transition-colors hover:border-black/20 dark:border-white/10 dark:bg-[#1E1E1E] dark:hover:border-white/20">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded bg-emerald-600 dark:bg-emerald-700 flex items-center justify-center text-white">
+                  <div className="flex h-8 w-8 items-center justify-center rounded bg-emerald-600 text-white dark:bg-emerald-700">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
@@ -329,10 +408,12 @@ export function ProcessSection() {
                     </svg>
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider font-geist">
-                      Service
+                    <div className="font-geist text-xs font-bold tracking-wider text-gray-500 uppercase dark:text-gray-400">
+                      Output
                     </div>
-                    <div className="text-sm text-gray-900 dark:text-gray-200 font-geist">Ready to Enjoy</div>
+                    <div className="font-geist text-sm text-gray-900 dark:text-gray-200">
+                      Production Ready
+                    </div>
                   </div>
                   <div className="ml-auto opacity-50">
                     <svg
@@ -360,5 +441,51 @@ export function ProcessSection() {
         </div>
       </div>
     </SpotlightCard>
-  )
+  );
+}
+
+function IngredientNode({
+  name,
+  color,
+  isActive,
+}: {
+  name: string;
+  color: "emerald" | "blue" | "red" | "amber";
+  isActive?: boolean;
+}) {
+  const colors = {
+    emerald:
+      "border-emerald-500/30 text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10",
+    blue: "border-blue-500/30 text-blue-600 bg-blue-50 dark:bg-blue-500/10",
+    red: "border-red-500/30 text-red-600 bg-red-50 dark:bg-red-500/10",
+    amber:
+      "border-amber-500/30 text-amber-600 bg-amber-50 dark:bg-amber-500/10",
+  };
+
+  return (
+    <div
+      className={`flex items-center gap-2 rounded-full border p-2 px-3 shadow-sm backdrop-blur-sm transition-all duration-500 ${
+        colors[color]
+      } ${
+        isActive
+          ? "scale-110 opacity-100 ring-2 ring-emerald-500/20"
+          : "opacity-40"
+      }`}
+    >
+      <div
+        className={`h-1.5 w-1.5 rounded-full ${
+          color === "emerald"
+            ? "bg-emerald-500"
+            : color === "blue"
+              ? "bg-blue-500"
+              : color === "red"
+                ? "bg-red-500"
+                : "bg-amber-500"
+        } ${isActive ? "animate-pulse" : ""}`}
+      />
+      <span className="font-geist text-[10px] font-bold tracking-wider uppercase">
+        {name}
+      </span>
+    </div>
+  );
 }

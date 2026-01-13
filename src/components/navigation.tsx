@@ -1,39 +1,40 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 
 export function Navigation() {
-  const [theme, setTheme] = useState<"light" | "dark">("light")
+  const [theme, setTheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
     // Initialize theme from localStorage or system preference
     if (
       localStorage.theme === "dark" ||
-      (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)
+      (!("theme" in localStorage) &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
     ) {
-      document.documentElement.classList.add("dark")
-      setTheme("dark")
+      document.documentElement.classList.add("dark");
+      setTheme("dark");
     } else {
-      document.documentElement.classList.remove("dark")
-      setTheme("light")
+      document.documentElement.classList.remove("dark");
+      setTheme("light");
     }
-  }, [])
+  }, []);
 
   const toggleTheme = () => {
     if (document.documentElement.classList.contains("dark")) {
-      document.documentElement.classList.remove("dark")
-      localStorage.theme = "light"
-      setTheme("light")
+      document.documentElement.classList.remove("dark");
+      localStorage.theme = "light";
+      setTheme("light");
     } else {
-      document.documentElement.classList.add("dark")
-      localStorage.theme = "dark"
-      setTheme("dark")
+      document.documentElement.classList.add("dark");
+      localStorage.theme = "dark";
+      setTheme("dark");
     }
-  }
+  };
 
   return (
-    <div className="fixed top-6 left-0 right-0 flex justify-center z-50 px-4 pointer-events-none">
-      <nav className="glass-nav flex w-full max-w-5xl pointer-events-auto rounded-full pt-3 pr-3 pb-3 pl-6 shadow-2xl items-center justify-between">
+    <div className="pointer-events-none fixed top-6 right-0 left-0 z-50 flex justify-center px-4">
+      <nav className="glass-nav pointer-events-auto flex w-full max-w-5xl items-center justify-between rounded-full pt-3 pr-3 pb-3 pl-6 shadow-2xl">
         {/* Logo */}
         <div className="flex items-center gap-2">
           <svg
@@ -52,27 +53,36 @@ export function Navigation() {
             <path d="M12 2a8 8 0 0 1 8 7v2.5" />
             <path d="M12 2a8 8 0 0 0-8 7v2.5" />
           </svg>
-          <span className="text-xl font-semibold tracking-tight text-gray-900 dark:text-gray-100 font-geist uppercase">
-            HA NOI QUAN
+          <span className="font-geist text-xl font-semibold tracking-tight text-gray-900 uppercase dark:text-gray-100">
+            REMARKABLE
           </span>
         </div>
 
         {/* Links (Desktop) */}
-        <div className="hidden lg:flex items-center gap-8 text-sm text-gray-600 dark:text-gray-400 font-medium">
+        <div className="hidden items-center gap-8 text-sm font-medium text-gray-600 lg:flex dark:text-gray-400">
           <a
-            href="#menu"
-            className="text-gray-900 dark:text-white transition-colors hover:text-emerald-500 dark:hover:text-emerald-400 font-geist"
+            href="#features"
+            className="font-geist text-gray-900 transition-colors hover:text-emerald-500 dark:text-white dark:hover:text-emerald-400"
           >
-            Menu
+            Features
           </a>
-          <a href="#about" className="hover:text-gray-900 dark:hover:text-white transition-colors font-geist">
-            About
+          <a
+            href="#pricing"
+            className="font-geist transition-colors hover:text-gray-900 dark:hover:text-white"
+          >
+            Pricing
           </a>
-          <a href="#space" className="hover:text-gray-900 dark:hover:text-white transition-colors font-geist">
-            Our Space
+          <a
+            href="#faq"
+            className="font-geist transition-colors hover:text-gray-900 dark:hover:text-white"
+          >
+            FAQ
           </a>
-          <a href="#hours" className="hover:text-gray-900 dark:hover:text-white transition-colors font-geist">
-            Hours
+          <a
+            href="#docs"
+            className="font-geist transition-colors hover:text-gray-900 dark:hover:text-white"
+          >
+            Documentation
           </a>
         </div>
 
@@ -81,13 +91,13 @@ export function Navigation() {
           {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
-            className="flex items-center justify-center w-8 h-8 rounded-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-black/10 bg-black/5 text-gray-700 transition-colors hover:bg-black/10 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10"
             aria-label="Toggle Theme"
           >
             {/* Sun Icon (for Dark Mode) */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="hidden dark:block w-4 h-4"
+              className="hidden h-4 w-4 dark:block"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -108,7 +118,7 @@ export function Navigation() {
             {/* Moon Icon (for Light Mode) */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="block dark:hidden w-4 h-4"
+              className="block h-4 w-4 dark:hidden"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -121,18 +131,18 @@ export function Navigation() {
           </button>
           <a
             href="#contact"
-            className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 text-sm font-medium hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-gray-700 dark:text-gray-300 font-geist"
+            className="font-geist hidden items-center gap-2 rounded-full border border-black/10 bg-black/5 px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-black/10 md:flex dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10"
           >
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
             </span>
             Open Today
           </a>
-          <button className="px-5 py-2 rounded-full border border-white/20 bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-500 transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] font-geist">
-            Book a Table
+          <button className="font-geist rounded-full border border-white/20 bg-emerald-600 px-5 py-2 text-sm font-bold text-white shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all hover:bg-emerald-500">
+            Get Started
           </button>
-          <button className="lg:hidden text-gray-900 dark:text-white flex items-center ml-2">
+          <button className="ml-2 flex items-center text-gray-900 lg:hidden dark:text-white">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               aria-hidden="true"
@@ -155,5 +165,5 @@ export function Navigation() {
         </div>
       </nav>
     </div>
-  )
+  );
 }

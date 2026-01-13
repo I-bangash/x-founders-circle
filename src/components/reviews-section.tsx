@@ -1,15 +1,16 @@
-import { SpotlightCard } from "./spotlight-card";
-import { SectionHeader } from "@/components/global-ui/section-header";
-import { SectionBadge } from "@/components/global-ui/section-badge";
-import { ReviewCard } from "@/components/global-ui/review-card";
 import { FeatureImageCard } from "@/components/global-ui/feature-image-card";
+import { ReviewCard } from "@/components/global-ui/review-card";
+import { SectionBadge } from "@/components/global-ui/section-badge";
+import { SectionHeader } from "@/components/global-ui/section-header";
+
+import { SpotlightCard } from "./spotlight-card";
 
 export function ReviewsSection() {
   return (
-    <SpotlightCard className="sm:mx-6 xl:ml-auto xl:mr-auto max-w-7xl rounded-[40px] mt-4 mr-3 ml-3">
-      <div className="sm:p-16 lg:p-24 overflow-hidden flex flex-col bg-card rounded-[40px] pt-8 pr-8 pb-8 pl-8 relative items-center">
-        <div className="absolute top-8 right-8 z-20 pointer-events-none opacity-30">
-          <span className="text-sm font-semibold text-gray-400 dark:text-gray-600 tracking-widest font-geist">
+    <SpotlightCard className="mt-4 mr-3 ml-3 max-w-7xl rounded-[40px] sm:mx-6 xl:mr-auto xl:ml-auto">
+      <div className="bg-card relative flex flex-col items-center overflow-hidden rounded-[40px] pt-8 pr-8 pb-8 pl-8 sm:p-16 lg:p-24">
+        <div className="pointer-events-none absolute top-8 right-8 z-20 opacity-30">
+          <span className="font-geist text-sm font-semibold tracking-widest text-gray-400 dark:text-gray-600">
             05
           </span>
         </div>
@@ -31,37 +32,37 @@ export function ReviewsSection() {
               >
                 <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
               </svg>
-              Loved by Locals
+              Loved by Founders
             </SectionBadge>
           }
           title={
             <>
-              Craft, Flavor,{" "}
-              <span className="text-gray-500 dark:text-gray-400 font-geist">
-                Tradition.
+              Craft, Design,{" "}
+              <span className="font-geist text-gray-500 dark:text-gray-400">
+                Speed.
               </span>
             </>
           }
-          description="We believe food is memories. At HA NOI QUAN, we create dishes that bring you straight to the bustling streets of Vietnam."
+          description="Built by founders, for founders. We know the setup grind. We fixed it."
           className="mb-20"
         />
 
         {/* Masonry Grid */}
-        <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+        <div className="relative z-10 grid w-full max-w-7xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {/* Card 1: Review */}
           <ReviewCard
             accentColor="emerald"
             initial="S"
             author="Sarah M."
-            role="Local Guide"
+            role="AI Startup Founder"
             quote={
               <>
-                "The{" "}
-                <span className="text-foreground font-medium font-geist">
-                  Bánh Mì Chảo
-                </span>{" "}
-                is absolutely incredible. It sizzling hot, savory, and reminds
-                me of my trip to Hanoi."
+                "I used to spend 3 days setting up Auth and Stripe. With{" "}
+                <span className="text-foreground font-geist font-medium">
+                  Remarkable
+                </span>
+                , I had my first customer paying in 4 hours. The DX is
+                incredible."
               </>
             }
             icon={
@@ -84,8 +85,8 @@ export function ReviewsSection() {
 
           {/* Card 2: Visual (Sushi) */}
           <FeatureImageCard
-            backgroundImage="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=800&auto=format&fit=crop"
-            label="Premium Sushi"
+            backgroundImage="https://images.unsplash.com/photo-1582878826618-c05326eff935?q=80&w=800&auto=format&fit=crop"
+            label="Pixel Perfect"
             gradientColor="emerald"
           />
 
@@ -94,14 +95,15 @@ export function ReviewsSection() {
             accentColor="amber"
             initial="D"
             author="Daniel K."
-            role="Regular Guest"
+            role="Serial Entrepreneur"
             quote={
               <>
-                "Authentic vibes and the{" "}
-                <span className="text-foreground font-medium font-geist">
-                  Wok dishes
-                </span>{" "}
-                are full of 'Wok Hei'. Best fusion spot in Dortmund."
+                "The design system is so coherent. I didn't have to touch a
+                single CSS file to make it look{" "}
+                <span className="text-foreground font-geist font-medium">
+                  premium
+                </span>
+                . It just works."
               </>
             }
             icon={
@@ -124,7 +126,7 @@ export function ReviewsSection() {
           {/* Card 4: Visual (Pho/Soup) */}
           <FeatureImageCard
             backgroundImage="https://images.unsplash.com/photo-1582878826618-c05326eff935?q=80&w=800&auto=format&fit=crop"
-            label="Traditional Phở"
+            label="Mobile Ready"
             gradientColor="amber"
           />
 
@@ -133,15 +135,15 @@ export function ReviewsSection() {
             accentColor="blue"
             initial="L"
             author="Lisa W."
-            role="Foodie"
+            role="Indie Hacker"
             quote={
               <>
-                "A beautiful, colorful space perfect for dinner with friends.
-                The{" "}
-                <span className="text-foreground font-medium font-geist">
-                  Curry
+                "I've tried every boilerplate.{" "}
+                <span className="text-foreground font-geist font-medium">
+                  Remarkable
                 </span>{" "}
-                was rich and perfectly spiced."
+                is the first one that actually feels like it was built for the
+                modern web."
               </>
             }
             icon={
@@ -163,8 +165,8 @@ export function ReviewsSection() {
 
           {/* Card 6: Visual (Interior) */}
           <FeatureImageCard
-            backgroundImage="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=800&auto=format&fit=crop"
-            label="Cozy Atmosphere"
+            backgroundImage="https://images.unsplash.com/photo-1582878826618-c05326eff935?q=80&w=800&auto=format&fit=crop"
+            label="Modern UX"
             gradientColor="purple"
             className="bg-center"
           />

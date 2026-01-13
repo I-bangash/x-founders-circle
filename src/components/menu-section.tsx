@@ -1,158 +1,172 @@
-import { SpotlightCard } from "./spotlight-card"
-import { SectionHeader } from "@/components/global-ui/section-header"
-import { SectionBadge } from "@/components/global-ui/section-badge"
-import { CategoryHeader } from "@/components/global-ui/category-header"
+import { CategoryHeader } from "@/components/global-ui/category-header";
+import { SectionBadge } from "@/components/global-ui/section-badge";
+import { SectionHeader } from "@/components/global-ui/section-header";
+
+import { SpotlightCard } from "./spotlight-card";
 
 export function MenuSection() {
   return (
-    <SpotlightCard className="mx-4 sm:mx-6 lg:mt-4 xl:ml-auto xl:mr-auto max-w-7xl z-10 rounded-[40px]">
-      <div className="rounded-[40px] relative overflow-hidden flex flex-col">
+    <SpotlightCard className="z-10 mx-4 max-w-7xl rounded-[40px] sm:mx-6 lg:mt-4 xl:mr-auto xl:ml-auto">
+      <div className="relative flex flex-col overflow-hidden rounded-[40px]">
         {/* Floating Nav (Sticky) */}
-        <div className="sticky top-0 z-40 w-full backdrop-blur-xl bg-card/80 border-b border-black/5 dark:border-white/5 pt-4 pb-4 px-6 sm:px-12">
-          <div className="flex items-center gap-3 overflow-x-auto hide-scrollbar snap-x">
+        <div className="bg-card/80 sticky top-0 z-40 w-full border-b border-black/5 px-6 pt-4 pb-4 backdrop-blur-xl sm:px-12 dark:border-white/5">
+          <div className="hide-scrollbar flex snap-x items-center gap-3 overflow-x-auto">
             <a
-              href="#cat-viet"
-              className="snap-start shrink-0 px-4 py-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-sm font-medium hover:bg-emerald-500/20 transition-all font-geist"
+              href="#get-started"
+              className="font-geist shrink-0 snap-start rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-2 text-sm font-medium text-emerald-600 transition-all hover:bg-emerald-500/20 dark:text-emerald-400"
             >
-              Vietnamese Specials
+              Get Started
             </a>
             <a
-              href="#cat-bmc"
-              className="snap-start shrink-0 px-4 py-2 rounded-full border border-black/5 dark:border-white/5 bg-black/5 dark:bg-white/5 text-gray-600 dark:text-gray-400 text-sm font-medium hover:text-amber-500 dark:hover:text-amber-400 hover:border-amber-500/30 transition-all font-geist"
+              href="#get-paid"
+              className="font-geist shrink-0 snap-start rounded-full border border-black/5 bg-black/5 px-4 py-2 text-sm font-medium text-gray-600 transition-all hover:border-amber-500/30 hover:text-amber-500 dark:border-white/5 dark:bg-white/5 dark:text-gray-400 dark:hover:text-amber-400"
             >
-              Bánh Mì Chảo
+              Get Paid
             </a>
             <a
-              href="#cat-sushi"
-              className="snap-start shrink-0 px-4 py-2 rounded-full border border-black/5 dark:border-white/5 bg-black/5 dark:bg-white/5 text-gray-600 dark:text-gray-400 text-sm font-medium hover:text-blue-500 dark:hover:text-blue-400 hover:border-blue-500/30 transition-all font-geist"
+              href="#get-growing"
+              className="font-geist shrink-0 snap-start rounded-full border border-black/5 bg-black/5 px-4 py-2 text-sm font-medium text-gray-600 transition-all hover:border-blue-500/30 hover:text-blue-500 dark:border-white/5 dark:bg-white/5 dark:text-gray-400 dark:hover:text-blue-400"
             >
-              Sushi &amp; Rolls
+              Get Growing
             </a>
             <a
-              href="#cat-wok"
-              className="snap-start shrink-0 px-4 py-2 rounded-full border border-black/5 dark:border-white/5 bg-black/5 dark:bg-white/5 text-gray-600 dark:text-gray-400 text-sm font-medium hover:text-orange-500 dark:hover:text-orange-400 hover:border-orange-500/30 transition-all font-geist"
+              href="#make-it-yours"
+              className="font-geist shrink-0 snap-start rounded-full border border-black/5 bg-black/5 px-4 py-2 text-sm font-medium text-gray-600 transition-all hover:border-orange-500/30 hover:text-orange-500 dark:border-white/5 dark:bg-white/5 dark:text-gray-400 dark:hover:text-orange-400"
             >
-              Wok &amp; Curry
+              Make It Yours
             </a>
             <a
-              href="#cat-start"
-              className="snap-start shrink-0 px-4 py-2 rounded-full border border-black/5 dark:border-white/5 bg-black/5 dark:bg-white/5 text-gray-600 dark:text-gray-400 text-sm font-medium hover:text-gray-900 dark:hover:text-white hover:border-black/20 dark:hover:border-white/20 transition-all font-geist"
+              href="#production-ready"
+              className="font-geist shrink-0 snap-start rounded-full border border-black/5 bg-black/5 px-4 py-2 text-sm font-medium text-gray-600 transition-all hover:border-black/20 hover:text-gray-900 dark:border-white/5 dark:bg-white/5 dark:text-gray-400 dark:hover:border-white/20 dark:hover:text-white"
             >
-              Starters
+              Production Ready
             </a>
           </div>
         </div>
 
         {/* Header Banner */}
-        <div className="relative px-6 py-16 sm:px-12 sm:py-24 text-center border-b border-black/5 dark:border-white/5">
-          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
+        <div className="relative border-b border-black/5 px-6 py-16 text-center sm:px-12 sm:py-24 dark:border-white/5">
+          <div className="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
 
           <SectionHeader
-className="mb-0"
+            className="mb-0"
             badge={
-              <SectionBadge variant="orange" className="shadow-[0_0_20px_-5px_rgba(249,115,22,0.3)]">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.1.243-2.143.5-3.5a6 6 0 1 0 6 6Z" />
-            </svg>
-            Chef's Hand-Picked Favorites This Week
-          </SectionBadge>
+              <SectionBadge
+                variant="orange"
+                className="shadow-[0_0_20px_-5px_rgba(249,115,22,0.3)]"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+                  <path d="m9 12 2 2 4-4" />
+                </svg>
+                The complete stack for shipping fast
+              </SectionBadge>
             }
             title={
               <>
-                The Menu — <span className="text-gray-500 font-geist">Crafted Fresh.</span>
+                Everything you need to{" "}
+                <span className="font-geist text-gray-500">ship fast.</span>
               </>
             }
-            description="A fusion of Vietnamese classics, vibrant wok creations, and hand-rolled sushi made with precision and heart."
+            description="Remarable handles the boring stuff so you can focus on what makes your app different."
           />
         </div>
 
-        <div className="p-6 sm:p-12 space-y-24">
-          {/* Category 1: Vietnamese Specials */}
-          <div id="cat-viet" className="scroll-mt-32">
-          <CategoryHeader
-            title="Vietnamese Specials"
-            subtitle="Traditional & Fresh"
-            titleClassName="text-emerald-600 dark:text-emerald-400"
-            gradientClassName="from-emerald-100/30 dark:from-emerald-900/10"
-            iconClassName="text-emerald-500/50"
-            icon={
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
-                <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
-              </svg>
-            }
-          />
+        <div className="space-y-24 p-6 sm:p-12">
+          {/* Category 1: Get Started */}
+          <div id="get-started" className="scroll-mt-32">
+            <CategoryHeader
+              title="Get Started"
+              subtitle="Authentication & Users"
+              titleClassName="text-emerald-600 dark:text-emerald-400"
+              gradientClassName="from-emerald-100/30 dark:from-emerald-900/10"
+              iconClassName="text-emerald-500/50"
+              icon={
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+              }
+            />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {[
                 {
-                  name: "Bún Nem Special",
-                  price: "€14.50",
-                  description: "Rice noodles, fried spring rolls, fresh herbs, roasted peanuts, lime-fish dressing.",
-                  badge: "Signature",
+                  name: "Clerk Integration",
+                  price: "Included",
+                  description:
+                    "OAuth, magic links, 2FA, and user management pre-configured.",
+                  badge: "Auth",
                   badgeColor: "emerald",
                 },
                 {
-                  name: "Bún Hải Sản",
-                  price: "€15.90",
-                  description: "Vermicelli with mixed seafood, fresh herbs, sweet & sour chili-lime sauce.",
-                  badge: "Seafood",
+                  name: "Role-Based Access",
+                  price: "Included",
+                  description:
+                    "Define user roles and restrict access to specific routes and API endpoints.",
+                  badge: "Security",
                   badgeColor: "blue",
                 },
                 {
-                  name: "Bún Gà Nướng",
-                  price: "€13.90",
-                  description: "Grilled lemongrass chicken, crisp vegetables, roasted peanuts.",
-                  badge: "Chicken",
+                  name: "User Profiles",
+                  price: "Included",
+                  description:
+                    "Custom metadata, avatar handling, and profile sync across services.",
+                  badge: "Feature",
                   badgeColor: "gray",
                 },
                 {
-                  name: "Chả Giò Giòn",
-                  price: "€6.90",
-                  description: "Crispy spring rolls filled with minced pork, mushrooms, and glass noodles.",
-                  badge: "Starter",
+                  name: "Onboarding Flows",
+                  price: "Included",
+                  description:
+                    "Guide new users through setup with pre-built multi-step forms.",
+                  badge: "UX",
                   badgeColor: "gray",
                 },
               ].map((dish, index) => (
                 <div
                   key={index}
-                  className="group relative p-6 bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 rounded-2xl hover:border-emerald-500/30 hover:bg-emerald-500/[0.05] dark:hover:bg-emerald-500/[0.02] transition-all duration-300"
+                  className="group relative rounded-2xl border border-black/5 bg-black/[0.02] p-6 transition-all duration-300 hover:border-emerald-500/30 hover:bg-emerald-500/[0.05] dark:border-white/5 dark:bg-white/[0.02] dark:hover:bg-emerald-500/[0.02]"
                 >
-                  <div className="flex justify-between items-start mb-2">
-                    <h4 className="text-lg font-medium text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-300 transition-colors font-geist">
+                  <div className="mb-2 flex items-start justify-between">
+                    <h4 className="font-geist text-lg font-medium text-gray-900 transition-colors group-hover:text-emerald-600 dark:text-white dark:group-hover:text-emerald-300">
                       {dish.name}
                     </h4>
-                    <span className="text-emerald-600 dark:text-emerald-400 font-mono font-medium">{dish.price}</span>
+                    <span className="font-mono font-medium text-emerald-600 dark:text-emerald-400">
+                      {dish.price}
+                    </span>
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 font-light mb-4">{dish.description}</p>
+                  <p className="mb-4 text-sm font-light text-gray-600 dark:text-gray-400">
+                    {dish.description}
+                  </p>
                   <div className="flex gap-2">
                     <span
-                      className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded border ${
+                      className={`rounded border px-2 py-0.5 text-[10px] tracking-wider uppercase ${
                         dish.badgeColor === "emerald"
-                          ? "border-emerald-500/20 text-emerald-600 dark:text-emerald-400 bg-emerald-500/5"
+                          ? "border-emerald-500/20 bg-emerald-500/5 text-emerald-600 dark:text-emerald-400"
                           : dish.badgeColor === "blue"
-                            ? "border-blue-500/20 text-blue-600 dark:text-blue-400 bg-blue-500/5"
-                            : "border-black/10 dark:border-white/10 text-gray-600 dark:text-gray-400"
+                            ? "border-blue-500/20 bg-blue-500/5 text-blue-600 dark:text-blue-400"
+                            : "border-black/10 text-gray-600 dark:border-white/10 dark:text-gray-400"
                       } flex items-center gap-1`}
                     >
                       {dish.badgeColor === "emerald" && (
@@ -193,33 +207,21 @@ className="mb-0"
             </div>
           </div>
 
-          {/* Category 2: Bánh Mì Chảo (Gold Feature) */}
-          <div id="cat-bmc" className="scroll-mt-32">
-            <div className="w-full relative rounded-3xl overflow-hidden group border border-amber-500/20">
+          {/* Category 2: Get Paid */}
+          <div id="get-paid" className="scroll-mt-32">
+            <div className="group relative w-full overflow-hidden rounded-3xl border border-amber-500/20">
               <div
                 className="absolute inset-0 bg-cover bg-center opacity-30 transition-transform duration-700 group-hover:scale-105"
                 style={{
                   backgroundImage:
-                    "url(https://images.unsplash.com/photo-1541544741938-0af808871cc0?q=80&w=1200&auto=format&fit=crop)",
+                    "url(https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=1200&auto=format&fit=crop)",
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/80 dark:from-black via-black/60 dark:via-[#0a0f0c]/90 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent dark:from-black dark:via-[#0a0f0c]/90" />
 
-              {/* Steam Animation Overlay */}
-              <div className="absolute bottom-10 left-1/4 opacity-30 pointer-events-none">
-                <div
-                  className="steam-particle w-8 h-8 bg-white blur-xl rounded-full absolute -ml-4"
-                  style={{ animation: "steam 3s infinite ease-out" }}
-                />
-                <div
-                  className="steam-particle w-12 h-12 bg-white blur-xl rounded-full absolute ml-4"
-                  style={{ animation: "steam 3s infinite ease-out 1s" }}
-                />
-              </div>
-
-              <div className="relative z-10 p-8 sm:p-12 flex flex-col md:flex-row gap-12 items-center">
+              <div className="relative z-10 flex flex-col items-center gap-12 p-8 sm:p-12 md:flex-row">
                 <div className="flex-1">
-                  <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 rounded-full bg-amber-500/20 text-amber-500 dark:text-amber-400 text-xs font-bold uppercase tracking-widest font-geist border border-amber-500/30">
+                  <div className="font-geist mb-4 inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/20 px-3 py-1 text-xs font-bold tracking-widest text-amber-500 uppercase dark:text-amber-400">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="12"
@@ -231,36 +233,48 @@ className="mb-0"
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     >
-                      <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.1.243-2.143.5-3.5a6 6 0 1 0 6 6Z" />
+                      <rect width="20" height="14" x="2" y="5" rx="2" />
+                      <line x1="2" x2="22" y1="10" y2="10" />
                     </svg>
-                    House Specialty
+                    Stripe Integration
                   </div>
-                  <h3 className="text-3xl sm:text-5xl text-white font-geist tracking-tighter mb-4">Bánh Mì Chảo</h3>
-                  <p className="text-gray-300 text-lg font-light mb-8 max-w-md">
-                    Our famous sizzling skillet served with warm baguette. A savory harmony of pate, eggs, and meat
-                    bathed in rich sauce.
+                  <h3 className="font-geist mb-4 text-3xl tracking-tighter text-white sm:text-5xl">
+                    Get Paid on Day One
+                  </h3>
+                  <p className="mb-8 max-w-md text-lg font-light text-gray-300">
+                    Pre-configured for both one-time payments and subscriptions.
+                    Tested webhooks and ready-to-use checkout flows.
                   </p>
 
                   <div className="space-y-4">
                     {[
-                      { name: "Original (Beef, Herbs, Eggs)", price: "€14.90" },
-                      { name: "Chảo Nem (w/ Spring Rolls)", price: "€15.90" },
-                      { name: "Chảo Hải Sản (Seafood)", price: "€17.90" },
+                      { name: "Subscription Logic", price: "Ready" },
+                      { name: "One-Time Purchases", price: "Ready" },
+                      { name: "Customer Portal", price: "Ready" },
                     ].map((item, index) => (
-                      <div key={index} className="flex justify-between items-center border-b border-white/10 pb-2">
-                        <span className="text-white font-medium font-geist">{item.name}</span>
-                        <span className="text-amber-400 font-mono text-lg">{item.price}</span>
+                      <div
+                        key={index}
+                        className="flex items-center justify-between border-b border-white/10 pb-2"
+                      >
+                        <span className="font-geist font-medium text-white">
+                          {item.name}
+                        </span>
+                        <span className="font-mono text-lg text-amber-400">
+                          {item.price}
+                        </span>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Visual Element */}
-                <div className="md:w-1/3 flex justify-center">
-                  <div className="w-48 h-48 rounded-full border-4 border-amber-500/20 flex items-center justify-center bg-black/50 backdrop-blur-sm relative group-hover:border-amber-500/50 transition-colors">
+                <div className="flex justify-center md:w-1/3">
+                  <div className="relative flex h-48 w-48 items-center justify-center rounded-full border-4 border-amber-500/20 bg-black/50 backdrop-blur-sm transition-colors group-hover:border-amber-500/50">
                     <span className="text-center">
-                      <span className="block text-4xl mb-1">🥘</span>
-                      <span className="text-xs text-amber-500 uppercase tracking-widest font-bold">Sizzling Hot</span>
+                      <span className="mb-1 block text-4xl">💰</span>
+                      <span className="text-xs font-bold tracking-widest text-amber-500 uppercase">
+                        Revenue Ready
+                      </span>
                     </span>
                   </div>
                 </div>
@@ -268,81 +282,89 @@ className="mb-0"
             </div>
           </div>
 
-          {/* Category 3: Sushi & Rolls (Blue) */}
-          <div id="cat-sushi" className="scroll-mt-32">
+          {/* Category 3: Get Growing */}
+          <div id="get-growing" className="scroll-mt-32">
             <CategoryHeader
-                title="Sushi & Rolls"
-                subtitle="Hand-rolled & Fresh"
-                titleClassName="text-blue-600 dark:text-blue-400"
-                gradientClassName="from-blue-100/30 dark:from-blue-900/10"
-                iconClassName="text-blue-500/50"
-                icon={
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
-                    <path d="m9 12 2 2 4-4" />
-                  </svg>
-                }
+              title="Get Growing"
+              subtitle="Database & Real-time"
+              titleClassName="text-blue-600 dark:text-blue-400"
+              gradientClassName="from-blue-100/30 dark:from-blue-900/10"
+              iconClassName="text-blue-500/50"
+              icon={
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+                  <path d="m9 12 2 2 4-4" />
+                </svg>
+              }
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {[
                 {
-                  name: "Rainbow Roll",
-                  price: "€12.50",
-                  description: "Salmon, tuna, avocado, mango inside out.",
-                  badge: "Fresh",
+                  name: "Convex Database",
+                  price: "Included",
+                  description:
+                    "Real-time updates, serverless functions, and type-safe queries.",
+                  badge: "Real-time",
                   badgeColor: "blue",
                 },
                 {
-                  name: "Crispy Ebi Roll",
-                  price: "€11.90",
-                  description: "Fried shrimp roll topped with spicy mayo.",
-                  badge: "Spicy",
+                  name: "Resend Integration",
+                  price: "Included",
+                  description:
+                    "Transactional emails, welcome sequences, and notification templates.",
+                  badge: "Email",
                   badgeColor: "red",
                 },
                 {
-                  name: "Dragon Roll",
-                  price: "€13.90",
-                  description: "Avocado, eel glaze, sesame seeds.",
-                  badge: "Cooked",
+                  name: "SEO Optimization",
+                  price: "Included",
+                  description:
+                    "Proper metadata, sitemaps, and robots.txt pre-configured.",
+                  badge: "Growing",
                   badgeColor: "gray",
                 },
                 {
-                  name: "Sake Sashimi",
-                  price: "€10.50",
-                  description: "Fresh, thick slices of premium salmon.",
-                  badge: "Raw",
+                  name: "Background Jobs",
+                  price: "Included",
+                  description:
+                    "Handle long-running tasks asynchronously with Convex functions.",
+                  badge: "Core",
                   badgeColor: "blue",
                 },
               ].map((dish, index) => (
                 <div
                   key={index}
-                  className="group relative p-6 bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 rounded-2xl hover:border-blue-500/30 hover:bg-blue-500/[0.05] dark:hover:bg-blue-500/[0.02] transition-all duration-300"
+                  className="group relative rounded-2xl border border-black/5 bg-black/[0.02] p-6 transition-all duration-300 hover:border-blue-500/30 hover:bg-blue-500/[0.05] dark:border-white/5 dark:bg-white/[0.02] dark:hover:bg-blue-500/[0.02]"
                 >
-                  <div className="flex justify-between items-start mb-2">
-                    <h4 className="text-lg font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors font-geist">
+                  <div className="mb-2 flex items-start justify-between">
+                    <h4 className="font-geist text-lg font-medium text-gray-900 transition-colors group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-300">
                       {dish.name}
                     </h4>
-                    <span className="text-blue-600 dark:text-blue-400 font-mono font-medium">{dish.price}</span>
+                    <span className="font-mono font-medium text-blue-600 dark:text-blue-400">
+                      {dish.price}
+                    </span>
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 font-light mb-4">{dish.description}</p>
+                  <p className="mb-4 text-sm font-light text-gray-600 dark:text-gray-400">
+                    {dish.description}
+                  </p>
                   <span
-                    className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded border ${
+                    className={`rounded border px-2 py-0.5 text-[10px] tracking-wider uppercase ${
                       dish.badgeColor === "blue"
-                        ? "border-blue-500/20 text-blue-600 dark:text-blue-400 bg-blue-500/5"
+                        ? "border-blue-500/20 bg-blue-500/5 text-blue-600 dark:text-blue-400"
                         : dish.badgeColor === "red"
-                          ? "border-red-500/20 text-red-600 dark:text-red-400 bg-red-500/5"
-                          : "border-black/10 dark:border-white/10 text-gray-600 dark:text-gray-400"
+                          ? "border-red-500/20 bg-red-500/5 text-red-600 dark:text-red-400"
+                          : "border-black/10 text-gray-600 dark:border-white/10 dark:text-gray-400"
                     }`}
                   >
                     {dish.badge}
@@ -352,73 +374,83 @@ className="mb-0"
             </div>
           </div>
 
-          {/* Category 4: Wok & Curry (Orange) */}
-          <div id="cat-wok" className="scroll-mt-32">
+          {/* Category 4: Make It Yours */}
+          <div id="make-it-yours" className="scroll-mt-32">
             <CategoryHeader
-                title="Wok & Curry"
-                subtitle="Fire & Spice"
-                titleClassName="text-orange-600 dark:text-orange-400"
-                gradientClassName="from-orange-100/30 dark:from-orange-900/10"
-                iconClassName="text-orange-500/50"
-                icon={
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.1.243-2.143.5-3.5a6 6 0 1 0 6 6Z" />
-                  </svg>
-                }
+              title="Make It Yours"
+              subtitle="Design & UI"
+              titleClassName="text-orange-600 dark:text-orange-400"
+              gradientClassName="from-orange-100/30 dark:from-orange-900/10"
+              iconClassName="text-orange-500/50"
+              icon={
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M12 19l7-7 3 3-7 7-3-3z" />
+                  <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" />
+                  <path d="m2 2 5 5" />
+                  <path d="m11 11 5 5" />
+                </svg>
+              }
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               {[
                 {
-                  name: "Xào Sả Ớt",
-                  price: "€12.90",
-                  description: "Lemongrass chili stir-fried vegetables.",
-                  badge: "Spicy",
+                  name: "shadcn/ui",
+                  price: "600+",
+                  description:
+                    "High-quality, customizable components ready for use.",
+                  badge: "Components",
                   badgeColor: "red",
                 },
                 {
-                  name: "Red Thai Curry",
-                  price: "€13.50",
-                  description: "Coconut milk, vegetables, chicken or tofu.",
-                  badge: "Veg Option",
+                  name: "Tailwind 4",
+                  price: "Latest",
+                  description:
+                    "Modern, utility-first CSS pre-configured with a coherent design system.",
+                  badge: "Styling",
                   badgeColor: "green",
                 },
                 {
-                  name: "Kung Pao Chicken",
-                  price: "€14.50",
-                  description: "Spicy wok chicken with crunchy peanuts.",
-                  badge: "Classic",
+                  name: "Framer Motion",
+                  price: "Included",
+                  description:
+                    "Subtle and sophisticated animations for a premium feel.",
+                  badge: "Animations",
                   badgeColor: "gray",
                 },
               ].map((dish, index) => (
                 <div
                   key={index}
-                  className="group relative p-6 bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 rounded-2xl hover:border-orange-500/30 hover:bg-orange-500/[0.05] dark:hover:bg-orange-500/[0.02] transition-all duration-300"
+                  className="group relative rounded-2xl border border-black/5 bg-black/[0.02] p-6 transition-all duration-300 hover:border-orange-500/30 hover:bg-orange-500/[0.05] dark:border-white/5 dark:bg-white/[0.02] dark:hover:bg-orange-500/[0.02]"
                 >
-                  <div className="flex justify-between items-start mb-4">
-                    <h4 className="text-lg font-medium text-gray-900 dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-300 transition-colors font-geist">
+                  <div className="mb-4 flex items-start justify-between">
+                    <h4 className="font-geist text-lg font-medium text-gray-900 transition-colors group-hover:text-orange-600 dark:text-white dark:group-hover:text-orange-300">
                       {dish.name}
                     </h4>
-                    <span className="text-orange-600 dark:text-orange-400 font-mono font-medium">{dish.price}</span>
+                    <span className="font-mono font-medium text-orange-600 dark:text-orange-400">
+                      {dish.price}
+                    </span>
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 font-light mb-4">{dish.description}</p>
+                  <p className="mb-4 text-sm font-light text-gray-600 dark:text-gray-400">
+                    {dish.description}
+                  </p>
                   <span
-                    className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded border ${
+                    className={`rounded border px-2 py-0.5 text-[10px] tracking-wider uppercase ${
                       dish.badgeColor === "red"
-                        ? "border-red-500/20 text-red-600 dark:text-red-400 bg-red-500/5"
+                        ? "border-red-500/20 bg-red-500/5 text-red-600 dark:text-red-400"
                         : dish.badgeColor === "green"
-                          ? "border-green-500/20 text-green-600 dark:text-green-400 bg-green-500/5"
-                          : "border-black/10 dark:border-white/10 text-gray-600 dark:text-gray-400"
+                          ? "border-green-500/20 bg-green-500/5 text-green-600 dark:text-green-400"
+                          : "border-black/10 text-gray-600 dark:border-white/10 dark:text-gray-400"
                     }`}
                   >
                     {dish.badge}
@@ -428,43 +460,50 @@ className="mb-0"
             </div>
           </div>
 
-          {/* Category 5: Starters (Gray/Neutral) */}
-          <div id="cat-start" className="scroll-mt-32">
+          {/* Category 5: Production Ready */}
+          <div id="production-ready" className="scroll-mt-32">
             <CategoryHeader
-                title="Starters"
-                subtitle="Small Bites"
-                titleClassName="text-gray-900 dark:text-gray-200"
+              title="Production Ready"
+              subtitle="Security & Analytics"
+              titleClassName="text-gray-900 dark:text-gray-200"
             />
 
             <div className="flex flex-col gap-3">
               {[
                 {
-                  name: "Gỏi Cuốn (Summer Rolls)",
-                  description: "Rice paper rolls with shrimp, herbs.",
-                  price: "€6.90",
+                  name: "Arcjet Security",
+                  description:
+                    "Rate limiting, bot protection, and security headers built in.",
+                  price: "Included",
                 },
                 {
-                  name: "Tom Yam Gung",
-                  description: "Spicy Thai soup with prawns.",
-                  price: "€7.50",
+                  name: "PostHog Analytics",
+                  description:
+                    "Session replays, feature flags, and product usage tracking.",
+                  price: "Included",
                 },
                 {
-                  name: "Chicken Wings Giòn Rụm",
-                  description: "Crispy wings with house glaze.",
-                  price: "€8.50",
+                  name: "Error Tracking",
+                  description:
+                    "Real-time error monitoring and reporting pre-configured.",
+                  price: "Included",
                 },
               ].map((item, index) => (
                 <div
                   key={index}
-                  className="flex justify-between items-center p-4 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors group border border-transparent hover:border-black/10 dark:hover:border-white/10"
+                  className="group flex items-center justify-between rounded-xl border border-transparent p-4 transition-colors hover:border-black/10 hover:bg-black/5 dark:hover:border-white/10 dark:hover:bg-white/5"
                 >
                   <div>
-                    <h4 className="text-base font-medium text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-300 font-geist">
+                    <h4 className="font-geist text-base font-medium text-gray-900 group-hover:text-emerald-600 dark:text-white dark:group-hover:text-emerald-300">
                       {item.name}
                     </h4>
-                    <p className="text-xs text-gray-500 mt-1">{item.description}</p>
+                    <p className="mt-1 text-xs text-gray-500">
+                      {item.description}
+                    </p>
                   </div>
-                  <span className="text-gray-600 dark:text-gray-300 font-mono">{item.price}</span>
+                  <span className="font-mono text-gray-600 dark:text-gray-300">
+                    {item.price}
+                  </span>
                 </div>
               ))}
             </div>
@@ -472,5 +511,5 @@ className="mb-0"
         </div>
       </div>
     </SpotlightCard>
-  )
+  );
 }

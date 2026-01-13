@@ -1,5 +1,6 @@
-import { SpotlightCard } from "./spotlight-card"
-import { SectionHeader } from "@/components/global-ui/section-header"
+import { SectionHeader } from "@/components/global-ui/section-header";
+
+import { SpotlightCard } from "./spotlight-card";
 
 export function FeaturesSection() {
   const features = [
@@ -16,11 +17,11 @@ export function FeaturesSection() {
           strokeLinecap="round"
           strokeLinejoin="round"
         >
-          <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
-          <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+          <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
         </svg>
       ),
-      label: "Fresh Ingredients",
+      label: "Authentication",
     },
     {
       icon: (
@@ -35,10 +36,11 @@ export function FeaturesSection() {
           strokeLinecap="round"
           strokeLinejoin="round"
         >
-          <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.1.243-2.143.5-3.5a6 6 0 1 0 6 6Z" />
+          <rect width="20" height="14" x="2" y="5" rx="2" />
+          <line x1="2" x2="22" y1="10" y2="10" />
         </svg>
       ),
-      label: "Wok Fire",
+      label: "Stripe Payments",
     },
     {
       icon: (
@@ -53,12 +55,11 @@ export function FeaturesSection() {
           strokeLinecap="round"
           strokeLinejoin="round"
         >
-          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-          <path d="M12 5 9.04 7.96a2.17 2.17 0 0 0 0 3.08v0c.82.82 2.13.85 3 .07l2.07-1.9a2.82 2.82 0 0 1 3.15-.49 2.87 2.87 0 0 1 1.48 2.65v3.12c0 .69.28 1.35.78 1.85l.75.75" />
-          <path d="M6 18c-.45 0-.85.2-1.1.53-.35.45-.4 1.07-.1 1.6L6 22h2" />
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+          <path d="m9 12 2 2 4-4" />
         </svg>
       ),
-      label: "Family Recipes",
+      label: "Convex Database",
     },
     {
       icon: (
@@ -73,10 +74,11 @@ export function FeaturesSection() {
           strokeLinecap="round"
           strokeLinejoin="round"
         >
-          <path d="M6.5 12c.94-2.08 2.55-3 5-3 3.72 0 5.68 1.76 9 2.69 2.57-1.95 3.03-5.04 1.5-7.69-3.25 1.5-5.96 4.45-8 4.45-1.95 0-3.35-1-4.5-2.5C8.03 3.86 6.3 3 4.5 3 2.15 3 1 5 1 8c0 3 1.95 5.5 4 8 1.35 1.65 3.5 2.5 5.5 2.5 3.72 0 6.6-2.5 9-6.5-1.17 3.32-3.13 6.64-5.5 8.16-2.52 1.62-5.71 1.34-8-1.5C3.3 16.5 2.5 13.5 3 10.5" />
+          <path d="m22 2-7 20-4-9-9-4Z" />
+          <path d="M22 2 11 13" />
         </svg>
       ),
-      label: "Sushi Artistry",
+      label: "Resend Email",
     },
     {
       icon: (
@@ -91,26 +93,34 @@ export function FeaturesSection() {
           strokeLinecap="round"
           strokeLinejoin="round"
         >
-          <circle cx="12" cy="12" r="10" />
-          <polyline points="12 6 12 12 16 14" />
+          <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z" />
+          <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
+          <path d="M12 2v2" />
+          <path d="M12 20v2" />
+          <path d="m4.93 4.93 1.41 1.41" />
+          <path d="m17.66 17.66 1.41 1.41" />
+          <path d="M2 12h2" />
+          <path d="M20 12h2" />
+          <path d="m6.34 17.66-1.41 1.41" />
+          <path d="m19.07 4.93-1.41 1.41" />
         </svg>
       ),
-      label: "Slow Cooked",
+      label: "Arcjet Security",
     },
-  ]
+  ];
 
   return (
-    <SpotlightCard className="mx-4 sm:mx-6 xl:ml-auto xl:mr-auto max-w-7xl rounded-[40px] mt-4">
-      <div className="sm:p-12 flex flex-col lg:flex-row lg:items-center gap-8 rounded-[40px] pt-8 pr-8 pb-8 pl-8 gap-x-8 gap-y-8 items-start justify-between">
-        <div className="absolute top-6 right-8 z-20 pointer-events-none">
-          <span className="font-mono text-sm font-bold text-gray-400 dark:text-gray-600 tracking-widest font-geist">
+    <SpotlightCard className="mx-4 mt-4 max-w-7xl rounded-[40px] sm:mx-6 xl:mr-auto xl:ml-auto">
+      <div className="flex flex-col items-start justify-between gap-8 gap-x-8 gap-y-8 rounded-[40px] pt-8 pr-8 pb-8 pl-8 sm:p-12 lg:flex-row lg:items-center">
+        <div className="pointer-events-none absolute top-6 right-8 z-20">
+          <span className="font-geist font-mono text-sm font-bold tracking-widest text-gray-400 dark:text-gray-600">
             02
           </span>
         </div>
         <div className="max-w-md">
           <SectionHeader
-            title="Our Kitchen Secrets"
-            description="From basic ingredients to advanced flavor profiles."
+            title="The setup tax no one warns you about"
+            description="You know exactly what you want to build. But you spend days wrestling with authentication, Stripe webhooks, and email configuration instead of building your vision."
             align="left"
             className="mb-0"
             titleClassName="text-2xl sm:text-3xl mb-2"
@@ -118,14 +128,14 @@ export function FeaturesSection() {
           />
         </div>
 
-        <div className="flex flex-wrap gap-3 max-w-2xl justify-start lg:justify-end">
+        <div className="flex max-w-2xl flex-wrap justify-start gap-3 lg:justify-end">
           {features.map((feature, index) => (
             <div
               key={index}
-              className="group/pill flex items-center gap-2 px-4 py-2.5 rounded-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 hover:bg-emerald-600 hover:text-white transition-all cursor-pointer"
+              className="group/pill flex cursor-pointer items-center gap-2 rounded-full border border-black/10 bg-black/5 px-4 py-2.5 transition-all hover:bg-emerald-600 hover:text-white dark:border-white/10 dark:bg-white/5"
             >
               {feature.icon}
-              <span className="text-sm font-medium font-geist text-gray-800 dark:text-gray-200 group-hover/pill:text-white">
+              <span className="font-geist text-sm font-medium text-gray-800 group-hover/pill:text-white dark:text-gray-200">
                 {feature.label}
               </span>
             </div>
@@ -133,5 +143,5 @@ export function FeaturesSection() {
         </div>
       </div>
     </SpotlightCard>
-  )
+  );
 }
