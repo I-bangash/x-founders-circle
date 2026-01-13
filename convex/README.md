@@ -1,198 +1,90 @@
-# Convex Functions
+# Welcome to your Convex functions directory!
 
-## Quick Start
+Write your Convex functions here.
+See https://docs.convex.dev/functions for more.
 
-All Convex functions use a simple response pattern: return `{ data }` on success, `{ error }` on failure.
-
-### Writing a Query
+A query function that takes two arguments looks like:
 
 ```ts
-import { v } from "convex/values";
-
+// convex/myFunctions.ts
 import { query } from "./_generated/server";
-import {
-  ConvexResponse,
-  ERROR_CODES,
-  fail,
-  success,
-  throwErr,
-} from "./convexTypes";
-
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-}
-
-export const getUsers = query({
-  args: {},
-  async handler(ctx): Promise<ConvexResponse<User[]>> {
-    try {
-      const identity = await ctx.auth.getUserIdentity();
-      if (!identity) {
-        throwErr(ERROR_CODES.UNAUTHORIZED, "Please sign in");
-      }
-
-      const users = await ctx.db.query("users").collect();
-      return success(users);
-    } catch (err) {
-      return fail(err, "Failed to fetch users");
-    }
-  },
-});
-```
-
-### Writing a Mutation
-
-```ts
 import { v } from "convex/values";
 
-import { mutation } from "./_generated/server";
-import {
-  ConvexResponse,
-  ERROR_CODES,
-  fail,
-  success,
-  throwErr,
-} from "./convexTypes";
-
-export const createUser = mutation({
+export const myQueryFunction = query({
+  // Validators for arguments.
   args: {
-    name: v.string(),
-    email: v.string(),
+    first: v.number(),
+    second: v.string(),
   },
-  async handler(ctx, args): Promise<ConvexResponse<{ id: string }>> {
-    try {
-      const identity = await ctx.auth.getUserIdentity();
-      if (!identity) {
-        throwErr(ERROR_CODES.UNAUTHORIZED, "Please sign in");
-      }
 
-      if (args.name.length < 2) {
-        throwErr(
-          ERROR_CODES.VALIDATION_ERROR,
-          "Name must be at least 2 characters"
-        );
-      }
+  // Function implementation.
+  handler: async (ctx, args) => {
+    // Read the database as many times as you need here.
+    // See https://docs.convex.dev/database/reading-data.
+    const documents = await ctx.db.query("tablename").collect();
 
-      const id = await ctx.db.insert("users", {
-        name: args.name,
-        email: args.email,
-      });
+    // Arguments passed from the client are properties of the args object.
+    console.log(args.first, args.second);
 
-      return success({ id });
-    } catch (err) {
-      return fail(err, "Failed to create user");
-    }
+    // Write arbitrary JavaScript here: filter, aggregate, build derived data,
+    // remove non-public properties, or create new objects.
+    return documents;
   },
 });
 ```
 
----
-
-## Using in React
-
-### With useQuery
-
-```tsx
-"use client";
-
-import { useQuery } from "convex/react";
-
-import { api } from "@/convex/_generated/api";
-import { isError } from "@/convex/convexTypes";
-
-export function UsersList() {
-  const response = useQuery(api.users.getUsers);
-
-  if (response === undefined) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError(response)) {
-    return <div className="text-red-500">{response.error.message}</div>;
-  }
-
-  // TypeScript knows response.data exists here
-  return (
-    <ul>
-      {response.data.map((user) => (
-        <li key={user._id}>{user.name}</li>
-      ))}
-    </ul>
-  );
-}
-```
-
-### With useMutation
-
-```tsx
-"use client";
-
-import { useState } from "react";
-
-import { useMutation } from "convex/react";
-import { toast } from "sonner";
-
-import { api } from "@/convex/_generated/api";
-import { isError } from "@/convex/convexTypes";
-
-export function CreateUserForm() {
-  const [name, setName] = useState("");
-  const createUser = useMutation(api.users.createUser);
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-
-    const response = await createUser({ name, email: "test@example.com" });
-
-    if (isError(response)) {
-      toast.error(response.error.message);
-      return;
-    }
-
-    // Success - response.data is available
-    toast.success("User created!");
-    setName("");
-  }
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <input value={name} onChange={(e) => setName(e.target.value)} />
-      <button type="submit">Create</button>
-    </form>
-  );
-}
-```
-
----
-
-## API Reference
-
-### Functions
-
-| Function                  | Usage                                                   |
-| ------------------------- | ------------------------------------------------------- |
-| `success(data)`           | Return success: `return success(users)`                 |
-| `throwErr(code, message)` | Throw error: `throwErr("NOT_FOUND", "User not found")`  |
-| `fail(err, message)`      | Catch block: `return fail(err, "Something went wrong")` |
-| `isError(response)`       | Check for error on frontend, then early return          |
-
-### Error Codes
+Using this query function in a React component looks like:
 
 ```ts
-ERROR_CODES.UNAUTHORIZED; // User not logged in
-ERROR_CODES.FORBIDDEN; // User lacks permission
-ERROR_CODES.NOT_FOUND; // Resource not found
-ERROR_CODES.VALIDATION_ERROR; // Invalid input
-ERROR_CODES.INTERNAL_ERROR; // Server error
+const data = useQuery(api.myFunctions.myQueryFunction, {
+  first: 10,
+  second: "hello",
+});
 ```
 
----
+A mutation function looks like:
 
-## CLI Commands
+```ts
+// convex/myFunctions.ts
+import { mutation } from "./_generated/server";
+import { v } from "convex/values";
 
-```bash
-npx convex dev      # Start development
-npx convex deploy   # Deploy to production
+export const myMutationFunction = mutation({
+  // Validators for arguments.
+  args: {
+    first: v.string(),
+    second: v.string(),
+  },
+
+  // Function implementation.
+  handler: async (ctx, args) => {
+    // Insert or modify documents in the database here.
+    // Mutations can also read from the database like queries.
+    // See https://docs.convex.dev/database/writing-data.
+    const message = { body: args.first, author: args.second };
+    const id = await ctx.db.insert("messages", message);
+
+    // Optionally, return a value from your mutation.
+    return await ctx.db.get("messages", id);
+  },
+});
 ```
+
+Using this mutation function in a React component looks like:
+
+```ts
+const mutation = useMutation(api.myFunctions.myMutationFunction);
+function handleButtonPress() {
+  // fire and forget, the most common way to use mutations
+  mutation({ first: "Hello!", second: "me" });
+  // OR
+  // use the result once the mutation has completed
+  mutation({ first: "Hello!", second: "me" }).then((result) =>
+    console.log(result),
+  );
+}
+```
+
+Use the Convex CLI to push your functions to a deployment. See everything
+the Convex CLI can do by running `npx convex -h` in your project root
+directory. To learn more, launch the docs with `npx convex docs`.
