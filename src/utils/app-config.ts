@@ -1,14 +1,14 @@
-import type { LocalizationResource } from '@clerk/types';
-import type { LocalePrefixMode } from 'next-intl/routing';
-import { enUS, frFR } from '@clerk/localizations';
+import { enUS, frFR } from "@clerk/localizations";
+import type { LocalizationResource } from "@clerk/types";
+import type { LocalePrefixMode } from "next-intl/routing";
 
-const localePrefix: LocalePrefixMode = 'as-needed';
+const localePrefix: LocalePrefixMode = "as-needed";
 
 // FIXME: Update this configuration file based on your project information
 export const AppConfig = {
-  name: 'Remarkable.sh',
-  locales: ['en', 'fr'],
-  defaultLocale: 'en',
+  name: "Remarkable.sh",
+  locales: ["en", "fr"],
+  defaultLocale: "en",
   localePrefix,
 };
 

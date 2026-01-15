@@ -8,6 +8,8 @@ import { PostHogProvider as PHProvider } from "posthog-js/react";
 
 // app/providers.tsx
 
+// app/providers.tsx
+
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY as string, {

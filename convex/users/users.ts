@@ -1,6 +1,7 @@
-import { internalMutation, query, QueryCtx } from "../_generated/server";
 import { UserJSON } from "@clerk/backend";
-import { v, Validator } from "convex/values";
+import { Validator, v } from "convex/values";
+
+import { QueryCtx, internalMutation, query } from "../_generated/server";
 
 export const current = query({
   args: {},
@@ -35,13 +36,11 @@ export const deleteFromClerk = internalMutation({
       await ctx.db.delete(user._id);
     } else {
       console.warn(
-        `Can't delete user, there is none for Clerk user ID: ${clerkUserId}`,
+        `Can't delete user, there is none for Clerk user ID: ${clerkUserId}`
       );
     }
   },
 });
-
-
 
 export async function getCurrentUserOrThrow(ctx: QueryCtx) {
   const userRecord = await getCurrentUser(ctx);
