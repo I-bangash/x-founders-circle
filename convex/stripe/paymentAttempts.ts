@@ -1,4 +1,4 @@
-import { internalMutation, QueryCtx } from "./_generated/server";
+import { internalMutation, QueryCtx } from "../_generated/server";
 import { v } from "convex/values";
 import { paymentAttemptDataValidator } from "./paymentAttemptTypes";
 

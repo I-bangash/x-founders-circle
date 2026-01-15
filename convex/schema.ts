@@ -1,7 +1,7 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
-import { paymentAttemptSchemaValidator } from "./paymentAttemptTypes";
+import { paymentAttemptSchemaValidator } from "./stripe/paymentAttemptTypes";
 
 export default defineSchema({
   users: defineTable({

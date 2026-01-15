@@ -1,4 +1,4 @@
-import { internalMutation, query, QueryCtx } from "./_generated/server";
+import { internalMutation, query, QueryCtx } from "../_generated/server";
 import { UserJSON } from "@clerk/backend";
 import { v, Validator } from "convex/values";
 

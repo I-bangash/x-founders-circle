@@ -10,10 +10,10 @@
 
 import type * as convexTypes from "../convexTypes.js";
 import type * as http from "../http.js";
-import type * as paymentAttemptTypes from "../paymentAttemptTypes.js";
-import type * as paymentAttempts from "../paymentAttempts.js";
+import type * as paymentAttemptTypes from "../stripe/paymentAttemptTypes.js";
+import type * as paymentAttempts from "../stripe/paymentAttempts.js";
 import type * as stripe_plans from "../stripe/plans.js";
-import type * as users from "../users.js";
+import type * as users from "../users/users.js";
 
 import type {
   ApiFromModules,

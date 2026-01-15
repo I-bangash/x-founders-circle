@@ -4,7 +4,7 @@ import { Webhook } from "svix";
 
 import { internal } from "./_generated/api";
 import { httpAction } from "./_generated/server";
-import { transformWebhookData } from "./paymentAttemptTypes";
+import { transformWebhookData } from "./stripe/paymentAttemptTypes";
 
 const http = httpRouter();
 
