@@ -16,7 +16,7 @@ type UserResponse<T> = {
   };
 };
 
-type UserData = Doc<"saasUsers">;
+type UserData = Doc<"users">;
 
 // Get user by ID
 export const getUser = query({
@@ -27,7 +27,7 @@ export const getUser = query({
       getIdentityOrThrow(identity);
 
       const user = await ctx.db
-        .query("saasUsers")
+        .query("users")
         .filter((q) => q.eq(q.field("clerkId"), userId))
         .first();
 
@@ -76,7 +76,7 @@ export const createUser = mutation({
 
       // Check if user already exists
       const existingUser = await ctx.db
-        .query("saasUsers")
+        .query("users")
         .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
         .first();
 
@@ -87,7 +87,7 @@ export const createUser = mutation({
         });
       }
 
-      const userId = await ctx.db.insert("saasUsers", {
+      const userId = await ctx.db.insert("users", {
         clerkId: args.clerkId,
         email: args.email,
         name: args.name,
@@ -140,7 +140,7 @@ export const createUserInternal = mutation({
     try {
       // Check if user already exists
       const existingUser = await ctx.db
-        .query("saasUsers")
+        .query("users")
         .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
         .first();
 
@@ -152,7 +152,7 @@ export const createUserInternal = mutation({
       }
 
       // Create base insert object with required fields
-      const insertData: Omit<Doc<"saasUsers">, "_id" | "_creationTime"> = {
+      const insertData: Omit<Doc<"users">, "_id" | "_creationTime"> = {
         clerkId: args.clerkId,
         email: args.email,
       };
@@ -166,7 +166,7 @@ export const createUserInternal = mutation({
       if (args.emailVerified) insertData.emailVerified = args.emailVerified;
       if (args.organizationId) insertData.organizationId = args.organizationId;
 
-      const userId = await ctx.db.insert("saasUsers", insertData);
+      const userId = await ctx.db.insert("users", insertData);
 
       const createdUser = await ctx.db.get(userId);
 
@@ -213,7 +213,7 @@ export const updateUser = mutation({
       getIdentityOrThrow(identity);
 
       const existingUser = await ctx.db
-        .query("saasUsers")
+        .query("users")
         .filter((q) => q.eq(q.field("clerkId"), args.userId))
         .first();
 
@@ -289,7 +289,7 @@ export const updateUserInternal = mutation({
   handler: async (ctx, args): Promise<UserResponse<UserData>> => {
     try {
       const existingUser = await ctx.db
-        .query("saasUsers")
+        .query("users")
         .filter((q) => q.eq(q.field("clerkId"), args.userId))
         .first();
 
@@ -357,7 +357,7 @@ export const deleteUser = mutation({
       getIdentityOrThrow(identity);
 
       const existingUser = await ctx.db
-        .query("saasUsers")
+        .query("users")
         .filter((q) => q.eq(q.field("clerkId"), userId))
         .first();
 
@@ -390,7 +390,7 @@ export const deleteUserInternal = mutation({
   handler: async (ctx, { userId }): Promise<UserResponse<boolean>> => {
     try {
       const existingUser = await ctx.db
-        .query("saasUsers")
+        .query("users")
         .filter((q) => q.eq(q.field("clerkId"), userId))
         .first();
 
@@ -440,13 +440,13 @@ export const getOrCreateUser = mutation({
 
       // Check if user exists
       let user = await ctx.db
-        .query("saasUsers")
+        .query("users")
         .filter((q) => q.eq(q.field("email"), args.email))
         .first();
 
       if (!user) {
         // Create new user
-        const newUserId = await ctx.db.insert("saasUsers", {
+        const newUserId = await ctx.db.insert("users", {
           clerkId: userId,
           email: args.email,
           name: args.name,
@@ -497,7 +497,7 @@ export const updateOnboardingStatus = mutation({
       getIdentityOrThrow(identity);
 
       const existingUser = await ctx.db
-        .query("saasUsers")
+        .query("users")
         .filter((q) => q.eq(q.field("clerkId"), args.userId))
         .first();
 

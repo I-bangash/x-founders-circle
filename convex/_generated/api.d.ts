@@ -9,11 +9,14 @@
  */
 
 import type * as convexTypes from "../convexTypes.js";
+import type * as helper_convexHelperFunctions from "../helper/convexHelperFunctions.js";
+import type * as helper_images from "../helper/images.js";
 import type * as http from "../http.js";
-import type * as paymentAttemptTypes from "../stripe/paymentAttemptTypes.js";
-import type * as paymentAttempts from "../stripe/paymentAttempts.js";
+import type * as stripe_billing from "../stripe/billing.js";
 import type * as stripe_plans from "../stripe/plans.js";
-import type * as users from "../users/users.js";
+import type * as users_organizationLimits from "../users/organizationLimits.js";
+import type * as users_organizations from "../users/organizations.js";
+import type * as users_users from "../users/users.js";
 
 import type {
   ApiFromModules,
@@ -23,11 +26,14 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   convexTypes: typeof convexTypes;
+  "helper/convexHelperFunctions": typeof helper_convexHelperFunctions;
+  "helper/images": typeof helper_images;
   http: typeof http;
-  paymentAttemptTypes: typeof paymentAttemptTypes;
-  paymentAttempts: typeof paymentAttempts;
+  "stripe/billing": typeof stripe_billing;
   "stripe/plans": typeof stripe_plans;
-  users: typeof users;
+  "users/organizationLimits": typeof users_organizationLimits;
+  "users/organizations": typeof users_organizations;
+  "users/users": typeof users_users;
 }>;
 
 /**

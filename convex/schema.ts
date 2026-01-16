@@ -47,7 +47,7 @@ export default defineSchema({
     .index("by_orgId_read", ["orgId", "isRead"]) // Index for org-level notifications if needed
     .index("by_userId_read", ["userId", "isRead"]), // Index for sorting by read status and implicit creation time
 
-  saasUsers: defineTable({
+  users: defineTable({
     name: v.optional(v.string()),
     firstname: v.optional(v.string()),
     lastname: v.optional(v.string()),
