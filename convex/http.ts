@@ -4,7 +4,7 @@ import { Resend as ResendAPI } from "resend";
 
 import { internal } from "./_generated/api";
 import { httpAction } from "./_generated/server";
-import { WinnerNotificationEmail } from "./emails/templates/WinnerNotificationEmail";
+import { UserNotificationEmail } from "./emails/templates/userNotificationEmail";
 
 const resend = new ResendAPI(process.env.RESEND_API_KEY);
 
@@ -28,30 +28,39 @@ http.route({
     const headerPayload = request.headers;
 
     try {
-      const result: WebhookEvent = await ctx.runAction(internal.clerk.fulfill, {
-        payload: payloadString,
-        headers: {
-          "svix-id": headerPayload.get("svix-id")!,
-          "svix-timestamp": headerPayload.get("svix-timestamp")!,
-          "svix-signature": headerPayload.get("svix-signature")!,
-        },
-      });
+      const result: WebhookEvent = await ctx.runAction(
+        internal.userFunctions.clerk.fulfill,
+        {
+          payload: payloadString,
+          headers: {
+            "svix-id": headerPayload.get("svix-id")!,
+            "svix-timestamp": headerPayload.get("svix-timestamp")!,
+            "svix-signature": headerPayload.get("svix-signature")!,
+          },
+        }
+      );
 
       console.log("result.type in addUserIdToOrg", result.type);
 
       switch (result.type) {
         case "organizationMembership.updated":
         case "organizationMembership.created":
-          await ctx.runMutation(internal.memberships.addUserIdToOrg, {
-            userId: `https://${process.env.CLERK_HOSTNAME}|${result.data.public_user_data.user_id}`,
-            orgId: result.data.organization.id,
-          });
+          await ctx.runMutation(
+            internal.userFunctions.memberships.addUserIdToOrg,
+            {
+              userId: `https://${process.env.CLERK_HOSTNAME}|${result.data.public_user_data.user_id}`,
+              orgId: result.data.organization.id,
+            }
+          );
           break;
         case "organizationMembership.deleted":
-          await ctx.runMutation(internal.memberships.removeUserIdFromOrg, {
-            userId: `https://${process.env.CLERK_HOSTNAME}|${result.data.public_user_data.user_id}`,
-            orgId: result.data.organization.id,
-          });
+          await ctx.runMutation(
+            internal.userFunctions.memberships.removeUserIdFromOrg,
+            {
+              userId: `https://${process.env.CLERK_HOSTNAME}|${result.data.public_user_data.user_id}`,
+              orgId: result.data.organization.id,
+            }
+          );
           break;
       }
 
@@ -78,11 +87,14 @@ http.route({
 
     try {
       // Call the internal action to handle verification and processing
-      const result = await ctx.runAction(internal.stripeActions.fulfill, {
-        // Ensure correct path
-        payload: requestBody,
-        signature,
-      });
+      const result = await ctx.runAction(
+        internal.stripe.stripeActions.fulfill,
+        {
+          // Ensure correct path
+          payload: requestBody,
+          signature,
+        }
+      );
 
       // The action now throws on verification/processing error
       console.log("[HTTP] Stripe action successful.");
@@ -104,28 +116,20 @@ http.route({
   }),
 });
 
-// Add a new route for sending winner notification emails
+// Add a new route for sending user notification emails
 http.route({
-  path: "/email/send-winner-notification",
+  path: "/email/send-user-notification",
   method: "POST",
   handler: httpAction(async (ctx, request) => {
     try {
       const body = await request.json();
-      const {
-        email,
-        winnerName,
-        giveawayName,
-        rank,
-        totalPoints,
-        referralPoints,
-        winTimestamp,
-        winnerId,
-      } = body;
+      const { email, userName } = body;
 
-      console.log("[HTTP] Sending winner notification email to:", email);
+      const appName = process.env.NEXT_PUBLIC_APP_NAME || "Your App";
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://example.com";
 
       // Validate required fields
-      if (!email || !giveawayName) {
+      if (!email) {
         return new Response(
           JSON.stringify({ error: "Missing required fields" }),
           {
@@ -140,13 +144,11 @@ http.route({
         from: "ViralLaunch <info@notifications.virallaunch.ai>",
         to: [email],
         replyTo: "izzybangash@gmail.com",
-        subject: `🎉 Congratulations! You've Won - ${giveawayName}!`,
-        react: WinnerNotificationEmail({
-          winnerName,
-          giveawayName,
-          totalPoints,
-          referralPoints,
-          winTimestamp,
+        subject: `Notification from ${appName}`,
+        react: UserNotificationEmail({
+          userName: userName || "there",
+          appName,
+          appUrl,
         }),
       });
 
@@ -163,16 +165,6 @@ http.route({
           }
         );
       }
-
-      console.log("[HTTP] Email sent successfully:", data);
-
-      // If winnerId is provided, mark the email as sent
-      // if (winnerId) {
-      //   await ctx.runMutation(internal.giveawayWinners.markWinnerEmailSent, {
-      //     winnerId,
-      //   });
-      //   console.log("[HTTP] Winner email marked as sent");
-      // }
 
       return new Response(JSON.stringify({ success: true, data }), {
         status: 200,

@@ -1,6 +1,8 @@
 import { ConvexError, v } from "convex/values";
+
+import { resend } from "@/libs/resend";
+
 import { internalAction } from "../_generated/server";
-import { resend } from "@/utils/resend";
 
 export const sendReminderEmail = internalAction({
   args: {
@@ -24,7 +26,7 @@ export const sendReminderEmail = internalAction({
     if (error) {
       console.error("Error inside reminder: ", error);
       throw new ConvexError(
-        `Failed to send email to ${args.email} on plan ${args.planId}`,
+        `Failed to send email to ${args.email} on plan ${args.planId}`
       );
     }
   },
