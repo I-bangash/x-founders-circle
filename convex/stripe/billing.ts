@@ -141,7 +141,7 @@ export const fulfillCheckout = internalMutation({
 
     // 1. Find the target plan
     const targetPlan = await ctx.runQuery(
-      internal.billing.getPlanByLookupKeyInternal,
+      internal.stripe.billing.getPlanByLookupKeyInternal,
       {
         lookupKey: args.planLookupKey,
       }
@@ -263,7 +263,7 @@ export const updateSubscriptionStatus = internalMutation({
 
     // 1. Find the target plan
     const targetPlan = await ctx.runQuery(
-      internal.billing.getPlanByLookupKeyInternal,
+      internal.stripe.billing.getPlanByLookupKeyInternal,
       {
         lookupKey: args.newPlanLookupKey,
       }
@@ -334,7 +334,7 @@ export const handleSubscriptionCancellation = internalMutation({
 
     // 1. Find the downgrade plan
     const downgradePlan = await ctx.runQuery(
-      internal.billing.getPlanByLookupKeyInternal,
+      internal.stripe.billing.getPlanByLookupKeyInternal,
       {
         lookupKey: args.downgradePlanLookupKey,
       }

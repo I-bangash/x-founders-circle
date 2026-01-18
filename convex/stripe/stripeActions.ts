@@ -194,7 +194,8 @@ export const fulfill = internalAction({
               newPlanLookupKey: newPriceLookupKey,
               stripeSubscriptionId: updatedSubscription.id,
               stripeSubscriptionStatus: updatedSubscription.status,
-              stripeCurrentPeriodEnd: updatedSubscription.current_period_end,
+              stripeCurrentPeriodEnd:
+                updatedSubscription.items.data[0]?.current_period_end,
               // Pass the anchor date from the updated subscription object
               billingCycleAnchor: updatedSubscription.billing_cycle_anchor,
             }
