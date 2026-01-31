@@ -7,9 +7,7 @@ export default function Home() {
 
   const handleAPIButtonClick = async () => {
     const response = await fetch("/api/test-error");
-    console.log("[test] response", response.body);
     const data = await response.json();
-    console.log("[test] data", data);
   };
 
   return (

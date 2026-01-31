@@ -23,6 +23,8 @@ const geistMono = Geist_Mono({
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
+const BODY_CLASS_NAME = `bg-background text-foreground relative overflow-x-hidden overscroll-none pb-10 antialiased selection:bg-emerald-500/30 selection:text-emerald-800 dark:selection:text-emerald-200`;
+
 export const metadata: Metadata = {
   title: "HA NOI QUAN | Authentic Vietnamese & Sushi Fusion",
   description:
@@ -55,7 +57,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geist.variable} ${inter.variable} ${geistSans.variable} ${geistMono.variable} bg-background text-foreground relative overflow-x-hidden overscroll-none pb-10 antialiased selection:bg-emerald-500/30 selection:text-emerald-800 dark:selection:text-emerald-200`}
+        className={`${geist.variable} ${inter.variable} ${geistSans.variable} ${geistMono.variable} ${BODY_CLASS_NAME}`}
       >
         <PostHogProvider>
           <ThemeProvider

@@ -3,6 +3,7 @@ import { getRequestConfig } from "next-intl/server";
 
 import { routing } from "./I18nRouting";
 
+// TODO: Rewrite this to be unique to Remarkable.sh
 // NextJS Boilerplate uses Crowdin as the localization software.
 // As a developer, you only need to take care of the English (or another default language) version.
 // Other languages are automatically generated and handled by Crowdin.

@@ -3,21 +3,18 @@ import { LoadingBar } from "@/app/[locale]/dashboard/loading-bar";
 import { SiteHeader } from "@/app/[locale]/dashboard/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
-export default function DashboardLayout({
-  children,
-}: {
+const LAYOUT_STYLE = {
+  "--sidebar-width": "calc(var(--spacing) * 72)",
+  "--header-height": "calc(var(--spacing) * 12)",
+} as React.CSSProperties;
+
+interface DashboardLayoutProps {
   children: React.ReactNode;
-}) {
+}
+
+export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-      className="group/layout"
-    >
+    <SidebarProvider style={LAYOUT_STYLE} className="group/layout">
       <AppSidebar variant="inset" />
       <SidebarInset>
         <LoadingBar />

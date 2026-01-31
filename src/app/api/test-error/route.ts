@@ -4,9 +4,7 @@ const posthog = getPostHogServer();
 
 export async function GET() {
   try {
-    throw new Error(
-      "Last test for backend error. change this to anything you want when sending the error to posthog"
-    );
+    throw new Error("Test error for PostHog exception tracking");
   } catch (error) {
     posthog.captureException(error);
     return new Response("Error", { status: 500 });

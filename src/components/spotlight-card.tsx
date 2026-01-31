@@ -16,6 +16,8 @@ export function SpotlightCard({ children, className }: SpotlightCardProps) {
     const card = cardRef.current;
     if (!card) return;
 
+    const inner = card.querySelector(".spotlight-inner") as HTMLElement;
+
     const handleMouseMove = (e: MouseEvent) => {
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -24,8 +26,6 @@ export function SpotlightCard({ children, className }: SpotlightCardProps) {
       card.style.setProperty("--mouse-x", `${x}px`);
       card.style.setProperty("--mouse-y", `${y}px`);
 
-      // Also update inner spotlight
-      const inner = card.querySelector(".spotlight-inner") as HTMLElement;
       if (inner) {
         inner.style.setProperty("--mouse-x", `${x}px`);
         inner.style.setProperty("--mouse-y", `${y}px`);
@@ -39,10 +39,7 @@ export function SpotlightCard({ children, className }: SpotlightCardProps) {
   return (
     <div
       ref={cardRef}
-      className={cn(
-        "spotlight-card group relative pt-[1px] pr-[1px] pb-[1px] pl-[1px]",
-        className
-      )}
+      className={cn("spotlight-card group relative p-[1px]", className)}
     >
       <div className="spotlight-inner">{children}</div>
     </div>

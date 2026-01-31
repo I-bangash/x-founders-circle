@@ -1,12 +1,20 @@
+import { type ReactNode } from "react";
+
 import { cn } from "@/utils/utils";
 
+const ACCENT_TEXT_COLORS = {
+  emerald: "text-emerald-600 dark:text-emerald-500",
+  amber: "text-amber-500",
+  blue: "text-blue-500 dark:text-blue-400",
+};
+
 interface ReviewCardProps {
-  quote: React.ReactNode;
+  quote: ReactNode;
   author: string;
   role: string;
   initial: string;
-  icon: React.ReactNode;
-  accentColor: "emerald" | "amber" | "blue";
+  icon: ReactNode;
+  accentColor: keyof typeof ACCENT_TEXT_COLORS;
   className?: string;
 }
 
@@ -19,12 +27,6 @@ export function ReviewCard({
   accentColor,
   className,
 }: ReviewCardProps) {
-  const accentTextColors = {
-    emerald: "text-emerald-600 dark:text-emerald-500",
-    amber: "text-amber-500",
-    blue: "text-blue-500 dark:text-blue-400",
-  };
-
   return (
     <div
       className={cn(
@@ -35,7 +37,7 @@ export function ReviewCard({
       <div
         className={cn(
           "absolute top-0 right-0 p-6 opacity-20 transition-all duration-500 group-hover/card:opacity-50",
-          accentTextColors[accentColor]
+          ACCENT_TEXT_COLORS[accentColor]
         )}
       >
         {icon}

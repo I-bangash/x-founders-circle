@@ -6,7 +6,6 @@ export function Navigation() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
-    // Initialize theme from localStorage or system preference
     if (
       localStorage.theme === "dark" ||
       (!("theme" in localStorage) &&
@@ -35,7 +34,6 @@ export function Navigation() {
   return (
     <div className="pointer-events-none fixed top-6 right-0 left-0 z-50 flex justify-center px-4">
       <nav className="glass-nav pointer-events-auto flex w-full max-w-5xl items-center justify-between rounded-full pt-3 pr-3 pb-3 pl-6 shadow-2xl">
-        {/* Logo */}
         <div className="flex items-center gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -58,7 +56,6 @@ export function Navigation() {
           </span>
         </div>
 
-        {/* Links (Desktop) */}
         <div className="hidden items-center gap-8 text-sm font-medium text-gray-600 lg:flex dark:text-gray-400">
           <a
             href="#features"
@@ -86,15 +83,12 @@ export function Navigation() {
           </a>
         </div>
 
-        {/* Actions */}
         <div className="flex items-center gap-3">
-          {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
             className="flex h-8 w-8 items-center justify-center rounded-full border border-black/10 bg-black/5 text-gray-700 transition-colors hover:bg-black/10 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10"
             aria-label="Toggle Theme"
           >
-            {/* Sun Icon (for Dark Mode) */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="hidden h-4 w-4 dark:block"
@@ -115,7 +109,6 @@ export function Navigation() {
               <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
               <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
             </svg>
-            {/* Moon Icon (for Light Mode) */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="block h-4 w-4 dark:hidden"

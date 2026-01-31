@@ -39,15 +39,10 @@ function FeaturesCard() {
   );
 }
 
-export default function TeamPage() {
+export default function PaymentGatedPage() {
   return (
     <Protect
-      condition={(has) => {
-        // Check if user has any of the paid plans
-        // return has({ plan: "starter" }) || has({ plan: "hobby" }) || has({ plan: "pro" })
-        // Or alternatively, check if user doesn't have free plan (if free plan exists)
-        return !has({ plan: "free_user" });
-      }}
+      condition={(has) => !has({ plan: "free_user" })}
       fallback={<UpgradeCard />}
     >
       <FeaturesCard />

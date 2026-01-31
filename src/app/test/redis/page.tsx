@@ -1,6 +1,5 @@
 import { redis } from "@/libs/redis";
 
-// 👇 server component
 const Page = async () => {
   const count = await redis.get<number>("count");
   return <p>count: {count}</p>;

@@ -6,7 +6,6 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
 function getPageTitle(pathname: string): string {
-  // Handle exact matches first
   switch (pathname) {
     case "/dashboard":
       return "Dashboard";

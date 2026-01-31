@@ -13,11 +13,15 @@ export async function sendUserNotificationEmailFunction({
   try {
     const appName = process.env.NEXT_PUBLIC_APP_NAME || "Your App";
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://example.com";
+    const fromEmail =
+      process.env.EMAIL_FROM ||
+      "ViralLaunch <info@notifications.virallaunch.ai>";
+    const replyToEmail = process.env.EMAIL_REPLY_TO || "izzybangash@gmail.com";
 
     const { data, error } = await resend.emails.send({
-      from: "ViralLaunch <info@notifications.virallaunch.ai>",
+      from: fromEmail,
       to: [email],
-      replyTo: "izzybangash@gmail.com",
+      replyTo: replyToEmail,
       subject: `Notification from ${appName}`,
       react: UserNotificationEmail({
         userName,

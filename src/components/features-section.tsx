@@ -2,97 +2,69 @@ import { SectionHeader } from "@/components/global-ui/section-header";
 
 import { SpotlightCard } from "./spotlight-card";
 
+interface IconProps {
+  children: React.ReactNode;
+}
+
+function Icon({ children }: IconProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {children}
+    </svg>
+  );
+}
+
 export function FeaturesSection() {
   const features = [
     {
       icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
+        <Icon>
           <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
           <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-        </svg>
+        </Icon>
       ),
       label: "Authentication",
     },
     {
       icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
+        <Icon>
           <rect width="20" height="14" x="2" y="5" rx="2" />
           <line x1="2" x2="22" y1="10" y2="10" />
-        </svg>
+        </Icon>
       ),
       label: "Stripe Payments",
     },
     {
       icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
+        <Icon>
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
           <path d="m9 12 2 2 4-4" />
-        </svg>
+        </Icon>
       ),
       label: "Convex Database",
     },
     {
       icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
+        <Icon>
           <path d="m22 2-7 20-4-9-9-4Z" />
           <path d="M22 2 11 13" />
-        </svg>
+        </Icon>
       ),
       label: "Resend Email",
     },
     {
       icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
+        <Icon>
           <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z" />
           <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
           <path d="M12 2v2" />
@@ -103,7 +75,7 @@ export function FeaturesSection() {
           <path d="M20 12h2" />
           <path d="m6.34 17.66-1.41 1.41" />
           <path d="m19.07 4.93-1.41 1.41" />
-        </svg>
+        </Icon>
       ),
       label: "Arcjet Security",
     },

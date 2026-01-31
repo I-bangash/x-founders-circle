@@ -2,8 +2,8 @@
 
 import {
   Body,
-  Container,
   Column,
+  Container,
   Head,
   Hr,
   Html,
@@ -15,7 +15,6 @@ import {
   Text,
   render,
 } from "@react-email/components";
-
 import { format } from "date-fns";
 
 interface ReceiptEmailProps {
@@ -32,7 +31,7 @@ export const ReceiptEmail = ({
   products,
 }: ReceiptEmailProps) => {
   const total =
-    products.reduce((acc: any, curr: any) => acc + curr.price, 0) + 1; // Todo tofix remove + 1 and calculate fee if needed
+    products.reduce((acc: any, curr: any) => acc + curr.price, 0) + 1;
 
   return (
     <Html>
@@ -108,7 +107,6 @@ export const ReceiptEmail = ({
                 </Column>
                 <Column style={{ paddingLeft: "22px" }}>
                   <Text style={productTitle}>{product.name}</Text>
-                  {/* {product.description ? ( */}
                   {product.publishedSubtitle ? (
                     <Text style={productDescription}>
                       {product.publishedSubtitle.length > 50
