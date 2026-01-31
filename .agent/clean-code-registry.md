@@ -53,7 +53,7 @@
 ### Stripe Integration
 
 - **File 014** ✅ `convex/stripe/billing.ts`
-- **File 015** ✅ `convex/stripe/plans.ts`
+- **File 015** ⬜ `convex/stripe/plans.ts`
 - **File 016** ✅ `convex/stripe/stripeActions.ts`
 
 ### User Functions
