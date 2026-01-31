@@ -8,7 +8,6 @@ import {
   query,
 } from "../_generated/server";
 
-// Types for error handling
 type MembershipResponse<T> = {
   data?: T;
   error?: {
@@ -22,15 +21,6 @@ export const hasOrgAccess = async (
   orgId: string
 ) => {
   const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
-
-  // const userIdToken = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
-  // console.log("[hasOrgAccess] userIdToken:", userIdToken);
-  // // LOG] '[hasOrgAccess] userId:' 'https://possible-shrew-36.clerk.accounts.dev|user_2wo7skfcdurR0IG23G875G9DLYk'
-  // // split userId by | and get the first part
-  // const userIdParts = userIdToken?.split("|");
-  // const userId = userIdParts?.[1];
-
-  // console.log("[hasOrgAccess] userId:", userId);
 
   if (!userId) {
     return false;
@@ -193,20 +183,6 @@ export const allOrgMembers = query({
           },
         };
       }
-
-      // const allOrgMembers = await ctx.db
-      //   .query("memberships")
-      //   .withIndex("by_orgId", (q) => q.eq("orgId", identity.profileUrl!))
-      //   .collect();
-      // if (!allOrgMembers) {
-      //   return { data: [] };
-      // }
-      // const allUsers = await Promise.all(
-      //   allOrgMembers.map(async (member) => {
-      //     const teamMember = await ctx.db.query("users").unique();
-      //     return teamMember;
-      //   }),
-      // );
 
       const allOrgMembers = await ctx.db
         .query("users")

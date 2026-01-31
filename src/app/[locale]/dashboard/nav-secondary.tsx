@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import * as React from "react";
 
 import { type Icon, IconBrightness } from "@tabler/icons-react";
@@ -13,16 +14,19 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-export function NavSecondary({
-  items,
-  ...props
-}: {
-  items: {
-    title: string;
-    url: string;
-    icon: Icon;
-  }[];
-} & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+interface NavItem {
+  title: string;
+  url: string;
+  icon: Icon;
+}
+
+interface NavSecondaryProps extends React.ComponentPropsWithoutRef<
+  typeof SidebarGroup
+> {
+  items: NavItem[];
+}
+
+export function NavSecondary({ items, ...props }: NavSecondaryProps) {
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>
@@ -30,22 +34,22 @@ export function NavSecondary({
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild>
-                <a href={item.url}>
+                <Link href={item.url}>
                   <item.icon />
                   <span>{item.title}</span>
-                </a>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <label>
+              <div className="flex w-full items-center gap-2">
                 <IconBrightness />
-                Dark Mode
-                <span className="ml-auto">
+                <span>Dark Mode</span>
+                <div className="ml-auto">
                   <ModeToggle />
-                </span>
-              </label>
+                </div>
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

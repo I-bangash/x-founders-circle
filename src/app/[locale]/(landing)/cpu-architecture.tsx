@@ -30,7 +30,6 @@ const CpuArchitecture = ({
       height={height}
       viewBox="0 0 200 100"
     >
-      {/* Paths */}
       <g
         stroke="var(--color-ring)"
         fill="none"
@@ -67,7 +66,6 @@ const CpuArchitecture = ({
         <path d="M 88 88 v -15 q 0 -5 -5 -5 h -10 q -5 0 -5 -5 v -5 q 0 -5 5 -5 h 14" />
         {/* 8th */}
         <path d="M 30 30 h 25 q 5 0 5 5 v 6.5 q 0 5 5 5 h 20" />
-        {/* Animation For Path Starting */}
         {animateLines && (
           <animate
             attributeName="stroke-dashoffset"
@@ -164,7 +162,6 @@ const CpuArchitecture = ({
       </g>
       {/* CPU Box */}
       <g>
-        {/* Cpu connections */}
         {showCpuConnections && (
           <g fill="url(#cpu-connection-gradient)">
             <rect x="93" y="37" width="2.5" height="5" rx="0.7" />
@@ -219,7 +216,6 @@ const CpuArchitecture = ({
             />
           </g>
         )}
-        {/* Main CPU Rectangle */}
         <rect
           x="85"
           y="40"
@@ -229,7 +225,6 @@ const CpuArchitecture = ({
           fill="#181818"
           filter="url(#cpu-light-shadow)"
         />
-        {/* CPU Text */}
         <text
           x="92"
           y="52.5"
@@ -241,7 +236,6 @@ const CpuArchitecture = ({
           {text}
         </text>
       </g>
-      {/* Masks */}
       <defs>
         <mask id="cpu-mask-1">
           <path
@@ -295,7 +289,6 @@ const CpuArchitecture = ({
             stroke="white"
           />
         </mask>
-        {/* Gradients */}
         <radialGradient id="cpu-blue-grad" fx="1">
           <stop offset="0%" stopColor="#00E8ED" />
           <stop offset="50%" stopColor="#08F" />
@@ -368,7 +361,6 @@ const CpuArchitecture = ({
             )}
           </circle>
         </marker>
-        {/* Cpu connection gradient */}
         <linearGradient
           id="cpu-connection-gradient"
           x1="0"
@@ -379,7 +371,6 @@ const CpuArchitecture = ({
           <stop offset="0%" stopColor="#4F4F4F" />
           <stop offset="60%" stopColor="#121214" />
         </linearGradient>
-        {/* Add CPU Text Gradient */}
         <linearGradient id="cpu-text-gradient" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0%" stopColor="#666666">
             <animate

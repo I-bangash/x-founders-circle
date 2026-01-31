@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
@@ -14,33 +14,140 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/utils/utils";
 
-const menuItems = [
+const MENU_ITEMS = [
   { name: "Features", href: "#link" },
   { name: "Solution", href: "#link" },
   { name: "Pricing", href: "#link" },
   { name: "About", href: "#link" },
 ];
 
-export const HeroHeader = () => {
-  const [menuState, setMenuState] = React.useState(false);
-  const [isScrolled, setIsScrolled] = React.useState(false);
-  const { theme } = useTheme();
+const SCROLL_THRESHOLD = 50;
 
+function HeaderLogo() {
+  return (
+    <Link href="/" aria-label="home" className="flex items-center space-x-2">
+      <ChatMaxingIconColoured />
+      <span className="text-xl font-medium">Lnch.day</span>
+      <Badge variant="outline" className="text-muted-foreground text-xs">
+        Demo
+      </Badge>
+    </Link>
+  );
+}
+
+function MenuLinks({ className }: { className?: string }) {
+  return (
+    <ul className={className}>
+      {MENU_ITEMS.map((item) => (
+        <li key={item.name}>
+          <Link
+            href={item.href}
+            className="text-muted-foreground hover:text-accent-foreground block duration-150"
+          >
+            <span>{item.name}</span>
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function MobileMenuToggle({
+  isOpen,
+  onToggle,
+}: {
+  isOpen: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      onClick={onToggle}
+      aria-label={isOpen ? "Close Menu" : "Open Menu"}
+      className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden"
+    >
+      <Menu className="m-auto size-6 duration-200 in-data-[state=active]:scale-0 in-data-[state=active]:rotate-180 in-data-[state=active]:opacity-0" />
+      <X className="absolute inset-0 m-auto size-6 scale-0 -rotate-180 opacity-0 duration-200 in-data-[state=active]:scale-100 in-data-[state=active]:rotate-0 in-data-[state=active]:opacity-100" />
+    </button>
+  );
+}
+
+function AuthSection({ isScrolled }: { isScrolled: boolean }) {
+  const { theme } = useTheme();
   const appearance = {
     baseTheme: theme === "dark" ? dark : undefined,
   };
 
-  React.useEffect(() => {
+  return (
+    <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+      <AuthLoading>
+        <div className="flex items-center justify-center">
+          <Loader2 className="size-8 animate-spin p-2" />
+        </div>
+      </AuthLoading>
+
+      <Authenticated>
+        <Button asChild size="sm">
+          <Link href="/dashboard">
+            <span>Dashboard</span>
+          </Link>
+        </Button>
+        <UserButton appearance={appearance} />
+      </Authenticated>
+
+      <Unauthenticated>
+        <SignInButton mode="modal">
+          <Button
+            asChild
+            variant="outline"
+            size="sm"
+            className={cn(isScrolled && "lg:hidden")}
+          >
+            <Link href="#">
+              <span>Login</span>
+            </Link>
+          </Button>
+        </SignInButton>
+
+        <SignUpButton mode="modal">
+          <Button asChild size="sm" className={cn(isScrolled && "lg:hidden")}>
+            <Link href="#">
+              <span>Sign Up</span>
+            </Link>
+          </Button>
+        </SignUpButton>
+
+        <SignUpButton mode="modal">
+          <Button
+            asChild
+            size="sm"
+            className={cn(isScrolled ? "lg:inline-flex" : "hidden")}
+          >
+            <Link href="#">
+              <span>Get Started</span>
+            </Link>
+          </Button>
+        </SignUpButton>
+      </Unauthenticated>
+    </div>
+  );
+}
+
+export const HeroHeader = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled(window.scrollY > SCROLL_THRESHOLD);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
   return (
     <header>
       <nav
-        data-state={menuState && "active"}
+        data-state={isMenuOpen && "active"}
         className="fixed z-20 w-full px-2"
       >
         <div
@@ -52,113 +159,22 @@ export const HeroHeader = () => {
         >
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
             <div className="flex w-full justify-between lg:w-auto">
-              <Link
-                href="/"
-                aria-label="home"
-                className="flex items-center space-x-2"
-              >
-                <ChatMaxingIconColoured />
-                <span className="text-xl font-medium">Lnch.day</span>
-                <Badge
-                  variant="outline"
-                  className="text-muted-foreground text-xs"
-                >
-                  Demo
-                </Badge>
-              </Link>
-
-              <button
-                onClick={() => setMenuState(!menuState)}
-                aria-label={menuState == true ? "Close Menu" : "Open Menu"}
-                className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden"
-              >
-                <Menu className="m-auto size-6 duration-200 in-data-[state=active]:scale-0 in-data-[state=active]:rotate-180 in-data-[state=active]:opacity-0" />
-                <X className="absolute inset-0 m-auto size-6 scale-0 -rotate-180 opacity-0 duration-200 in-data-[state=active]:scale-100 in-data-[state=active]:rotate-0 in-data-[state=active]:opacity-100" />
-              </button>
+              <HeaderLogo />
+              <MobileMenuToggle
+                isOpen={isMenuOpen}
+                onToggle={() => setIsMenuOpen(!isMenuOpen)}
+              />
             </div>
 
             <div className="absolute inset-0 m-auto hidden size-fit lg:block">
-              <ul className="flex gap-8 text-sm">
-                {menuItems.map((item, index) => (
-                  <li key={index}>
-                    <Link
-                      href={item.href}
-                      className="text-muted-foreground hover:text-accent-foreground block duration-150"
-                    >
-                      <span>{item.name}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+              <MenuLinks className="flex gap-8 text-sm" />
             </div>
 
             <div className="bg-background mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 in-data-[state=active]:block md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none lg:in-data-[state=active]:flex dark:shadow-none dark:lg:bg-transparent">
               <div className="lg:hidden">
-                <ul className="space-y-6 text-base">
-                  {menuItems.map((item, index) => (
-                    <li key={index}>
-                      <Link
-                        href={item.href}
-                        className="text-muted-foreground hover:text-accent-foreground block duration-150"
-                      >
-                        <span>{item.name}</span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+                <MenuLinks className="space-y-6 text-base" />
               </div>
-              <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                <AuthLoading>
-                  <div className="flex items-center justify-center">
-                    <Loader2 className="size-8 animate-spin p-2" />
-                  </div>
-                </AuthLoading>
-                <Authenticated>
-                  <Button asChild size="sm">
-                    <Link href="/dashboard">
-                      <span>Dashboard</span>
-                    </Link>
-                  </Button>
-                  <UserButton appearance={appearance} />
-                </Authenticated>
-
-                <Unauthenticated>
-                  <SignInButton mode="modal">
-                    <Button
-                      asChild
-                      variant="outline"
-                      size="sm"
-                      className={cn(isScrolled && "lg:hidden")}
-                    >
-                      <Link href="#">
-                        <span>Login</span>
-                      </Link>
-                    </Button>
-                  </SignInButton>
-                  <SignUpButton mode="modal">
-                    <Button
-                      asChild
-                      size="sm"
-                      className={cn(isScrolled && "lg:hidden")}
-                    >
-                      <Link href="#">
-                        <span>Sign Up</span>
-                      </Link>
-                    </Button>
-                  </SignUpButton>
-                  <SignUpButton mode="modal">
-                    <Button
-                      asChild
-                      size="sm"
-                      className={cn(isScrolled ? "lg:inline-flex" : "hidden")}
-                    >
-                      <Link href="#">
-                        <span>Get Started</span>
-                      </Link>
-                    </Button>
-                  </SignUpButton>
-                </Unauthenticated>
-              </div>
+              <AuthSection isScrolled={isScrolled} />
             </div>
           </div>
         </div>

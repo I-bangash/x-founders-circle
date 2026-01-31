@@ -1,4 +1,3 @@
-// convex/mainSaas/organizations.ts
 import { ConvexError, v } from "convex/values";
 
 import { Doc, Id } from "../_generated/dataModel";
@@ -9,7 +8,6 @@ import {
   handleConvexError,
 } from "../helper/convexHelperFunctions";
 
-// Types for error handling
 type OrganizationResponse<T> = {
   data?: T;
   error?: {
@@ -18,10 +16,8 @@ type OrganizationResponse<T> = {
   };
 };
 
-// Using Doc type for Organization
 type OrganizationData = Doc<"organizations">;
 
-// Type for the data returned by the query
 type OrgSubscriptionStatus = {
   id: Id<"organizations">;
   orgId: string;
@@ -40,7 +36,6 @@ type OrgSubscriptionResponse = {
   error?: { code: string; message: string };
 };
 
-// Get organization by ID
 export const getOrganizationById = query({
   args: { organizationId: v.string() },
   handler: async (
@@ -119,7 +114,6 @@ export const getOrganizationByIdInternal = internalQuery({
   },
 });
 
-// Create organization
 export const createOrganization = mutation({
   args: {
     name: v.string(),
@@ -215,7 +209,6 @@ export const createOrganizationInternal = mutation({
     args
   ): Promise<OrganizationResponse<OrganizationData>> => {
     try {
-      // Create base insert object with required fields
       const insertData: Omit<Doc<"organizations">, "_id" | "_creationTime"> = {
         name: args.name,
         orgId: args.orgId,
@@ -225,7 +218,6 @@ export const createOrganizationInternal = mutation({
         isOnTrial: args.isOnTrial ?? false,
       };
 
-      // Add optional fields if they have non-null values
       if (args.image !== undefined) insertData.image = args.image;
       if (args.avatarImage !== undefined)
         insertData.avatarImage = args.avatarImage;
@@ -271,7 +263,6 @@ export const createOrganizationInternal = mutation({
   },
 });
 
-// Update organization
 export const updateOrganization = mutation({
   args: {
     organizationId: v.string(),
@@ -308,7 +299,6 @@ export const updateOrganization = mutation({
         });
       }
 
-      // Only update fields that are provided
       const updateData = {
         ...(args.name !== undefined && { name: args.name }),
         ...(args.image !== undefined && { image: args.image }),
@@ -403,7 +393,6 @@ export const updateOrganizationInternal = mutation({
         });
       }
 
-      // Only update fields that are provided
       const updateData = {
         ...(name !== undefined && { name }),
         ...(image !== undefined && { image }),
@@ -439,7 +428,6 @@ export const updateOrganizationInternal = mutation({
   },
 });
 
-// Delete organization
 export const deleteOrganization = mutation({
   args: { organizationId: v.string() },
   handler: async (
@@ -488,8 +476,6 @@ export const getOrgSubscriptionStatus = query({
     ctx,
     { callingFunction }
   ): Promise<OrgSubscriptionResponse> => {
-    // console.log("[getOrgSubscriptionStatus] callingFunction", callingFunction);
-
     const identity = await ctx.auth.getUserIdentity();
     const identityResult = getIdentityOrError(
       identity,
@@ -534,7 +520,6 @@ export const getOrgSubscriptionStatus = query({
             (plan?.planType as OrgSubscriptionStatus["planType"]) ?? null;
         }
       } else if (org.isOnTrial) {
-        // If no planId but isOnTrial, explicitly set type
         planType = "free_trial";
       }
 
@@ -572,9 +557,6 @@ export const getOrgSubscriptionStatus = query({
 export const getOrgSubscriptionStatusInternal = query({
   args: { orgId: v.string() },
   handler: async (ctx, { orgId }): Promise<OrgSubscriptionResponse> => {
-    // const identity = await ctx.auth.getUserIdentity();
-    // const { orgId } = getIdentityOrThrow(identity);
-
     if (!orgId) {
       return { data: null };
     }
@@ -598,7 +580,6 @@ export const getOrgSubscriptionStatusInternal = query({
       if (org.planId) {
         const plan = await ctx.db.get(org.planId);
         planLookupKey = plan?.lookupKey ?? null;
-        // Determine planType based on lookupKey or plan record
         if (plan?.lookupKey === "free_trial") {
           planType = "free_trial";
         } else {
@@ -606,7 +587,6 @@ export const getOrgSubscriptionStatusInternal = query({
             (plan?.planType as OrgSubscriptionStatus["planType"]) ?? null;
         }
       } else if (org.isOnTrial) {
-        // If no planId but isOnTrial, explicitly set type
         planType = "free_trial";
       }
 

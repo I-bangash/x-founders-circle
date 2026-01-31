@@ -1,14 +1,28 @@
+import { ReactNode } from "react";
+
 import { cn } from "@/utils/utils";
 
 interface SectionHeaderProps {
-  title: React.ReactNode;
-  description?: React.ReactNode;
-  badge?: React.ReactNode;
+  title: ReactNode;
+  description?: ReactNode;
+  badge?: ReactNode;
   align?: "left" | "center" | "right";
   className?: string;
   titleClassName?: string;
   descriptionClassName?: string;
 }
+
+const ALIGNMENT_CLASSES = {
+  left: "ml-0 text-left",
+  center: "text-center",
+  right: "mr-0 text-right",
+};
+
+const BADGE_ALIGNMENT_CLASSES = {
+  left: "justify-start",
+  center: "justify-center",
+  right: "justify-end",
+};
 
 export function SectionHeader({
   title,
@@ -23,23 +37,12 @@ export function SectionHeader({
     <div
       className={cn(
         "relative z-10 mx-auto mb-16 max-w-4xl",
-        align === "center" && "text-center",
-        align === "left" && "ml-0 text-left",
-        align === "right" && "mr-0 text-right",
+        ALIGNMENT_CLASSES[align],
         className
       )}
     >
       {badge && (
-        <div
-          className={cn(
-            "mb-8 flex w-full",
-            align === "center"
-              ? "justify-center"
-              : align === "right"
-                ? "justify-end"
-                : "justify-start"
-          )}
-        >
+        <div className={cn("mb-8 flex w-full", BADGE_ALIGNMENT_CLASSES[align])}>
           {badge}
         </div>
       )}

@@ -1,4 +1,3 @@
-// convex/mainSaas/organizationLimits.ts
 import { ConvexError, v } from "convex/values";
 
 import { Doc, Id } from "../_generated/dataModel";
@@ -8,7 +7,6 @@ import {
   handleConvexError,
 } from "../helper/convexHelperFunctions";
 
-// Types for error handling
 type OrganizationLimitsResponse<T> = {
   data?: T;
   error?: {
@@ -19,7 +17,6 @@ type OrganizationLimitsResponse<T> = {
 
 type OrganizationLimitsData = Doc<"organizationLimits">;
 
-// Get organization limits by organization ID
 export const getOrganizationLimits = query({
   args: { organizationId: v.string() },
   handler: async (
@@ -61,7 +58,6 @@ export const getOrganizationLimits = query({
   },
 });
 
-// Create organization limits
 export const createOrganizationLimits = mutation({
   args: {
     organizationId: v.string(),
@@ -142,7 +138,6 @@ export const createOrganizationLimits = mutation({
   },
 });
 
-// Create organization limits (internal)
 export const createOrganizationLimitsInternal = mutation({
   args: {
     organizationId: v.string(),
@@ -225,7 +220,6 @@ export const createOrganizationLimitsInternal = mutation({
   },
 });
 
-// Update organization limits
 export const updateOrganizationLimits = mutation({
   args: {
     organizationId: v.string(),
@@ -264,7 +258,6 @@ export const updateOrganizationLimits = mutation({
         });
       }
 
-      // Only update fields that are provided
       const updateData = {
         ...(args.planId !== undefined && { planId: args.planId }),
         ...(args.planType !== undefined && { planType: args.planType }),
@@ -327,7 +320,6 @@ export const updateOrganizationLimits = mutation({
   },
 });
 
-// Delete organization limits
 export const deleteOrganizationLimits = mutation({
   args: { organizationId: v.string() },
   handler: async (
@@ -369,7 +361,6 @@ export const deleteOrganizationLimits = mutation({
   },
 });
 
-// Increment usage for a specific feature
 export const incrementUsage = mutation({
   args: {
     organizationId: v.string(),
@@ -432,7 +423,6 @@ export const incrementUsage = mutation({
   },
 });
 
-// Increment period-based usage
 export const incrementPeriodUsage = mutation({
   args: {
     organizationId: v.string(),
@@ -495,11 +485,10 @@ export const incrementPeriodUsage = mutation({
   },
 });
 
-// Update storage usage
 export const updateStorageUsage = mutation({
   args: {
     organizationId: v.string(),
-    bytesChange: v.number(), // Can be positive or negative
+    bytesChange: v.number(),
   },
   handler: async (
     ctx,

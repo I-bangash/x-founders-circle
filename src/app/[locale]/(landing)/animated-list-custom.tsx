@@ -11,12 +11,11 @@ interface Item {
   time: string;
 }
 
-let notifications = [
+const baseNotifications = [
   {
     name: "Payment received",
     description: "Magic UI",
     time: "15m ago",
-
     icon: "💸",
     color: "#00C9A7",
   },
@@ -43,7 +42,10 @@ let notifications = [
   },
 ];
 
-notifications = Array.from({ length: 10 }, () => notifications).flat();
+const notifications = Array.from(
+  { length: 10 },
+  () => baseNotifications
+).flat();
 
 const Notification = ({ name, description, icon, color, time }: Item) => {
   return (

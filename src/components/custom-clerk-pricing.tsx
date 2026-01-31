@@ -13,16 +13,13 @@ export default function CustomClerkPricing() {
           baseTheme: theme === "dark" ? dark : undefined,
           elements: {
             pricingTableCardTitle: {
-              // title
               fontSize: 20,
               fontWeight: 400,
             },
             pricingTableCardDescription: {
-              // description
               fontSize: 14,
             },
             pricingTableCardFee: {
-              // price
               fontSize: 36,
               fontWeight: 800,
             },

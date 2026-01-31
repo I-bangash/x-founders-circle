@@ -4,8 +4,11 @@ import { Button } from "@/components/ui/button";
 
 const EmailPage = () => {
   const handleSendEmail = async () => {
-    const response = await fetch("/api/send");
-    const data = await response.json();
+    try {
+      await fetch("/api/send");
+    } catch (error) {
+      console.error("Failed to send email:", error);
+    }
   };
 
   return (

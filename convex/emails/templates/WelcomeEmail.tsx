@@ -1,5 +1,3 @@
-// convex/emails/templates/WelcomeEmail.tsx
-
 import {
   Body,
   Button,
@@ -9,8 +7,8 @@ import {
   Html,
   Preview,
   Section,
-  Text,
   Tailwind,
+  Text,
 } from "@react-email/components";
 
 interface WelcomeEmailProps {
@@ -37,7 +35,7 @@ export const WelcomeEmail = ({
         <Body className="bg-white font-sans">
           <Container className="mx-auto max-w-[580px] py-5">
             <Section className="rounded-lg bg-gray-50 p-8">
-              <Heading className="mt-4 text-2xl font-bold leading-tight text-gray-700">
+              <Heading className="mt-4 text-2xl leading-tight font-bold text-gray-700">
                 You just joined something special.
               </Heading>
               <Text className="text-base leading-relaxed text-gray-600">

@@ -40,8 +40,6 @@ http.route({
         }
       );
 
-      console.log("result.type in addUserIdToOrg", result.type);
-
       switch (result.type) {
         case "organizationMembership.updated":
         case "organizationMembership.created":
@@ -80,32 +78,23 @@ http.route({
   method: "POST",
   handler: httpAction(async (ctx, request) => {
     const signature = request.headers.get("stripe-signature") as string;
-    // Read body once for verification AND passing to action
     const requestBody = await request.text();
 
-    console.log("[HTTP] Stripe webhook received..."); // Log receipt
-
     try {
-      // Call the internal action to handle verification and processing
       const result = await ctx.runAction(
         internal.stripe.stripeActions.fulfill,
         {
-          // Ensure correct path
           payload: requestBody,
           signature,
         }
       );
 
-      // The action now throws on verification/processing error
-      console.log("[HTTP] Stripe action successful.");
-      return new Response(null, { status: 200 }); // Success
+      return new Response(null, { status: 200 });
     } catch (error: any) {
-      // Catch errors thrown by the action (verification or mutation errors)
       console.error(
         "[HTTP] Error processing Stripe webhook action:",
         error.message
       );
-      // Return 400 for client-like errors (bad signature, missing data), 500 for internal server errors
       const status =
         error.message.includes("Webhook Error") ||
         error.message.includes("Missing required data")
@@ -116,7 +105,6 @@ http.route({
   }),
 });
 
-// Add a new route for sending user notification emails
 http.route({
   path: "/email/send-user-notification",
   method: "POST",
@@ -128,7 +116,6 @@ http.route({
       const appName = process.env.NEXT_PUBLIC_APP_NAME || "Your App";
       const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://example.com";
 
-      // Validate required fields
       if (!email) {
         return new Response(
           JSON.stringify({ error: "Missing required fields" }),
@@ -139,7 +126,6 @@ http.route({
         );
       }
 
-      // Send the email using Resend
       const { data, error } = await resend.emails.send({
         from: "ViralLaunch <info@notifications.virallaunch.ai>",
         to: [email],

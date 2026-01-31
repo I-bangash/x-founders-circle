@@ -8,19 +8,15 @@ export function HeroSection() {
   return (
     <SpotlightCard className="z-10 mx-4 mt-32 max-w-7xl rounded-[40px] sm:mx-6 lg:mt-32 xl:mr-auto xl:ml-auto">
       <div className="bg-card text-card-foreground z-10 flex min-h-[850px] flex-col justify-center overflow-hidden rounded-[40px]">
-        {/* Number Detail */}
         <div className="pointer-events-none absolute top-8 right-8 z-20">
           <span className="font-geist font-mono text-sm font-bold tracking-widest text-gray-400 dark:text-gray-600">
             BUILT IN 2025
           </span>
         </div>
 
-        {/* Inner Background Grid */}
         <div className="bg-grid-pattern pointer-events-none absolute inset-0 z-0 opacity-20" />
 
-        {/* Main Hero Content */}
         <main className="relative z-10 container mr-auto ml-auto grid items-center gap-16 gap-x-16 gap-y-16 pt-20 pr-6 pb-20 pl-6 lg:grid-cols-2 lg:px-12">
-          {/* Left Column: Text */}
           <div className="relative max-w-2xl">
             <SectionBadge variant="emerald" className="mb-6">
               <svg
@@ -48,12 +44,11 @@ export function HeroSection() {
 
             <p className="font-geist mb-10 max-w-lg text-lg leading-relaxed font-light text-gray-600 dark:text-gray-400">
               Build and launch apps that look like you hired a designer. Not
-              another AI template that screams "I used AI." Ship something
-              people actually remember.
+              another AI template that screams &ldquo;I used AI.&rdquo; Ship
+              something people actually remember.
             </p>
 
             <div className="flex flex-col gap-4 gap-x-4 gap-y-4 sm:flex-row">
-              {/* Main Button */}
               <button className="group font-geist relative flex items-center justify-center overflow-hidden rounded-full px-10 py-4 text-sm font-bold tracking-widest text-white uppercase transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)] focus:outline-none">
                 <div className="absolute inset-0 -z-20 overflow-hidden rounded-full p-[1px]">
                   <div
@@ -100,10 +95,9 @@ export function HeroSection() {
                 </svg>
               </button>
 
-              {/* Secondary Button */}
               <button className="font-geist group/btn relative flex items-center justify-center overflow-hidden rounded-full border border-black/10 bg-black/5 px-8 py-4 text-base font-medium text-gray-700 transition-all hover:bg-black/5 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/5">
                 <span className="font-geist relative z-10 text-base font-medium tracking-tight text-gray-800 dark:text-gray-200">
-                  See what's included
+                  See what&apos;s included
                 </span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -122,7 +116,6 @@ export function HeroSection() {
               </button>
             </div>
 
-            {/* Avatar Group */}
             <div className="mt-12 flex items-center gap-4">
               <div className="flex -space-x-3">
                 <img
@@ -163,10 +156,8 @@ export function HeroSection() {
             </div>
           </div>
 
-          {/* Right Column: Interactive Menu Grid */}
           <div className="relative flex w-full items-center justify-center lg:justify-end">
             <div className="grid w-full max-w-[520px] grid-cols-1 gap-4 gap-x-4 gap-y-4 sm:grid-cols-2">
-              {/* Main Menu Card */}
               <div className="group relative flex flex-col justify-between overflow-hidden rounded-[32px] bg-gray-100 bg-[url(https://images.unsplash.com/photo-1553621042-f6e147245754?q=80&w=800&auto=format&fit=crop)] bg-cover bg-center pt-6 pr-6 pb-6 pl-6 shadow-xl transition-all duration-500 hover:border-emerald-500/30 sm:row-span-2 dark:bg-[#1E1E1E]">
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-50/90 via-gray-50/40 to-transparent dark:from-black/90 dark:via-black/40" />
                 <div className="relative z-10 flex h-full flex-col">
@@ -235,7 +226,6 @@ export function HeroSection() {
                 </div>
               </div>
 
-              {/* Reservations Card */}
               <div className="group relative flex flex-col items-center overflow-hidden rounded-[32px] bg-gray-100 bg-[url(https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=600&auto=format&fit=crop)] bg-cover bg-center pt-6 pr-6 pb-6 pl-6 text-center shadow-xl transition-all duration-500 hover:border-emerald-500/30 dark:bg-[#1E1E1E]">
                 <div className="absolute inset-0 bg-white/60 dark:bg-black/60" />
                 <h3 className="font-geist relative z-10 mb-6 text-base font-medium text-gray-800 dark:text-gray-200">
@@ -297,7 +287,6 @@ export function HeroSection() {
                 </div>
               </div>
 
-              {/* Our Space Card */}
               <div className="group relative flex flex-col items-center overflow-hidden rounded-[32px] border border-black/10 bg-gradient-to-br from-white/80 to-white/50 pt-6 pr-6 pb-6 pl-6 text-center shadow-xl transition-all duration-500 hover:border-emerald-500/30 dark:border-white/10 dark:from-white/10 dark:to-white/0">
                 <div className="absolute inset-0 bg-[url(https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=600&auto=format&fit=crop)] bg-cover bg-center opacity-40" />
                 <h3 className="font-geist relative z-10 mb-4 text-base font-medium text-gray-800 dark:text-gray-200">
@@ -341,7 +330,6 @@ export function HeroSection() {
           </div>
         </main>
 
-        {/* Ticker integrated inside the Card at bottom */}
         <div className="mt-auto border-t border-black/5 bg-gray-50 dark:border-white/5 dark:bg-[#080c0a]">
           <div
             className="relative w-full overflow-hidden py-8"

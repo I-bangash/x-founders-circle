@@ -11,7 +11,6 @@ import { ReviewsSection } from "@/components/reviews-section";
 export default function Home() {
   return (
     <>
-      {/* Background texture */}
       <div
         className="pointer-events-none fixed inset-0 z-0 opacity-20"
         style={{
@@ -21,7 +20,6 @@ export default function Home() {
         }}
       />
 
-      {/* Vertical Lines Container */}
       <div className="pointer-events-none fixed inset-0 z-0 mx-auto flex w-full max-w-7xl justify-center px-6">
         <div className="relative flex h-full w-full justify-center border-x border-dashed border-black/5 dark:border-white/5">
           <div className="bg-dashed absolute left-1/4 h-full w-px bg-black/5 dark:bg-white/5" />

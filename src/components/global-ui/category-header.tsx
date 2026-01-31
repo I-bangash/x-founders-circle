@@ -1,10 +1,12 @@
+import type { ReactNode } from "react";
+
 import { cn } from "@/utils/utils";
 
 interface CategoryHeaderProps {
   id?: string;
   title: string;
   subtitle: string;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
   titleClassName?: string;
   gradientClassName?: string;
   iconClassName?: string;
@@ -27,7 +29,7 @@ export function CategoryHeader({
         {gradientClassName && (
           <div
             className={cn(
-              "pointer-events-none absolute inset-0 bg-gradient-to-r to-transparent",
+              "pointer-events-none absolute inset-0 bg-linear-to-r to-transparent",
               gradientClassName
             )}
           />
