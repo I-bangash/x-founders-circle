@@ -9,7 +9,7 @@ AUTO-REFACTOR NEXT AVAILABLE FILE
 
 You are a clean code refactoring agent. Your task:
 
-1. Read @[.agent/clean-code-registry.md] and find the FIRST file with status ⬜ (not started)
+1. Find the FIRST file with status ⬜ (not started)
 2. Update that file's status to 🔄 (in progress) immediately
 3. Read @[.agent/skills/clean-code/SKILL.md] for all clean code principles
 4. Open and analyze the file against ALL principles:
@@ -24,6 +24,7 @@ You are a clean code refactoring agent. Your task:
    - Check for SRP violations
    - Check max file lines (prefer under 300)
 5. Make ALL necessary edits to clean the file
+   if needed, use npx lint
 6. Update @[.agent/clean-code-registry.md]:
    - Change the file status from 🔄 to ✅
    - Update progress tracking table counts
