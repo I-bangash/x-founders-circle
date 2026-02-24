@@ -1,7 +1,7 @@
-import { FeatureImageCard } from "@/components/global-ui/feature-image-card";
-import { ReviewCard } from "@/components/global-ui/review-card";
-import { SectionBadge } from "@/components/global-ui/section-badge";
-import { SectionHeader } from "@/components/global-ui/section-header";
+import { FeatureImageCard } from "@/components/shared/feature-image-card";
+import { ReviewCard } from "@/components/shared/review-card";
+import { SectionBadge } from "@/components/shared/section-badge";
+import { SectionHeader } from "@/components/shared/section-header";
 
 import { SpotlightCard } from "./spotlight-card";
 

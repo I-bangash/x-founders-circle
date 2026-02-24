@@ -1,6 +1,6 @@
 "use client";
 
-import { SectionBadge } from "@/components/global-ui/section-badge";
+import { SectionBadge } from "@/components/shared/section-badge";
 
 import { SpotlightCard } from "./spotlight-card";
 

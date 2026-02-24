@@ -1,4 +1,4 @@
-import { SectionHeader } from "@/components/global-ui/section-header";
+import { SectionHeader } from "@/components/shared/section-header";
 
 import { SpotlightCard } from "./spotlight-card";
 

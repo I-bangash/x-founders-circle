@@ -1,6 +1,6 @@
-import { CategoryHeader } from "@/components/global-ui/category-header";
-import { SectionBadge } from "@/components/global-ui/section-badge";
-import { SectionHeader } from "@/components/global-ui/section-header";
+import { CategoryHeader } from "@/components/shared/category-header";
+import { SectionBadge } from "@/components/shared/section-badge";
+import { SectionHeader } from "@/components/shared/section-header";
 
 import { SpotlightCard } from "./spotlight-card";
 
