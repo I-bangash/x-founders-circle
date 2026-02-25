@@ -35,10 +35,6 @@ export function SignUpForm() {
     }
   }, []);
 
-  const ROOT_HOME_URL = process.env.NEXT_PUBLIC_ROOT_DOMAIN
-    ? `https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`
-    : "http://localhost:3000";
-
   return (
     <div className="grid max-h-screen min-h-screen w-full grid-cols-1 md:grid-cols-2">
       <div className="flex w-full items-center justify-center">
