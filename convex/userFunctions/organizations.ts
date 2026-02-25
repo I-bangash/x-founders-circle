@@ -1,7 +1,12 @@
 import { ConvexError, v } from "convex/values";
 
 import { Doc, Id } from "../_generated/dataModel";
-import { internalQuery, mutation, query } from "../_generated/server";
+import {
+  internalMutation,
+  internalQuery,
+  mutation,
+  query,
+} from "../_generated/server";
 import {
   getIdentityOrError,
   getIdentityOrThrow,
@@ -606,6 +611,49 @@ export const getOrgSubscriptionStatusInternal = query({
         error: {
           code: "DATABASE_ERROR",
           message: "Failed to fetch organization status.",
+        },
+      };
+    }
+  },
+});
+
+export const updateOrganizationWebhook = internalMutation({
+  args: {
+    organizationId: v.string(),
+    name: v.optional(v.string()),
+    image: v.optional(v.string()),
+  },
+  handler: async (
+    ctx,
+    { organizationId, name, image }
+  ): Promise<OrganizationResponse<boolean>> => {
+    try {
+      const existingOrg = await ctx.db
+        .query("organizations")
+        .withIndex("by_orgId", (q) => q.eq("orgId", organizationId))
+        .first();
+
+      if (!existingOrg) {
+        throw new ConvexError({
+          code: "NOT_FOUND",
+          message: "Organization not found",
+        });
+      }
+
+      await ctx.db.patch(existingOrg._id, {
+        ...(name !== undefined && { name }),
+        ...(image !== undefined && { image }),
+      });
+
+      return { data: true };
+    } catch (error) {
+      if (error instanceof ConvexError) {
+        return { error: error.data as { code: string; message: string } };
+      }
+      return {
+        error: {
+          code: "INTERNAL_ERROR",
+          message: "An unexpected error occurred",
         },
       };
     }

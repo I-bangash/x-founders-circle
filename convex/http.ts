@@ -1,6 +1,7 @@
-import { WebhookEvent } from "@clerk/nextjs/server";
+import type { WebhookEvent } from "@clerk/backend";
 import { httpRouter } from "convex/server";
 import { Resend as ResendAPI } from "resend";
+import { Webhook } from "svix";
 
 import { internal } from "./_generated/api";
 import { httpAction } from "./_generated/server";
@@ -10,13 +11,33 @@ const resend = new ResendAPI(process.env.RESEND_API_KEY);
 
 const http = httpRouter();
 
+async function validateRequest(req: Request): Promise<WebhookEvent | null> {
+  const payloadString = await req.text();
+  const svixHeaders = {
+    "svix-id": req.headers.get("svix-id")!,
+    "svix-timestamp": req.headers.get("svix-timestamp")!,
+    "svix-signature": req.headers.get("svix-signature")!,
+  };
+  const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET ?? "");
+  try {
+    return wh.verify(payloadString, svixHeaders) as WebhookEvent;
+  } catch {
+    return null;
+  }
+}
+
+function stripeErrorStatus(message: string): number {
+  return message.includes("Webhook Error") ||
+    message.includes("Missing required data")
+    ? 400
+    : 500;
+}
+
 http.route({
   path: "/check",
   method: "GET",
-  handler: httpAction(async (ctx, request) => {
-    return new Response("WHATTTSSS UPPPY!", {
-      status: 200,
-    });
+  handler: httpAction(async (_ctx, _request) => {
+    return new Response("OK", { status: 200 });
   }),
 });
 
@@ -24,51 +45,105 @@ http.route({
   path: "/clerk",
   method: "POST",
   handler: httpAction(async (ctx, request) => {
-    const payloadString = await request.text();
-    const headerPayload = request.headers;
+    const event = await validateRequest(request);
+    if (!event) {
+      return new Response("Webhook verification failed", { status: 400 });
+    }
 
     try {
-      const result: WebhookEvent = await ctx.runAction(
-        internal.userFunctions.clerk.fulfill,
-        {
-          payload: payloadString,
-          headers: {
-            "svix-id": headerPayload.get("svix-id")!,
-            "svix-timestamp": headerPayload.get("svix-timestamp")!,
-            "svix-signature": headerPayload.get("svix-signature")!,
-          },
+      switch (event.type) {
+        case "user.created": {
+          const d = event.data;
+          const primaryEmail = d.email_addresses?.[0];
+          await ctx.runAction(internal.userFunctions.clerk.handleUserCreated, {
+            clerkId: d.id,
+            email: primaryEmail?.email_address,
+            firstName: d.first_name ?? undefined,
+            lastName: d.last_name ?? undefined,
+            username:
+              d.username ||
+              primaryEmail?.email_address?.split("@")[0] ||
+              undefined,
+            imageUrl: d.image_url || undefined,
+            emailVerified:
+              primaryEmail?.verification?.status === "verified"
+                ? Date.now()
+                : undefined,
+          });
+          break;
         }
-      );
-
-      switch (result.type) {
-        case "organizationMembership.updated":
-        case "organizationMembership.created":
-          await ctx.runMutation(
-            internal.userFunctions.memberships.addUserIdToOrg,
+        case "user.updated": {
+          const d = event.data;
+          const primaryEmail = d.email_addresses?.[0];
+          await ctx.runAction(internal.userFunctions.clerk.handleUserUpdated, {
+            clerkId: d.id,
+            email: primaryEmail?.email_address,
+            firstName: d.first_name ?? undefined,
+            lastName: d.last_name ?? undefined,
+            username:
+              d.username ||
+              primaryEmail?.email_address?.split("@")[0] ||
+              undefined,
+            imageUrl: d.image_url || undefined,
+            emailVerified:
+              primaryEmail?.verification?.status === "verified"
+                ? Date.now()
+                : undefined,
+          });
+          break;
+        }
+        case "user.deleted": {
+          const id = event.data.id!;
+          await ctx.runAction(internal.userFunctions.clerk.handleUserDeleted, {
+            clerkId: id,
+          });
+          break;
+        }
+        case "organization.created": {
+          const d = event.data;
+          await ctx.runAction(
+            internal.userFunctions.clerk.handleOrganizationCreated,
             {
-              userId: `https://${process.env.CLERK_HOSTNAME}|${result.data.public_user_data.user_id}`,
-              orgId: result.data.organization.id,
+              orgId: d.id,
+              name: d.name,
+              createdBy: d.created_by!,
+              imageUrl: d.image_url || undefined,
             }
           );
           break;
-        case "organizationMembership.deleted":
-          await ctx.runMutation(
-            internal.userFunctions.memberships.removeUserIdFromOrg,
+        }
+        case "organization.updated": {
+          const d = event.data;
+          await ctx.runAction(
+            internal.userFunctions.clerk.handleOrganizationUpdated,
             {
-              userId: `https://${process.env.CLERK_HOSTNAME}|${result.data.public_user_data.user_id}`,
-              orgId: result.data.organization.id,
+              orgId: d.id,
+              name: d.name,
+              imageUrl: d.image_url || undefined,
             }
           );
           break;
+        }
+        case "organizationMembership.created": {
+          const d = event.data;
+          await ctx.runAction(
+            internal.userFunctions.clerk.handleOrganizationMembershipCreated,
+            {
+              userId: d.public_user_data.user_id,
+              orgId: d.organization.id,
+            }
+          );
+          break;
+        }
+        default: {
+          console.log("[CLERK_WEBHOOK] Unhandled event type:", event.type);
+        }
       }
 
-      return new Response(null, {
-        status: 200,
-      });
+      return new Response(null, { status: 200 });
     } catch (err) {
-      return new Response("Webhook Error", {
-        status: 400,
-      });
+      console.error(`[CLERK_WEBHOOK] Error processing ${event.type}:`, err);
+      return new Response("Internal Server Error", { status: 500 });
     }
   }),
 });
@@ -81,26 +156,17 @@ http.route({
     const requestBody = await request.text();
 
     try {
-      const result = await ctx.runAction(
-        internal.stripe.stripeActions.fulfill,
-        {
-          payload: requestBody,
-          signature,
-        }
-      );
-
+      await ctx.runAction(internal.stripe.stripeActions.fulfill, {
+        payload: requestBody,
+        signature,
+      });
       return new Response(null, { status: 200 });
-    } catch (error: any) {
-      console.error(
-        "[HTTP] Error processing Stripe webhook action:",
-        error.message
-      );
-      const status =
-        error.message.includes("Webhook Error") ||
-        error.message.includes("Missing required data")
-          ? 400
-          : 500;
-      return new Response(`Webhook Error: ${error.message}`, { status });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error("[HTTP] Error processing Stripe webhook:", message);
+      return new Response(`Webhook Error: ${message}`, {
+        status: stripeErrorStatus(message),
+      });
     }
   }),
 });
@@ -108,67 +174,46 @@ http.route({
 http.route({
   path: "/email/send-user-notification",
   method: "POST",
-  handler: httpAction(async (ctx, request) => {
-    try {
-      const body = await request.json();
-      const { email, userName } = body;
+  handler: httpAction(async (_ctx, request) => {
+    const body = await request.json();
+    const { email, userName } = body;
 
-      const appName = process.env.NEXT_PUBLIC_APP_NAME || "Your App";
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://example.com";
+    if (!email) {
+      return new Response(
+        JSON.stringify({ error: "Missing required fields" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
 
-      if (!email) {
-        return new Response(
-          JSON.stringify({ error: "Missing required fields" }),
-          {
-            status: 400,
-            headers: { "Content-Type": "application/json" },
-          }
-        );
-      }
+    const appName = process.env.NEXT_PUBLIC_APP_NAME || "Your App";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://example.com";
 
-      const { data, error } = await resend.emails.send({
-        from: "ViralLaunch <info@notifications.virallaunch.ai>",
-        to: [email],
-        replyTo: "izzybangash@gmail.com",
-        subject: `Notification from ${appName}`,
-        react: UserNotificationEmail({
-          userName: userName || "there",
-          appName,
-          appUrl,
-        }),
-      });
+    const { data, error } = await resend.emails.send({
+      from: "ViralLaunch <info@notifications.virallaunch.ai>",
+      to: [email],
+      replyTo: "izzybangash@gmail.com",
+      subject: `Notification from ${appName}`,
+      react: UserNotificationEmail({
+        userName: userName || "there",
+        appName,
+        appUrl,
+      }),
+    });
 
-      if (error) {
-        console.error("[HTTP] Error sending email:", error);
-        return new Response(
-          JSON.stringify({
-            success: false,
-            error: `Failed to send email: ${error.message}`,
-          }),
-          {
-            status: 500,
-            headers: { "Content-Type": "application/json" },
-          }
-        );
-      }
-
-      return new Response(JSON.stringify({ success: true, data }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
-    } catch (error) {
-      console.error("[HTTP] Error in email endpoint:", error);
+    if (error) {
       return new Response(
         JSON.stringify({
           success: false,
-          error: `Server error: ${error}`,
+          error: `Failed to send email: ${error.message}`,
         }),
-        {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        }
+        { status: 500, headers: { "Content-Type": "application/json" } }
       );
     }
+
+    return new Response(JSON.stringify({ success: true, data }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   }),
 });
 

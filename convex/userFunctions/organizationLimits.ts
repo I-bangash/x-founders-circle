@@ -1,7 +1,7 @@
 import { ConvexError, v } from "convex/values";
 
 import { Doc, Id } from "../_generated/dataModel";
-import { mutation, query } from "../_generated/server";
+import { internalMutation, mutation, query } from "../_generated/server";
 import {
   getIdentityOrThrow,
   handleConvexError,
@@ -519,6 +519,65 @@ export const updateStorageUsage = mutation({
 
       await ctx.db.patch(existingLimits._id, {
         storageUsedBytes: newStorageUsed,
+        updatedAt: Date.now(),
+      });
+
+      const updatedLimits = await ctx.db.get(existingLimits._id);
+
+      if (!updatedLimits) {
+        throw new ConvexError({
+          code: "UPDATE_FAILED",
+          message: "Failed to update organization limits",
+        });
+      }
+
+      return { data: updatedLimits };
+    } catch (error) {
+      if (error instanceof ConvexError) {
+        return { error: error.data as { code: string; message: string } };
+      }
+      return {
+        error: {
+          code: "INTERNAL_ERROR",
+          message: "An unexpected error occurred",
+        },
+      };
+    }
+  },
+});
+
+export const incrementUsageInternal = internalMutation({
+  args: {
+    organizationId: v.string(),
+    feature: v.union(v.literal("projects"), v.literal("teamMembers")),
+    amount: v.optional(v.number()),
+  },
+  handler: async (
+    ctx,
+    args
+  ): Promise<OrganizationLimitsResponse<OrganizationLimitsData>> => {
+    try {
+      const existingLimits = await ctx.db
+        .query("organizationLimits")
+        .withIndex("by_organizationId", (q) =>
+          q.eq("organizationId", args.organizationId)
+        )
+        .first();
+
+      if (!existingLimits) {
+        throw new ConvexError({
+          code: "NOT_FOUND",
+          message: "Organization limits not found",
+        });
+      }
+
+      const amount = args.amount ?? 1;
+      const updateField =
+        `${args.feature}Current` as keyof typeof existingLimits;
+      const currentValue = (existingLimits[updateField] as number) ?? 0;
+
+      await ctx.db.patch(existingLimits._id, {
+        [updateField]: currentValue + amount,
         updatedAt: Date.now(),
       });
 
