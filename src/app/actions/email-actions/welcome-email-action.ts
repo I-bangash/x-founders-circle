@@ -2,6 +2,12 @@
 
 import { WelcomeEmail } from "@/convex/emails/templates/WelcomeEmail";
 import { resend } from "@/libs/resend";
+import {
+  APP_ROOT_DOMAIN,
+  DEFAULT_APP_URL,
+  EMAIL_FROM,
+  EMAIL_REPLY_TO,
+} from "@/utils/constants";
 
 export async function sendWelcomeEmail({
   email,
@@ -12,15 +18,13 @@ export async function sendWelcomeEmail({
 }) {
   try {
     const userName = name || "Founder";
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL
-      ? `${process.env.NEXT_PUBLIC_APP_URL}`
-      : "https://foundersonx.com";
+    const baseUrl = APP_ROOT_DOMAIN ?? DEFAULT_APP_URL;
     const loginUrl = `${baseUrl}/sign-in`;
 
     const { data, error } = await resend.emails.send({
-      from: "FoundersonX <bangash@updates.foundersonx.com>",
+      from: EMAIL_FROM,
       to: [email],
-      replyTo: "izzybangash@gmail.com",
+      replyTo: EMAIL_REPLY_TO,
       subject: "You're in!",
       react: WelcomeEmail({ userName }),
       text: `Welcome to FoundersonX. Let's get to work.
