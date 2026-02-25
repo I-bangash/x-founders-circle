@@ -52,16 +52,47 @@ export default defineSchema({
     firstname: v.optional(v.string()),
     lastname: v.optional(v.string()),
     clerkId: v.string(),
-    username: v.optional(v.string()),
+    username: v.optional(v.string()), // This could stay as the local user's handle if different from twitter
     email: v.string(),
     emailVerified: v.optional(v.number()), // timestamp stored as number in Convex
     image: v.optional(v.string()),
     organizationId: v.optional(v.string()),
     hasOnboarded: v.optional(v.boolean()),
+
+    // Appended MVP fields (from twitter)
+    twitterId: v.optional(v.string()), // rest_id
+    twitterUsername: v.optional(v.string()), // screen_name
+    followersCount: v.optional(v.number()),
+    joinedAt: v.optional(v.number()),
   })
     .index("by_email", ["email"])
     .index("by_clerkId", ["clerkId"])
-    .index("by_organizationId", ["organizationId"]),
+    .index("by_organizationId", ["organizationId"])
+    .index("by_twitterId", ["twitterId"])
+    .index("by_twitterUsername", ["twitterUsername"]),
+
+  posts: defineTable({
+    tweetId: v.string(),
+    authorTwitterId: v.string(),
+    authorUsername: v.string(),
+    authorName: v.string(),
+    authorAvatar: v.string(),
+    content: v.string(),
+    createdAt: v.number(),
+    fetchedAt: v.number(),
+    threadData: v.optional(v.any()), // Store the parsed thread structure
+  })
+    .index("by_tweetId", ["tweetId"])
+    .index("by_createdAt", ["createdAt"]),
+
+  engagements: defineTable({
+    postId: v.id("posts"),
+    twitterUserId: v.string(), // matches users.twitterId
+    engagedAt: v.number(),
+  })
+    .index("by_postId", ["postId"])
+    .index("by_twitterUserId", ["twitterUserId"])
+    .index("by_postId_twitterUserId", ["postId", "twitterUserId"]),
 
   // Organizations table
   organizations: defineTable({

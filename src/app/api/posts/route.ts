@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
 
-import { Engagement, Post, getDb, saveDb } from "@/libs/db";
+import { fetchMutation, fetchQuery } from "convex/nextjs";
+
 import { parseTwitterData } from "@/libs/twitter";
 
+import { api } from "../../../../convex/_generated/api";
+
 export async function GET() {
-  const db = getDb();
-  return NextResponse.json(db.posts.sort((a, b) => b.createdAt - a.createdAt));
+  const posts = await fetchQuery(api.mvp.getPosts);
+  return NextResponse.json(posts);
 }
 
 export async function POST(req: Request) {
@@ -85,16 +88,17 @@ export async function POST(req: Request) {
       );
     }
 
-    const db = getDb();
-
     // Check if post already exists
-    let post = db.posts.find((p) => p.tweetId === parsedFeed.mainTweet!.id);
+    let post = await fetchQuery(api.mvp.getPostByTweetId, {
+      tweetId: parsedFeed.mainTweet!.id,
+    });
+
+    let postId = post?._id;
 
     if (!post) {
-      post = {
-        id: crypto.randomUUID(),
+      postId = await fetchMutation(api.mvp.addPost, {
         tweetId: parsedFeed.mainTweet.id,
-        authorTwitterId: "unknown", // Would need to extract from rawData if not in parsed
+        authorTwitterId: parsedFeed.mainTweet.author.username, // Using username as ID fallback if no real ID
         authorUsername: parsedFeed.mainTweet.author.username,
         authorName: parsedFeed.mainTweet.author.name,
         authorAvatar: parsedFeed.mainTweet.author.avatar,
@@ -102,49 +106,61 @@ export async function POST(req: Request) {
         createdAt: Date.now(), // Should parse from tweet, using now for mock
         fetchedAt: Date.now(),
         threadData: parsedFeed.threads,
-      };
-      db.posts.push(post);
+      });
+      // Mock post object for response
+      post = {
+        _id: postId,
+        tweetId: parsedFeed.mainTweet.id,
+      } as any;
     } else {
       // Update thread data on refresh
-      post.threadData = parsedFeed.threads;
-      post.fetchedAt = Date.now();
+      await fetchMutation(api.mvp.addPost, {
+        tweetId: parsedFeed.mainTweet.id,
+        authorTwitterId: parsedFeed.mainTweet.author.username,
+        authorUsername: parsedFeed.mainTweet.author.username,
+        authorName: parsedFeed.mainTweet.author.name,
+        authorAvatar: parsedFeed.mainTweet.author.avatar,
+        content: parsedFeed.mainTweet.content.text,
+        createdAt: post.createdAt,
+        fetchedAt: Date.now(),
+        threadData: parsedFeed.threads,
+      });
     }
 
     // Process engagements (replies)
-    const newEngagements: Engagement[] = [];
+    const newEngagementsToInsert = [];
+    const members = await fetchQuery(api.mvp.getMembers);
 
     for (const thread of parsedFeed.threads) {
       for (const tweet of thread.tweets) {
         // Find if this user is a member
-        const member = db.users.find(
-          (u) => u.username === tweet.author.username
+        const member = members.find(
+          (u) =>
+            u.twitterUsername?.toLowerCase() ===
+              tweet.author.username.toLowerCase() ||
+            u.username?.toLowerCase() === tweet.author.username.toLowerCase()
         );
 
-        if (member) {
-          // Check if engagement already exists
-          const exists = db.engagements.find(
-            (e) => e.postId === post!.id && e.twitterUserId === member.twitterId
-          );
-
-          if (!exists) {
-            const engagement: Engagement = {
-              id: crypto.randomUUID(),
-              postId: post.id,
-              twitterUserId: member.twitterId,
-              engagedAt: Date.now(), // Should parse from tweet
-            };
-            db.engagements.push(engagement);
-            newEngagements.push(engagement);
-          }
+        if (member && member.twitterId) {
+          newEngagementsToInsert.push({
+            postId: postId as any,
+            twitterUserId: member.twitterId,
+            engagedAt: Date.now(),
+          });
         }
       }
     }
 
-    saveDb(db);
+    let newEngagementsCount = 0;
+    if (newEngagementsToInsert.length > 0) {
+      newEngagementsCount = await fetchMutation(api.mvp.addEngagements, {
+        engagements: newEngagementsToInsert,
+      });
+    }
 
     return NextResponse.json({
       post,
-      newEngagementsCount: newEngagements.length,
+      newEngagementsCount,
     });
   } catch (error: any) {
     console.error("API Error:", error);

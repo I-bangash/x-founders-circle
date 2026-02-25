@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 
-import { getDb, saveDb } from "@/libs/db";
+import { fetchMutation } from "convex/nextjs";
+
+import { api } from "../../../../../convex/_generated/api";
+import { Id } from "../../../../../convex/_generated/dataModel";
 
 export async function DELETE(
   req: Request,
@@ -8,20 +11,13 @@ export async function DELETE(
 ) {
   const { id } = await params;
 
-  const db = getDb();
-
-  const post = db.posts.find((p) => p.id === id);
-  if (!post) {
-    return NextResponse.json({ error: "Post not found" }, { status: 404 });
+  try {
+    await fetchMutation(api.mvp.deletePost, { id: id as Id<"posts"> });
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Failed to delete post" },
+      { status: 500 }
+    );
   }
-
-  // Delete post
-  db.posts = db.posts.filter((p) => p.id !== id);
-
-  // Delete engagements
-  db.engagements = db.engagements.filter((e) => e.postId !== id);
-
-  saveDb(db);
-
-  return NextResponse.json({ success: true });
 }

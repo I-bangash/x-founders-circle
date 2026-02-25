@@ -17,6 +17,7 @@ import type * as emails_userEmails from "../emails/userEmails.js";
 import type * as helper_convexHelperFunctions from "../helper/convexHelperFunctions.js";
 import type * as helper_images from "../helper/images.js";
 import type * as http from "../http.js";
+import type * as mvp from "../mvp.js";
 import type * as stripe_billing from "../stripe/billing.js";
 import type * as stripe_plans from "../stripe/plans.js";
 import type * as stripe_stripeActions from "../stripe/stripeActions.js";
@@ -42,6 +43,7 @@ declare const fullApi: ApiFromModules<{
   "helper/convexHelperFunctions": typeof helper_convexHelperFunctions;
   "helper/images": typeof helper_images;
   http: typeof http;
+  mvp: typeof mvp;
   "stripe/billing": typeof stripe_billing;
   "stripe/plans": typeof stripe_plans;
   "stripe/stripeActions": typeof stripe_stripeActions;

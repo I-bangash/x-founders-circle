@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 
-import { getDb, saveDb } from "@/libs/db";
+import { fetchMutation } from "convex/nextjs";
+
+import { api } from "../../../../../convex/_generated/api";
+import { Id } from "../../../../../convex/_generated/dataModel";
 
 export async function DELETE(
   req: Request,
@@ -8,22 +11,13 @@ export async function DELETE(
 ) {
   const { id } = await params;
 
-  const db = getDb();
-
-  const user = db.users.find((u) => u.id === id);
-  if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  try {
+    await fetchMutation(api.mvp.deleteMember, { id: id as Id<"users"> });
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Failed to delete user" },
+      { status: 500 }
+    );
   }
-
-  // Delete user
-  db.users = db.users.filter((u) => u.id !== id);
-
-  // Delete engagements
-  db.engagements = db.engagements.filter(
-    (e) => e.twitterUserId !== user.twitterId
-  );
-
-  saveDb(db);
-
-  return NextResponse.json({ success: true });
 }

@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 
-import { getDb, saveDb } from "@/libs/db";
+import { fetchMutation, fetchQuery } from "convex/nextjs";
+
+import { api } from "../../../../convex/_generated/api";
 
 export async function GET() {
-  const db = getDb();
-  return NextResponse.json(db.users);
+  const members = await fetchQuery(api.mvp.getMembers);
+  return NextResponse.json(members);
 }
 
 export async function POST(req: Request) {
@@ -81,15 +83,17 @@ export async function POST(req: Request) {
       };
     }
 
-    const db = getDb();
-    if (
-      !db.users.find((u) => u.username.toLowerCase() === username.toLowerCase())
-    ) {
-      db.users.push(user);
-      saveDb(db);
-    }
+    // Insert into Convex
+    const newMember = await fetchMutation(api.mvp.addMember, {
+      twitterId: user.twitterId,
+      twitterUsername: user.username,
+      name: user.name,
+      profileImageUrl: user.profileImageUrl,
+      followersCount: user.followersCount,
+      joinedAt: user.joinedAt,
+    });
 
-    return NextResponse.json(user);
+    return NextResponse.json(newMember);
   } catch (error) {
     console.error(error);
     return NextResponse.json(
