@@ -44,3 +44,4 @@ next-env.d.ts
 .backups/
 **/old/
 **/old-landing/
+**/old-dashboard/
