@@ -10,7 +10,7 @@ import { WelcomeEmail } from "../emails/templates/WelcomeEmail";
 const ADMIN_USER_ID = "user_2rfFgTNPDKE9fhRMpMX9AlMGiLz";
 const DEFAULT_PLAN_LOOKUP_KEY = "free_trial";
 
-const EMAIL_FROM = "FoundersonX <bangash@notifications.foundersonx.com>";
+const EMAIL_FROM = "FoundersonX <bangash@updates.foundersonx.com>";
 const EMAIL_REPLY_TO = "izzybangash@gmail.com";
 const DEFAULT_APP_URL = "https://foundersonx.com";
 

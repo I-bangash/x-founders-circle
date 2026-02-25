@@ -18,7 +18,7 @@ export async function sendWelcomeEmail({
     const loginUrl = `${baseUrl}/sign-in`;
 
     const { data, error } = await resend.emails.send({
-      from: "FoundersonX <bangash@notifications.foundersonx.com>",
+      from: "FoundersonX <bangash@updates.foundersonx.com>",
       to: [email],
       replyTo: "izzybangash@gmail.com",
       subject: "You're in!",
