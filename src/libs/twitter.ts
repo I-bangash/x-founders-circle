@@ -1,4 +1,3 @@
-
 // --- Utility for Tailwind classes ---
 // (Not needed here, but kept for reference if needed elsewhere)
 
@@ -7,7 +6,7 @@ export function getTimeAgo(dateString: string) {
   const date = new Date(dateString);
   const now = new Date();
   const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-  
+
   let interval = Math.floor(seconds / 31536000);
   if (interval > 1) return interval + "y";
   interval = Math.floor(seconds / 2592000);
@@ -57,24 +56,29 @@ export interface ParsedFeed {
 // --- The Parser Function ---
 export function parseTwitterData(rawData: any): ParsedFeed {
   const feed: ParsedFeed = { mainTweet: null, threads: [] };
-  
+
   try {
     // Determine if it's the old format or new format
-    let entries = rawData?.data?.threaded_conversation_with_injections_v2?.instructions?.find(
-      (inst: any) => inst.type === "TimelineAddEntries"
-    )?.entries;
+    let entries =
+      rawData?.data?.threaded_conversation_with_injections_v2?.instructions?.find(
+        (inst: any) => inst.type === "TimelineAddEntries"
+      )?.entries;
 
     if (!entries) {
       // Try alternative format if entries not found
-      entries = rawData?.data?.tweetResult?.result?.timeline?.instructions?.find(
-        (inst: any) => inst.type === "TimelineAddEntries"
-      )?.entries;
+      entries =
+        rawData?.data?.tweetResult?.result?.timeline?.instructions?.find(
+          (inst: any) => inst.type === "TimelineAddEntries"
+        )?.entries;
     }
 
     if (!entries) {
       // If still no entries, maybe rawData is an array of tweets or a different structure
       // Let's check if it's the new format from real-time-x-com-data-scraper
-      const result = rawData?.data?.tweet_result?.result || rawData?.data?.tweetResult?.result || rawData?.data;
+      const result =
+        rawData?.data?.tweet_result?.result ||
+        rawData?.data?.tweetResult?.result ||
+        rawData?.data;
       if (result && (result.__typename === "Tweet" || result.core)) {
         // It's a single tweet response
         const parsed = extractTweetData(result);
@@ -88,20 +92,25 @@ export function parseTwitterData(rawData: any): ParsedFeed {
       if (!result) return null;
       // Sometimes __typename is missing but core exists
       if (result.__typename !== "Tweet" && !result.core) return null;
-      
+
       const core = result.core?.user_results?.result;
       const legacy = result.legacy;
       if (!core || !legacy) return null;
 
       // Handle truncated text for X Premium users
-      const fullText = result.note_tweet?.note_tweet_results?.result?.text || legacy.full_text;
+      const fullText =
+        result.note_tweet?.note_tweet_results?.result?.text || legacy.full_text;
 
       return {
         id: legacy.id_str,
         author: {
           name: core.legacy?.name || "Unknown",
           username: core.legacy?.screen_name || "unknown",
-          avatar: core.legacy?.profile_image_url_https || "",
+          avatar:
+            core.legacy?.profile_image_url_https?.replace(
+              "_normal",
+              "_400x400"
+            ) || "",
           timeAgo: getTimeAgo(legacy.created_at || new Date().toISOString()),
           isVerified: core.is_blue_verified || false,
         },
@@ -123,25 +132,25 @@ export function parseTwitterData(rawData: any): ParsedFeed {
         const result = entry.content.itemContent?.tweet_results?.result;
         const parsed = extractTweetData(result);
         if (parsed) feed.mainTweet = parsed;
-      } 
+      }
       // 2. Parse Comments (Ignoring Ads/Promoted)
       else if (entry.entryId.startsWith("conversationthread-")) {
         const items = entry.content.items;
         const threadTweets: ParsedTweet[] = [];
-        
+
         for (const itemObj of items) {
           // Skip Ads
           if (itemObj.item.itemContent?.promotedMetadata) continue;
-          
+
           const result = itemObj.item.itemContent?.tweet_results?.result;
           const parsed = extractTweetData(result);
           if (parsed) threadTweets.push(parsed);
         }
-        
+
         if (threadTweets.length > 0) {
           feed.threads.push({
             id: entry.entryId,
-            tweets: threadTweets
+            tweets: threadTweets,
           });
         }
       }
