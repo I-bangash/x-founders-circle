@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { IconArrowRight } from "@tabler/icons-react";
 
-import SplashCursor from "@/components/react-bits/splash-cursor";
+import SplashCursor from "@/components/shared/splash-cursor";
 
 export default function NotFoundPage() {
   return (

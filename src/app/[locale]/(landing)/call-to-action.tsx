@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import PixelCard from "@/components/react-bits/pixel-card";
+import PixelCard from "@/components/shared/pixel-card";
 import { Button } from "@/components/ui/button";
 
 export default function CallToAction() {

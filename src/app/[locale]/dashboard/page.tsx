@@ -1,6 +1,6 @@
-import { ChartAreaInteractive } from "@/app/[locale]/dashboard/chart-area-interactive";
-import { DataTable } from "@/app/[locale]/dashboard/data-table";
 import { SectionCards } from "@/app/[locale]/dashboard/section-cards";
+import { ChartAreaInteractive } from "@/components/dashboard-components/chart-area-interactive";
+import { DataTable } from "@/components/dashboard-components/data-table";
 
 import dashboardData from "./data.json";
 

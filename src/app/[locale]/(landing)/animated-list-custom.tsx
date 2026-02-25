@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatedList } from "@/components/magicui/animated-list";
+import { AnimatedList } from "@/components/shared/animated-list";
 import { cn } from "@/utils/utils";
 
 interface Item {
