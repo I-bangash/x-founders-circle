@@ -22,68 +22,57 @@ export async function POST(req: Request) {
   try {
     let user;
 
-    if (process.env.RAPIDAPI_KEY) {
-      const options = {
-        method: "GET",
-        headers: {
-          "x-rapidapi-key": process.env.RAPIDAPI_KEY,
-          "x-rapidapi-host":
-            process.env.RAPIDAPI_HOST ||
-            "real-time-x-com-data-scraper.p.rapidapi.com",
-        },
-      };
-      const response = await fetch(
-        `https://${process.env.RAPIDAPI_HOST || "real-time-x-com-data-scraper.p.rapidapi.com"}/v2/UserByScreenName?username=${username}`,
-        options
+    if (!process.env.RAPIDAPI_KEY) {
+      throw new Error(
+        "Missing RAPIDAPI_KEY environment variable. Cannot securely fetch user data."
       );
-
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch user: ${response.status} ${response.statusText}`
-        );
-      }
-
-      const data = await response.json();
-
-      // Check for API specific error in 200 OK response
-      if (data.error) {
-        throw new Error(`API Error: ${data.error}`);
-      }
-
-      // Assuming standard Twitter API v2 or similar RapidAPI structure
-      // Adjust based on actual RapidAPI response
-      const result = data?.data?.user?.result || data;
-      const legacy = result?.legacy || result;
-
-      if (!result) {
-        throw new Error("User not found in API response");
-      }
-
-      user = {
-        id: crypto.randomUUID(),
-        twitterId: result?.rest_id || result?.id_str || String(Date.now()),
-        username: legacy?.screen_name || username,
-        name: legacy?.name || username,
-        profileImageUrl:
-          legacy?.profile_image_url_https ||
-          `https://picsum.photos/seed/${username}/200/200`,
-        followersCount: legacy?.followers_count || 0,
-        joinedAt: Date.now(),
-      };
-    } else {
-      // Mock fallback
-      user = {
-        id: crypto.randomUUID(),
-        twitterId: String(Math.floor(Math.random() * 1000000000)),
-        username: username,
-        name: username,
-        profileImageUrl: `https://picsum.photos/seed/${username}/200/200`,
-        followersCount: Math.floor(Math.random() * 10000),
-        joinedAt: Date.now(),
-      };
     }
 
-    // Insert into Convex
+    const options = {
+      method: "GET",
+      headers: {
+        "x-rapidapi-key": process.env.RAPIDAPI_KEY,
+        "x-rapidapi-host":
+          process.env.RAPIDAPI_HOST ||
+          "real-time-x-com-data-scraper.p.rapidapi.com",
+      },
+    };
+
+    const response = await fetch(
+      `https://${process.env.RAPIDAPI_HOST || "real-time-x-com-data-scraper.p.rapidapi.com"}/v2/UserByScreenName?username=${username}`,
+      options
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch user: ${response.status} ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+
+    if (data.error) {
+      throw new Error(`API Error: ${data.error}`);
+    }
+
+    const result = data?.data?.user?.result || data;
+    const legacy = result?.legacy || result;
+
+    if (!result) {
+      throw new Error("User not found in API response");
+    }
+
+    user = {
+      twitterId: result?.rest_id || result?.id_str || String(Date.now()),
+      username: legacy?.screen_name || username,
+      name: legacy?.name || username,
+      profileImageUrl:
+        legacy?.profile_image_url_https?.replace("_normal", "_400x400") ||
+        `https://picsum.photos/seed/${username}/200/200`,
+      followersCount: legacy?.followers_count || 0,
+      joinedAt: Date.now(),
+    };
+
     const newMember = await fetchMutation(api.mvp.addMember, {
       twitterId: user.twitterId,
       twitterUsername: user.username,
@@ -93,11 +82,11 @@ export async function POST(req: Request) {
       joinedAt: user.joinedAt,
     });
 
-    return NextResponse.json(newMember);
-  } catch (error) {
+    return NextResponse.json({ ...newMember, username: user.username });
+  } catch (error: any) {
     console.error(error);
     return NextResponse.json(
-      { error: "Failed to fetch user" },
+      { error: error?.message || "Failed to fetch user" },
       { status: 500 }
     );
   }

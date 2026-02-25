@@ -1,0 +1,2297 @@
+{
+  "data": {
+    "threaded_conversation_with_injections_v2": {
+      "instructions": [
+        {
+          "type": "TimelineClearCache"
+        },
+        {
+          "entries": [
+            {
+              "content": {
+                "__typename": "TimelineTimelineItem",
+                "clientEventInfo": {
+                  "component": "tweet",
+                  "element": "tweet"
+                },
+                "entryType": "TimelineTimelineItem",
+                "itemContent": {
+                  "__typename": "TimelineTweet",
+                  "itemType": "TimelineTweet",
+                  "tweetDisplayType": "Tweet",
+                  "tweet_results": {
+                    "result": {
+                      "__typename": "Tweet",
+                      "core": {
+                        "user_results": {
+                          "result": {
+                            "__typename": "User",
+                            "affiliates_highlighted_label": {},
+                            "has_graduated_access": true,
+                            "id": "VXNlcjoxMTQ5NDkxNjU1NTc5Mjc5MzYw",
+                            "is_blue_verified": true,
+                            "legacy": {
+                              "blocked_by": false,
+                              "blocking": false,
+                              "can_dm": true,
+                              "can_media_tag": true,
+                              "created_at": "Fri Jul 12 01:32:22 +0000 2019",
+                              "default_profile": true,
+                              "default_profile_image": false,
+                              "description": "Building @rasgo_ai. Experimenting with @clawversee. Exploring what AI can become. 23 · learning by shipping",
+                              "entities": {
+                                "description": {
+                                  "urls": []
+                                },
+                                "url": {
+                                  "urls": [
+                                    {
+                                      "display_url": "rasgo.ai",
+                                      "expanded_url": "http://rasgo.ai",
+                                      "indices": [0, 23],
+                                      "url": "https://t.co/gOJuQ3hJdQ"
+                                    }
+                                  ]
+                                }
+                              },
+                              "fast_followers_count": 0,
+                              "favourites_count": 179,
+                              "follow_request_sent": false,
+                              "followed_by": false,
+                              "followers_count": 87,
+                              "following": false,
+                              "friends_count": 219,
+                              "has_custom_timelines": false,
+                              "is_translator": false,
+                              "listed_count": 1,
+                              "location": "United Kingdom",
+                              "media_count": 57,
+                              "muting": false,
+                              "name": "Txori",
+                              "normal_followers_count": 87,
+                              "notifications": false,
+                              "pinned_tweet_ids_str": ["2020560930224865327"],
+                              "possibly_sensitive": false,
+                              "profile_banner_url": "https://pbs.twimg.com/profile_banners/1149491655579279360/1770521784",
+                              "profile_image_url_https": "https://pbs.twimg.com/profile_images/2020339399834144768/zO-xTv28_normal.jpg",
+                              "profile_interstitial_type": "",
+                              "protected": false,
+                              "screen_name": "TxoriAGI",
+                              "statuses_count": 475,
+                              "translator_type": "none",
+                              "url": "https://t.co/gOJuQ3hJdQ",
+                              "verified": false,
+                              "want_retweets": false,
+                              "withheld_in_countries": []
+                            },
+                            "parody_commentary_fan_label": "None",
+                            "professional": {
+                              "category": [],
+                              "professional_type": "Creator",
+                              "rest_id": "2017432092708094009"
+                            },
+                            "profile_image_shape": "Circle",
+                            "rest_id": "1149491655579279360",
+                            "super_follow_eligible": false,
+                            "super_followed_by": false,
+                            "super_following": false,
+                            "tipjar_settings": {}
+                          }
+                        }
+                      },
+                      "edit_control": {
+                        "edit_tweet_ids": ["2026741518585794902"],
+                        "editable_until_msecs": "1772051407000",
+                        "edits_remaining": "5",
+                        "is_edit_eligible": true
+                      },
+                      "has_birdwatch_notes": false,
+                      "is_translatable": false,
+                      "legacy": {
+                        "bookmark_count": 0,
+                        "bookmarked": false,
+                        "conversation_id_str": "2026741518585794902",
+                        "created_at": "Wed Feb 25 19:30:07 +0000 2026",
+                        "display_text_range": [0, 126],
+                        "entities": {
+                          "hashtags": [],
+                          "media": [
+                            {
+                              "allow_download_status": {
+                                "allow_download": true
+                              },
+                              "display_url": "pic.x.com/SqkipVYNoR",
+                              "expanded_url": "https://x.com/TxoriAGI/status/2026741518585794902/photo/1",
+                              "ext_media_availability": {
+                                "status": "Available"
+                              },
+                              "features": {
+                                "large": {
+                                  "faces": []
+                                },
+                                "medium": {
+                                  "faces": []
+                                },
+                                "orig": {
+                                  "faces": []
+                                },
+                                "small": {
+                                  "faces": []
+                                }
+                              },
+                              "id_str": "2026741514907295744",
+                              "indices": [127, 150],
+                              "media_key": "3_2026741514907295744",
+                              "media_results": {
+                                "result": {
+                                  "media_key": "3_2026741514907295744"
+                                }
+                              },
+                              "media_url_https": "https://pbs.twimg.com/media/HCBuq2-WIAAANSs.jpg",
+                              "original_info": {
+                                "focus_rects": [
+                                  {
+                                    "h": 306,
+                                    "w": 547,
+                                    "x": 0,
+                                    "y": 79
+                                  },
+                                  {
+                                    "h": 517,
+                                    "w": 517,
+                                    "x": 0,
+                                    "y": 0
+                                  },
+                                  {
+                                    "h": 517,
+                                    "w": 454,
+                                    "x": 0,
+                                    "y": 0
+                                  },
+                                  {
+                                    "h": 517,
+                                    "w": 259,
+                                    "x": 21,
+                                    "y": 0
+                                  },
+                                  {
+                                    "h": 517,
+                                    "w": 547,
+                                    "x": 0,
+                                    "y": 0
+                                  }
+                                ],
+                                "height": 517,
+                                "width": 547
+                              },
+                              "sizes": {
+                                "large": {
+                                  "h": 517,
+                                  "resize": "fit",
+                                  "w": 547
+                                },
+                                "medium": {
+                                  "h": 517,
+                                  "resize": "fit",
+                                  "w": 547
+                                },
+                                "small": {
+                                  "h": 517,
+                                  "resize": "fit",
+                                  "w": 547
+                                },
+                                "thumb": {
+                                  "h": 150,
+                                  "resize": "crop",
+                                  "w": 150
+                                }
+                              },
+                              "type": "photo",
+                              "url": "https://t.co/SqkipVYNoR"
+                            }
+                          ],
+                          "symbols": [],
+                          "timestamps": [],
+                          "urls": [],
+                          "user_mentions": []
+                        },
+                        "extended_entities": {
+                          "media": [
+                            {
+                              "allow_download_status": {
+                                "allow_download": true
+                              },
+                              "display_url": "pic.x.com/SqkipVYNoR",
+                              "expanded_url": "https://x.com/TxoriAGI/status/2026741518585794902/photo/1",
+                              "ext_media_availability": {
+                                "status": "Available"
+                              },
+                              "features": {
+                                "large": {
+                                  "faces": []
+                                },
+                                "medium": {
+                                  "faces": []
+                                },
+                                "orig": {
+                                  "faces": []
+                                },
+                                "small": {
+                                  "faces": []
+                                }
+                              },
+                              "id_str": "2026741514907295744",
+                              "indices": [127, 150],
+                              "media_key": "3_2026741514907295744",
+                              "media_results": {
+                                "result": {
+                                  "media_key": "3_2026741514907295744"
+                                }
+                              },
+                              "media_url_https": "https://pbs.twimg.com/media/HCBuq2-WIAAANSs.jpg",
+                              "original_info": {
+                                "focus_rects": [
+                                  {
+                                    "h": 306,
+                                    "w": 547,
+                                    "x": 0,
+                                    "y": 79
+                                  },
+                                  {
+                                    "h": 517,
+                                    "w": 517,
+                                    "x": 0,
+                                    "y": 0
+                                  },
+                                  {
+                                    "h": 517,
+                                    "w": 454,
+                                    "x": 0,
+                                    "y": 0
+                                  },
+                                  {
+                                    "h": 517,
+                                    "w": 259,
+                                    "x": 21,
+                                    "y": 0
+                                  },
+                                  {
+                                    "h": 517,
+                                    "w": 547,
+                                    "x": 0,
+                                    "y": 0
+                                  }
+                                ],
+                                "height": 517,
+                                "width": 547
+                              },
+                              "sizes": {
+                                "large": {
+                                  "h": 517,
+                                  "resize": "fit",
+                                  "w": 547
+                                },
+                                "medium": {
+                                  "h": 517,
+                                  "resize": "fit",
+                                  "w": 547
+                                },
+                                "small": {
+                                  "h": 517,
+                                  "resize": "fit",
+                                  "w": 547
+                                },
+                                "thumb": {
+                                  "h": 150,
+                                  "resize": "crop",
+                                  "w": 150
+                                }
+                              },
+                              "type": "photo",
+                              "url": "https://t.co/SqkipVYNoR"
+                            }
+                          ]
+                        },
+                        "favorite_count": 6,
+                        "favorited": false,
+                        "full_text": "Crossed 100+ sign ups in my web 🚀\n\nI now have more sign ups in my web than followers in X\n\nCan we match them?\nLet's connect 🤙🏻 https://t.co/SqkipVYNoR",
+                        "id_str": "2026741518585794902",
+                        "is_quote_status": false,
+                        "lang": "en",
+                        "possibly_sensitive": false,
+                        "possibly_sensitive_editable": true,
+                        "quote_count": 0,
+                        "reply_count": 4,
+                        "retweet_count": 0,
+                        "retweeted": false,
+                        "user_id_str": "1149491655579279360"
+                      },
+                      "quick_promote_eligibility": {
+                        "eligibility": "IneligibleNotProfessional"
+                      },
+                      "rest_id": "2026741518585794902",
+                      "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+                      "unmention_data": {},
+                      "views": {
+                        "count": "38",
+                        "state": "EnabledWithCount"
+                      }
+                    }
+                  }
+                }
+              },
+              "entryId": "tweet-2026741518585794902",
+              "sortIndex": "2026785335031103488"
+            },
+            {
+              "content": {
+                "__typename": "TimelineTimelineModule",
+                "clientEventInfo": {
+                  "component": "tweet",
+                  "details": {
+                    "conversationDetails": {
+                      "conversationSection": "HighQuality"
+                    },
+                    "timelinesDetails": {
+                      "controllerData": "DAACDAAEDAABCgABAAAAAAAAAAEKAAIAAAAAAAAAAAoAAwAAAZyW5xqKAAAAAA=="
+                    }
+                  }
+                },
+                "displayType": "VerticalConversation",
+                "entryType": "TimelineTimelineModule",
+                "items": [
+                  {
+                    "entryId": "conversationthread-2026742599844040936-tweet-2026742599844040936",
+                    "item": {
+                      "clientEventInfo": {
+                        "component": "tweet",
+                        "details": {
+                          "conversationDetails": {
+                            "conversationSection": "HighQuality"
+                          },
+                          "timelinesDetails": {
+                            "controllerData": "DAACDAAEDAABCgABAAAAAAAAAAEKAAIAAAAAAAAAAAoAAwAAAZyW5xqKAAAAAA=="
+                          }
+                        },
+                        "element": "tweet"
+                      },
+                      "itemContent": {
+                        "__typename": "TimelineTweet",
+                        "itemType": "TimelineTweet",
+                        "tweetDisplayType": "Tweet",
+                        "tweet_results": {
+                          "result": {
+                            "__typename": "Tweet",
+                            "core": {
+                              "user_results": {
+                                "result": {
+                                  "__typename": "User",
+                                  "affiliates_highlighted_label": {},
+                                  "has_graduated_access": true,
+                                  "id": "VXNlcjoxNTA3MzgzNDY3Njk2NTk0OTQ0",
+                                  "is_blue_verified": true,
+                                  "legacy": {
+                                    "blocked_by": false,
+                                    "blocking": false,
+                                    "can_dm": true,
+                                    "can_media_tag": true,
+                                    "created_at": "Fri Mar 25 15:47:11 +0000 2022",
+                                    "default_profile": true,
+                                    "default_profile_image": false,
+                                    "description": "Indie maker building products that earn passively\n\nBuilt GrowReply - saves social media managers 10+ hrs/week\n\nEx-web3 dev → Product builder",
+                                    "entities": {
+                                      "description": {
+                                        "urls": []
+                                      },
+                                      "url": {
+                                        "urls": [
+                                          {
+                                            "display_url": "go.nexaha.com/growreply",
+                                            "expanded_url": "https://go.nexaha.com/growreply",
+                                            "indices": [0, 23],
+                                            "url": "https://t.co/reTx4swUcf"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    "fast_followers_count": 0,
+                                    "favourites_count": 15374,
+                                    "follow_request_sent": false,
+                                    "followed_by": false,
+                                    "followers_count": 482,
+                                    "following": false,
+                                    "friends_count": 316,
+                                    "has_custom_timelines": false,
+                                    "is_translator": false,
+                                    "listed_count": 2,
+                                    "location": "Mars",
+                                    "media_count": 164,
+                                    "muting": false,
+                                    "name": "Sahil Panhotra",
+                                    "normal_followers_count": 482,
+                                    "notifications": false,
+                                    "pinned_tweet_ids_str": [
+                                      "2014732433527325153"
+                                    ],
+                                    "possibly_sensitive": false,
+                                    "profile_banner_url": "https://pbs.twimg.com/profile_banners/1507383467696594944/1723052358",
+                                    "profile_image_url_https": "https://pbs.twimg.com/profile_images/1821224129913389056/lyZGAKNT_normal.jpg",
+                                    "profile_interstitial_type": "",
+                                    "protected": false,
+                                    "screen_name": "SahilPanhotra",
+                                    "statuses_count": 2390,
+                                    "translator_type": "none",
+                                    "url": "https://t.co/reTx4swUcf",
+                                    "verified": false,
+                                    "want_retweets": false,
+                                    "withheld_in_countries": []
+                                  },
+                                  "parody_commentary_fan_label": "None",
+                                  "profile_image_shape": "Circle",
+                                  "rest_id": "1507383467696594944",
+                                  "super_follow_eligible": false,
+                                  "super_followed_by": false,
+                                  "super_following": false,
+                                  "tipjar_settings": {}
+                                }
+                              }
+                            },
+                            "edit_control": {
+                              "edit_tweet_ids": ["2026742599844040936"],
+                              "editable_until_msecs": "1772051665000",
+                              "edits_remaining": "5",
+                              "is_edit_eligible": false
+                            },
+                            "has_birdwatch_notes": false,
+                            "is_translatable": false,
+                            "legacy": {
+                              "bookmark_count": 0,
+                              "bookmarked": false,
+                              "conversation_id_str": "2026741518585794902",
+                              "created_at": "Wed Feb 25 19:34:25 +0000 2026",
+                              "display_text_range": [10, 106],
+                              "entities": {
+                                "hashtags": [],
+                                "symbols": [],
+                                "timestamps": [],
+                                "urls": [],
+                                "user_mentions": [
+                                  {
+                                    "id_str": "1149491655579279360",
+                                    "indices": [0, 9],
+                                    "name": "Txori",
+                                    "screen_name": "TxoriAGI"
+                                  }
+                                ]
+                              },
+                              "favorite_count": 1,
+                              "favorited": false,
+                              "full_text": "@TxoriAGI 100 sign ups &gt; 1000 followers\n\nreal people beat bots any day, let’s keep climbing together :)",
+                              "id_str": "2026742599844040936",
+                              "in_reply_to_screen_name": "TxoriAGI",
+                              "in_reply_to_status_id_str": "2026741518585794902",
+                              "in_reply_to_user_id_str": "1149491655579279360",
+                              "is_quote_status": false,
+                              "lang": "en",
+                              "quote_count": 0,
+                              "reply_count": 1,
+                              "retweet_count": 0,
+                              "retweeted": false,
+                              "user_id_str": "1507383467696594944"
+                            },
+                            "quick_promote_eligibility": {
+                              "eligibility": "IneligibleNotProfessional"
+                            },
+                            "rest_id": "2026742599844040936",
+                            "source": "<a href=\"https://mobile.twitter.com\" rel=\"nofollow\">Twitter Web App</a>",
+                            "unmention_data": {},
+                            "views": {
+                              "count": "10",
+                              "state": "EnabledWithCount"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "entryId": "conversationthread-2026742599844040936-tweet-2026774036387111071",
+                    "item": {
+                      "clientEventInfo": {
+                        "component": "tweet",
+                        "details": {
+                          "conversationDetails": {
+                            "conversationSection": "HighQuality"
+                          },
+                          "timelinesDetails": {
+                            "controllerData": "DAACDAAEDAABCgABAAAAAAAAAAEKAAIAAAAAAAAAAAoAAwAAAZyW5xqKAAAAAA=="
+                          }
+                        },
+                        "element": "tweet"
+                      },
+                      "itemContent": {
+                        "__typename": "TimelineTweet",
+                        "itemType": "TimelineTweet",
+                        "tweetDisplayType": "Tweet",
+                        "tweet_results": {
+                          "result": {
+                            "__typename": "Tweet",
+                            "core": {
+                              "user_results": {
+                                "result": {
+                                  "__typename": "User",
+                                  "affiliates_highlighted_label": {},
+                                  "has_graduated_access": true,
+                                  "id": "VXNlcjoxMTQ5NDkxNjU1NTc5Mjc5MzYw",
+                                  "is_blue_verified": true,
+                                  "legacy": {
+                                    "blocked_by": false,
+                                    "blocking": false,
+                                    "can_dm": true,
+                                    "can_media_tag": true,
+                                    "created_at": "Fri Jul 12 01:32:22 +0000 2019",
+                                    "default_profile": true,
+                                    "default_profile_image": false,
+                                    "description": "Building @rasgo_ai. Experimenting with @clawversee. Exploring what AI can become. 23 · learning by shipping",
+                                    "entities": {
+                                      "description": {
+                                        "urls": []
+                                      },
+                                      "url": {
+                                        "urls": [
+                                          {
+                                            "display_url": "rasgo.ai",
+                                            "expanded_url": "http://rasgo.ai",
+                                            "indices": [0, 23],
+                                            "url": "https://t.co/gOJuQ3hJdQ"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    "fast_followers_count": 0,
+                                    "favourites_count": 179,
+                                    "follow_request_sent": false,
+                                    "followed_by": false,
+                                    "followers_count": 87,
+                                    "following": false,
+                                    "friends_count": 219,
+                                    "has_custom_timelines": false,
+                                    "is_translator": false,
+                                    "listed_count": 1,
+                                    "location": "United Kingdom",
+                                    "media_count": 57,
+                                    "muting": false,
+                                    "name": "Txori",
+                                    "normal_followers_count": 87,
+                                    "notifications": false,
+                                    "pinned_tweet_ids_str": [
+                                      "2020560930224865327"
+                                    ],
+                                    "possibly_sensitive": false,
+                                    "profile_banner_url": "https://pbs.twimg.com/profile_banners/1149491655579279360/1770521784",
+                                    "profile_image_url_https": "https://pbs.twimg.com/profile_images/2020339399834144768/zO-xTv28_normal.jpg",
+                                    "profile_interstitial_type": "",
+                                    "protected": false,
+                                    "screen_name": "TxoriAGI",
+                                    "statuses_count": 475,
+                                    "translator_type": "none",
+                                    "url": "https://t.co/gOJuQ3hJdQ",
+                                    "verified": false,
+                                    "want_retweets": false,
+                                    "withheld_in_countries": []
+                                  },
+                                  "parody_commentary_fan_label": "None",
+                                  "professional": {
+                                    "category": [],
+                                    "professional_type": "Creator",
+                                    "rest_id": "2017432092708094009"
+                                  },
+                                  "profile_image_shape": "Circle",
+                                  "rest_id": "1149491655579279360",
+                                  "super_follow_eligible": false,
+                                  "super_followed_by": false,
+                                  "super_following": false,
+                                  "tipjar_settings": {}
+                                }
+                              }
+                            },
+                            "edit_control": {
+                              "edit_tweet_ids": ["2026774036387111071"],
+                              "editable_until_msecs": "1772059160000",
+                              "edits_remaining": "5",
+                              "is_edit_eligible": false
+                            },
+                            "has_birdwatch_notes": false,
+                            "is_translatable": false,
+                            "legacy": {
+                              "bookmark_count": 0,
+                              "bookmarked": false,
+                              "conversation_id_str": "2026741518585794902",
+                              "created_at": "Wed Feb 25 21:39:20 +0000 2026",
+                              "display_text_range": [15, 23],
+                              "entities": {
+                                "hashtags": [],
+                                "symbols": [],
+                                "timestamps": [],
+                                "urls": [],
+                                "user_mentions": [
+                                  {
+                                    "id_str": "1507383467696594944",
+                                    "indices": [0, 14],
+                                    "name": "Sahil Panhotra",
+                                    "screen_name": "SahilPanhotra"
+                                  }
+                                ]
+                              },
+                              "favorite_count": 0,
+                              "favorited": false,
+                              "full_text": "@SahilPanhotra Yes sirr",
+                              "id_str": "2026774036387111071",
+                              "in_reply_to_screen_name": "SahilPanhotra",
+                              "in_reply_to_status_id_str": "2026742599844040936",
+                              "in_reply_to_user_id_str": "1507383467696594944",
+                              "is_quote_status": false,
+                              "lang": "en",
+                              "quote_count": 0,
+                              "reply_count": 0,
+                              "retweet_count": 0,
+                              "retweeted": false,
+                              "user_id_str": "1149491655579279360"
+                            },
+                            "quick_promote_eligibility": {
+                              "eligibility": "IneligibleNotProfessional"
+                            },
+                            "rest_id": "2026774036387111071",
+                            "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+                            "unmention_data": {},
+                            "views": {
+                              "count": "3",
+                              "state": "EnabledWithCount"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ],
+                "metadata": {
+                  "conversationMetadata": {
+                    "allTweetIds": ["2026774036387111071"],
+                    "enableDeduplication": true
+                  }
+                }
+              },
+              "entryId": "conversationthread-2026742599844040936",
+              "sortIndex": "2026785335031103478"
+            },
+            {
+              "content": {
+                "__typename": "TimelineTimelineModule",
+                "clientEventInfo": {
+                  "component": "tweet",
+                  "details": {
+                    "conversationDetails": {
+                      "conversationSection": "HighQuality"
+                    },
+                    "timelinesDetails": {
+                      "controllerData": "DAACDAAEDAABCgABAAAAAAAAAAEKAAIAAAAAAAAAAAoAAwAAAZyW5xqKAAAAAA=="
+                    }
+                  }
+                },
+                "displayType": "VerticalConversation",
+                "entryType": "TimelineTimelineModule",
+                "items": [
+                  {
+                    "entryId": "conversationthread-2026744182031667247-tweet-2026744182031667247",
+                    "item": {
+                      "clientEventInfo": {
+                        "component": "tweet",
+                        "details": {
+                          "conversationDetails": {
+                            "conversationSection": "HighQuality"
+                          },
+                          "timelinesDetails": {
+                            "controllerData": "DAACDAAEDAABCgABAAAAAAAAAAEKAAIAAAAAAAAAAAoAAwAAAZyW5xqKAAAAAA=="
+                          }
+                        },
+                        "element": "tweet"
+                      },
+                      "itemContent": {
+                        "__typename": "TimelineTweet",
+                        "itemType": "TimelineTweet",
+                        "tweetDisplayType": "Tweet",
+                        "tweet_results": {
+                          "result": {
+                            "__typename": "Tweet",
+                            "core": {
+                              "user_results": {
+                                "result": {
+                                  "__typename": "User",
+                                  "affiliates_highlighted_label": {},
+                                  "has_graduated_access": true,
+                                  "id": "VXNlcjoxMzgwMDg1MzAzODAxNzQxMzEz",
+                                  "is_blue_verified": true,
+                                  "legacy": {
+                                    "blocked_by": false,
+                                    "blocking": false,
+                                    "can_dm": true,
+                                    "can_media_tag": true,
+                                    "created_at": "Thu Apr 08 09:09:22 +0000 2021",
+                                    "default_profile": true,
+                                    "default_profile_image": false,
+                                    "description": "Chef | Nerding out on AI | Building distribution 1 app at a time + sharing what I learn",
+                                    "entities": {
+                                      "description": {
+                                        "urls": []
+                                      },
+                                      "url": {
+                                        "urls": [
+                                          {
+                                            "display_url": "virallaunch.ai",
+                                            "expanded_url": "https://virallaunch.ai/",
+                                            "indices": [0, 23],
+                                            "url": "https://t.co/z1J0WCL4Yy"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    "fast_followers_count": 0,
+                                    "favourites_count": 7455,
+                                    "follow_request_sent": false,
+                                    "followed_by": false,
+                                    "followers_count": 1149,
+                                    "following": false,
+                                    "friends_count": 698,
+                                    "has_custom_timelines": false,
+                                    "is_translator": false,
+                                    "listed_count": 12,
+                                    "location": "Portugal",
+                                    "media_count": 139,
+                                    "muting": false,
+                                    "name": "Irteza Bangash",
+                                    "normal_followers_count": 1149,
+                                    "notifications": false,
+                                    "pinned_tweet_ids_str": [
+                                      "2007828629103776139"
+                                    ],
+                                    "possibly_sensitive": false,
+                                    "profile_banner_url": "https://pbs.twimg.com/profile_banners/1380085303801741313/1768135077",
+                                    "profile_image_url_https": "https://pbs.twimg.com/profile_images/2008946944500994050/CjF6213I_normal.jpg",
+                                    "profile_interstitial_type": "",
+                                    "protected": false,
+                                    "screen_name": "ibangash_",
+                                    "statuses_count": 2503,
+                                    "translator_type": "none",
+                                    "url": "https://t.co/z1J0WCL4Yy",
+                                    "verified": false,
+                                    "want_retweets": false,
+                                    "withheld_in_countries": []
+                                  },
+                                  "parody_commentary_fan_label": "None",
+                                  "profile_image_shape": "Circle",
+                                  "rest_id": "1380085303801741313",
+                                  "super_follow_eligible": false,
+                                  "super_followed_by": false,
+                                  "super_following": false,
+                                  "tipjar_settings": {}
+                                }
+                              }
+                            },
+                            "edit_control": {
+                              "edit_tweet_ids": ["2026744182031667247"],
+                              "editable_until_msecs": "1772052042000",
+                              "edits_remaining": "5",
+                              "is_edit_eligible": false
+                            },
+                            "has_birdwatch_notes": false,
+                            "is_translatable": false,
+                            "legacy": {
+                              "bookmark_count": 0,
+                              "bookmarked": false,
+                              "conversation_id_str": "2026741518585794902",
+                              "created_at": "Wed Feb 25 19:40:42 +0000 2026",
+                              "display_text_range": [10, 81],
+                              "entities": {
+                                "hashtags": [],
+                                "symbols": [],
+                                "timestamps": [],
+                                "urls": [],
+                                "user_mentions": [
+                                  {
+                                    "id_str": "1149491655579279360",
+                                    "indices": [0, 9],
+                                    "name": "Txori",
+                                    "screen_name": "TxoriAGI"
+                                  }
+                                ]
+                              },
+                              "favorite_count": 1,
+                              "favorited": false,
+                              "full_text": "@TxoriAGI that's awesome! congrats on the 100 milestone 🥳\n\nhappy to be connected🙌",
+                              "id_str": "2026744182031667247",
+                              "in_reply_to_screen_name": "TxoriAGI",
+                              "in_reply_to_status_id_str": "2026741518585794902",
+                              "in_reply_to_user_id_str": "1149491655579279360",
+                              "is_quote_status": false,
+                              "lang": "en",
+                              "quote_count": 0,
+                              "reply_count": 1,
+                              "retweet_count": 0,
+                              "retweeted": false,
+                              "user_id_str": "1380085303801741313"
+                            },
+                            "quick_promote_eligibility": {
+                              "eligibility": "IneligibleNotProfessional"
+                            },
+                            "rest_id": "2026744182031667247",
+                            "source": "<a href=\"https://mobile.twitter.com\" rel=\"nofollow\">Twitter Web App</a>",
+                            "unmention_data": {},
+                            "views": {
+                              "count": "8",
+                              "state": "EnabledWithCount"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "entryId": "conversationthread-2026744182031667247-tweet-2026774096579575862",
+                    "item": {
+                      "clientEventInfo": {
+                        "component": "tweet",
+                        "details": {
+                          "conversationDetails": {
+                            "conversationSection": "HighQuality"
+                          },
+                          "timelinesDetails": {
+                            "controllerData": "DAACDAAEDAABCgABAAAAAAAAAAEKAAIAAAAAAAAAAAoAAwAAAZyW5xqKAAAAAA=="
+                          }
+                        },
+                        "element": "tweet"
+                      },
+                      "itemContent": {
+                        "__typename": "TimelineTweet",
+                        "itemType": "TimelineTweet",
+                        "tweetDisplayType": "Tweet",
+                        "tweet_results": {
+                          "result": {
+                            "__typename": "Tweet",
+                            "core": {
+                              "user_results": {
+                                "result": {
+                                  "__typename": "User",
+                                  "affiliates_highlighted_label": {},
+                                  "has_graduated_access": true,
+                                  "id": "VXNlcjoxMTQ5NDkxNjU1NTc5Mjc5MzYw",
+                                  "is_blue_verified": true,
+                                  "legacy": {
+                                    "blocked_by": false,
+                                    "blocking": false,
+                                    "can_dm": true,
+                                    "can_media_tag": true,
+                                    "created_at": "Fri Jul 12 01:32:22 +0000 2019",
+                                    "default_profile": true,
+                                    "default_profile_image": false,
+                                    "description": "Building @rasgo_ai. Experimenting with @clawversee. Exploring what AI can become. 23 · learning by shipping",
+                                    "entities": {
+                                      "description": {
+                                        "urls": []
+                                      },
+                                      "url": {
+                                        "urls": [
+                                          {
+                                            "display_url": "rasgo.ai",
+                                            "expanded_url": "http://rasgo.ai",
+                                            "indices": [0, 23],
+                                            "url": "https://t.co/gOJuQ3hJdQ"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    "fast_followers_count": 0,
+                                    "favourites_count": 179,
+                                    "follow_request_sent": false,
+                                    "followed_by": false,
+                                    "followers_count": 87,
+                                    "following": false,
+                                    "friends_count": 219,
+                                    "has_custom_timelines": false,
+                                    "is_translator": false,
+                                    "listed_count": 1,
+                                    "location": "United Kingdom",
+                                    "media_count": 57,
+                                    "muting": false,
+                                    "name": "Txori",
+                                    "normal_followers_count": 87,
+                                    "notifications": false,
+                                    "pinned_tweet_ids_str": [
+                                      "2020560930224865327"
+                                    ],
+                                    "possibly_sensitive": false,
+                                    "profile_banner_url": "https://pbs.twimg.com/profile_banners/1149491655579279360/1770521784",
+                                    "profile_image_url_https": "https://pbs.twimg.com/profile_images/2020339399834144768/zO-xTv28_normal.jpg",
+                                    "profile_interstitial_type": "",
+                                    "protected": false,
+                                    "screen_name": "TxoriAGI",
+                                    "statuses_count": 475,
+                                    "translator_type": "none",
+                                    "url": "https://t.co/gOJuQ3hJdQ",
+                                    "verified": false,
+                                    "want_retweets": false,
+                                    "withheld_in_countries": []
+                                  },
+                                  "parody_commentary_fan_label": "None",
+                                  "professional": {
+                                    "category": [],
+                                    "professional_type": "Creator",
+                                    "rest_id": "2017432092708094009"
+                                  },
+                                  "profile_image_shape": "Circle",
+                                  "rest_id": "1149491655579279360",
+                                  "super_follow_eligible": false,
+                                  "super_followed_by": false,
+                                  "super_following": false,
+                                  "tipjar_settings": {}
+                                }
+                              }
+                            },
+                            "edit_control": {
+                              "edit_tweet_ids": ["2026774096579575862"],
+                              "editable_until_msecs": "1772059174000",
+                              "edits_remaining": "5",
+                              "is_edit_eligible": false
+                            },
+                            "has_birdwatch_notes": false,
+                            "is_translatable": false,
+                            "legacy": {
+                              "bookmark_count": 0,
+                              "bookmarked": false,
+                              "conversation_id_str": "2026741518585794902",
+                              "created_at": "Wed Feb 25 21:39:34 +0000 2026",
+                              "display_text_range": [11, 24],
+                              "entities": {
+                                "hashtags": [],
+                                "symbols": [],
+                                "timestamps": [],
+                                "urls": [],
+                                "user_mentions": [
+                                  {
+                                    "id_str": "1380085303801741313",
+                                    "indices": [0, 10],
+                                    "name": "Irteza Bangash",
+                                    "screen_name": "ibangash_"
+                                  }
+                                ]
+                              },
+                              "favorite_count": 0,
+                              "favorited": false,
+                              "full_text": "@ibangash_ Thanks man 🫡🫡",
+                              "id_str": "2026774096579575862",
+                              "in_reply_to_screen_name": "ibangash_",
+                              "in_reply_to_status_id_str": "2026744182031667247",
+                              "in_reply_to_user_id_str": "1380085303801741313",
+                              "is_quote_status": false,
+                              "lang": "en",
+                              "quote_count": 0,
+                              "reply_count": 0,
+                              "retweet_count": 0,
+                              "retweeted": false,
+                              "user_id_str": "1149491655579279360"
+                            },
+                            "quick_promote_eligibility": {
+                              "eligibility": "IneligibleNotProfessional"
+                            },
+                            "rest_id": "2026774096579575862",
+                            "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+                            "unmention_data": {},
+                            "views": {
+                              "count": "5",
+                              "state": "EnabledWithCount"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ],
+                "metadata": {
+                  "conversationMetadata": {
+                    "allTweetIds": ["2026774096579575862"],
+                    "enableDeduplication": true
+                  }
+                }
+              },
+              "entryId": "conversationthread-2026744182031667247",
+              "sortIndex": "2026785335031103468"
+            },
+            {
+              "content": {
+                "__typename": "TimelineTimelineModule",
+                "clientEventInfo": {
+                  "component": "tweet",
+                  "details": {
+                    "conversationDetails": {
+                      "conversationSection": "HighQuality"
+                    },
+                    "timelinesDetails": {
+                      "controllerData": "DAACDAAEDAABCgABAAAAAAAAAAEKAAIAAAAAAAAAAAoAAwAAAZyW5xqKAAAAAA=="
+                    }
+                  }
+                },
+                "displayType": "VerticalConversation",
+                "entryType": "TimelineTimelineModule",
+                "items": [
+                  {
+                    "entryId": "conversationthread-2026747449008705731-tweet-2026747449008705731",
+                    "item": {
+                      "clientEventInfo": {
+                        "component": "tweet",
+                        "details": {
+                          "conversationDetails": {
+                            "conversationSection": "HighQuality"
+                          },
+                          "timelinesDetails": {
+                            "controllerData": "DAACDAAEDAABCgABAAAAAAAAAAEKAAIAAAAAAAAAAAoAAwAAAZyW5xqKAAAAAA=="
+                          }
+                        },
+                        "element": "tweet"
+                      },
+                      "itemContent": {
+                        "__typename": "TimelineTweet",
+                        "itemType": "TimelineTweet",
+                        "tweetDisplayType": "Tweet",
+                        "tweet_results": {
+                          "result": {
+                            "__typename": "Tweet",
+                            "core": {
+                              "user_results": {
+                                "result": {
+                                  "__typename": "User",
+                                  "affiliates_highlighted_label": {},
+                                  "has_graduated_access": true,
+                                  "id": "VXNlcjoxOTU4MjA5NTAzMDkxOTE2ODAw",
+                                  "is_blue_verified": true,
+                                  "legacy": {
+                                    "blocked_by": false,
+                                    "blocking": false,
+                                    "can_dm": false,
+                                    "can_media_tag": true,
+                                    "created_at": "Wed Aug 20 16:48:45 +0000 2025",
+                                    "default_profile": true,
+                                    "default_profile_image": false,
+                                    "description": "Your wallet has more value than you think. I built Norte to show you exactly what's there and when to use it.\nBuilding @norte_app ↓",
+                                    "entities": {
+                                      "description": {
+                                        "urls": []
+                                      },
+                                      "url": {
+                                        "urls": [
+                                          {
+                                            "display_url": "norteapp.io",
+                                            "expanded_url": "http://norteapp.io",
+                                            "indices": [0, 23],
+                                            "url": "https://t.co/jVhITs7xmT"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    "fast_followers_count": 0,
+                                    "favourites_count": 5347,
+                                    "follow_request_sent": false,
+                                    "followed_by": false,
+                                    "followers_count": 698,
+                                    "following": false,
+                                    "friends_count": 643,
+                                    "has_custom_timelines": false,
+                                    "is_translator": false,
+                                    "listed_count": 8,
+                                    "location": "Madrid",
+                                    "media_count": 131,
+                                    "muting": false,
+                                    "name": "Jose Sanchez",
+                                    "normal_followers_count": 698,
+                                    "notifications": false,
+                                    "pinned_tweet_ids_str": [
+                                      "2009654725730541892"
+                                    ],
+                                    "possibly_sensitive": false,
+                                    "profile_banner_url": "https://pbs.twimg.com/profile_banners/1958209503091916800/1763627910",
+                                    "profile_image_url_https": "https://pbs.twimg.com/profile_images/1974369256977436673/eVOfur6P_normal.jpg",
+                                    "profile_interstitial_type": "",
+                                    "protected": false,
+                                    "screen_name": "JoseInNorte",
+                                    "statuses_count": 2803,
+                                    "translator_type": "none",
+                                    "url": "https://t.co/jVhITs7xmT",
+                                    "verified": false,
+                                    "want_retweets": false,
+                                    "withheld_in_countries": []
+                                  },
+                                  "parody_commentary_fan_label": "None",
+                                  "profile_image_shape": "Circle",
+                                  "rest_id": "1958209503091916800",
+                                  "super_follow_eligible": false,
+                                  "super_followed_by": false,
+                                  "super_following": false,
+                                  "tipjar_settings": {}
+                                }
+                              }
+                            },
+                            "edit_control": {
+                              "edit_tweet_ids": ["2026747449008705731"],
+                              "editable_until_msecs": "1772052821000",
+                              "edits_remaining": "5",
+                              "is_edit_eligible": false
+                            },
+                            "has_birdwatch_notes": false,
+                            "is_translatable": false,
+                            "legacy": {
+                              "bookmark_count": 0,
+                              "bookmarked": false,
+                              "conversation_id_str": "2026741518585794902",
+                              "created_at": "Wed Feb 25 19:53:41 +0000 2026",
+                              "display_text_range": [10, 102],
+                              "entities": {
+                                "hashtags": [],
+                                "symbols": [],
+                                "timestamps": [],
+                                "urls": [],
+                                "user_mentions": [
+                                  {
+                                    "id_str": "1149491655579279360",
+                                    "indices": [0, 9],
+                                    "name": "Txori",
+                                    "screen_name": "TxoriAGI"
+                                  }
+                                ]
+                              },
+                              "favorite_count": 1,
+                              "favorited": false,
+                              "full_text": "@TxoriAGI Time to start building your email marketing strategy. Don’t let that funnel leak. Let’s gooo",
+                              "id_str": "2026747449008705731",
+                              "in_reply_to_screen_name": "TxoriAGI",
+                              "in_reply_to_status_id_str": "2026741518585794902",
+                              "in_reply_to_user_id_str": "1149491655579279360",
+                              "is_quote_status": false,
+                              "lang": "en",
+                              "quote_count": 0,
+                              "reply_count": 1,
+                              "retweet_count": 0,
+                              "retweeted": false,
+                              "user_id_str": "1958209503091916800"
+                            },
+                            "quick_promote_eligibility": {
+                              "eligibility": "IneligibleNotProfessional"
+                            },
+                            "rest_id": "2026747449008705731",
+                            "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+                            "unmention_data": {},
+                            "views": {
+                              "count": "10",
+                              "state": "EnabledWithCount"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "entryId": "conversationthread-2026747449008705731-tweet-2026774201156161646",
+                    "item": {
+                      "clientEventInfo": {
+                        "component": "tweet",
+                        "details": {
+                          "conversationDetails": {
+                            "conversationSection": "HighQuality"
+                          },
+                          "timelinesDetails": {
+                            "controllerData": "DAACDAAEDAABCgABAAAAAAAAAAEKAAIAAAAAAAAAAAoAAwAAAZyW5xqKAAAAAA=="
+                          }
+                        },
+                        "element": "tweet"
+                      },
+                      "itemContent": {
+                        "__typename": "TimelineTweet",
+                        "itemType": "TimelineTweet",
+                        "tweetDisplayType": "Tweet",
+                        "tweet_results": {
+                          "result": {
+                            "__typename": "Tweet",
+                            "core": {
+                              "user_results": {
+                                "result": {
+                                  "__typename": "User",
+                                  "affiliates_highlighted_label": {},
+                                  "has_graduated_access": true,
+                                  "id": "VXNlcjoxMTQ5NDkxNjU1NTc5Mjc5MzYw",
+                                  "is_blue_verified": true,
+                                  "legacy": {
+                                    "blocked_by": false,
+                                    "blocking": false,
+                                    "can_dm": true,
+                                    "can_media_tag": true,
+                                    "created_at": "Fri Jul 12 01:32:22 +0000 2019",
+                                    "default_profile": true,
+                                    "default_profile_image": false,
+                                    "description": "Building @rasgo_ai. Experimenting with @clawversee. Exploring what AI can become. 23 · learning by shipping",
+                                    "entities": {
+                                      "description": {
+                                        "urls": []
+                                      },
+                                      "url": {
+                                        "urls": [
+                                          {
+                                            "display_url": "rasgo.ai",
+                                            "expanded_url": "http://rasgo.ai",
+                                            "indices": [0, 23],
+                                            "url": "https://t.co/gOJuQ3hJdQ"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    "fast_followers_count": 0,
+                                    "favourites_count": 179,
+                                    "follow_request_sent": false,
+                                    "followed_by": false,
+                                    "followers_count": 87,
+                                    "following": false,
+                                    "friends_count": 219,
+                                    "has_custom_timelines": false,
+                                    "is_translator": false,
+                                    "listed_count": 1,
+                                    "location": "United Kingdom",
+                                    "media_count": 57,
+                                    "muting": false,
+                                    "name": "Txori",
+                                    "normal_followers_count": 87,
+                                    "notifications": false,
+                                    "pinned_tweet_ids_str": [
+                                      "2020560930224865327"
+                                    ],
+                                    "possibly_sensitive": false,
+                                    "profile_banner_url": "https://pbs.twimg.com/profile_banners/1149491655579279360/1770521784",
+                                    "profile_image_url_https": "https://pbs.twimg.com/profile_images/2020339399834144768/zO-xTv28_normal.jpg",
+                                    "profile_interstitial_type": "",
+                                    "protected": false,
+                                    "screen_name": "TxoriAGI",
+                                    "statuses_count": 475,
+                                    "translator_type": "none",
+                                    "url": "https://t.co/gOJuQ3hJdQ",
+                                    "verified": false,
+                                    "want_retweets": false,
+                                    "withheld_in_countries": []
+                                  },
+                                  "parody_commentary_fan_label": "None",
+                                  "professional": {
+                                    "category": [],
+                                    "professional_type": "Creator",
+                                    "rest_id": "2017432092708094009"
+                                  },
+                                  "profile_image_shape": "Circle",
+                                  "rest_id": "1149491655579279360",
+                                  "super_follow_eligible": false,
+                                  "super_followed_by": false,
+                                  "super_following": false,
+                                  "tipjar_settings": {}
+                                }
+                              }
+                            },
+                            "edit_control": {
+                              "edit_tweet_ids": ["2026774201156161646"],
+                              "editable_until_msecs": "1772059199000",
+                              "edits_remaining": "5",
+                              "is_edit_eligible": false
+                            },
+                            "has_birdwatch_notes": false,
+                            "is_translatable": false,
+                            "legacy": {
+                              "bookmark_count": 0,
+                              "bookmarked": false,
+                              "conversation_id_str": "2026741518585794902",
+                              "created_at": "Wed Feb 25 21:39:59 +0000 2026",
+                              "display_text_range": [13, 26],
+                              "entities": {
+                                "hashtags": [],
+                                "symbols": [],
+                                "timestamps": [],
+                                "urls": [],
+                                "user_mentions": [
+                                  {
+                                    "id_str": "1958209503091916800",
+                                    "indices": [0, 12],
+                                    "name": "Jose Sanchez",
+                                    "screen_name": "JoseInNorte"
+                                  }
+                                ]
+                              },
+                              "favorite_count": 0,
+                              "favorited": false,
+                              "full_text": "@JoseInNorte Yeah lets go🫡",
+                              "id_str": "2026774201156161646",
+                              "in_reply_to_screen_name": "JoseInNorte",
+                              "in_reply_to_status_id_str": "2026747449008705731",
+                              "in_reply_to_user_id_str": "1958209503091916800",
+                              "is_quote_status": false,
+                              "lang": "en",
+                              "quote_count": 0,
+                              "reply_count": 0,
+                              "retweet_count": 0,
+                              "retweeted": false,
+                              "user_id_str": "1149491655579279360"
+                            },
+                            "quick_promote_eligibility": {
+                              "eligibility": "IneligibleNotProfessional"
+                            },
+                            "rest_id": "2026774201156161646",
+                            "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+                            "unmention_data": {},
+                            "views": {
+                              "count": "5",
+                              "state": "EnabledWithCount"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ],
+                "metadata": {
+                  "conversationMetadata": {
+                    "allTweetIds": ["2026774201156161646"],
+                    "enableDeduplication": true
+                  }
+                }
+              },
+              "entryId": "conversationthread-2026747449008705731",
+              "sortIndex": "2026785335031103458"
+            },
+            {
+              "content": {
+                "__typename": "TimelineTimelineModule",
+                "clientEventInfo": {
+                  "component": "tweet",
+                  "details": {
+                    "conversationDetails": {
+                      "conversationSection": "HighQuality"
+                    },
+                    "timelinesDetails": {
+                      "controllerData": "DAACDAAEDAABCgABAAAAAAAAAAEKAAIAAAAAAAAAAAoAAwAAAZyW5xqKAAAAAA=="
+                    }
+                  }
+                },
+                "displayType": "VerticalConversation",
+                "entryType": "TimelineTimelineModule",
+                "items": [
+                  {
+                    "entryId": "conversationthread-2026746489435746674-tweet-2026746489435746674",
+                    "item": {
+                      "clientEventInfo": {
+                        "component": "tweet",
+                        "details": {
+                          "conversationDetails": {
+                            "conversationSection": "HighQuality"
+                          },
+                          "timelinesDetails": {
+                            "controllerData": "DAACDAAEDAABCgABAAAAAAAAAAEKAAIAAAAAAAAAAAoAAwAAAZyW5xqKAAAAAA=="
+                          }
+                        },
+                        "element": "tweet"
+                      },
+                      "itemContent": {
+                        "__typename": "TimelineTweet",
+                        "itemType": "TimelineTweet",
+                        "tweetDisplayType": "Tweet",
+                        "tweet_results": {
+                          "result": {
+                            "__typename": "Tweet",
+                            "core": {
+                              "user_results": {
+                                "result": {
+                                  "__typename": "User",
+                                  "affiliates_highlighted_label": {},
+                                  "has_graduated_access": true,
+                                  "id": "VXNlcjoyMDE5ODA0MDUyMjE3ODgwNTc2",
+                                  "is_blue_verified": true,
+                                  "legacy": {
+                                    "blocked_by": false,
+                                    "blocking": false,
+                                    "can_dm": true,
+                                    "can_media_tag": true,
+                                    "created_at": "Fri Feb 06 16:03:33 +0000 2026",
+                                    "default_profile": true,
+                                    "default_profile_image": false,
+                                    "description": "Software Engineer building a saas empire. Goal - $500K MRR; Current - $0K MRR; Follow along to see how I fail. \nFirst up: https://t.co/SY5ioRvYOr\n#Buildinpublic #Failinpublic",
+                                    "entities": {
+                                      "description": {
+                                        "urls": [
+                                          {
+                                            "display_url": "Sembra.ai",
+                                            "expanded_url": "http://Sembra.ai",
+                                            "indices": [122, 145],
+                                            "url": "https://t.co/SY5ioRvYOr"
+                                          }
+                                        ]
+                                      },
+                                      "url": {
+                                        "urls": [
+                                          {
+                                            "display_url": "sembra.ai",
+                                            "expanded_url": "https://www.sembra.ai/",
+                                            "indices": [0, 23],
+                                            "url": "https://t.co/Jjb2oReZgi"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    "fast_followers_count": 0,
+                                    "favourites_count": 54,
+                                    "follow_request_sent": false,
+                                    "followed_by": false,
+                                    "followers_count": 346,
+                                    "following": false,
+                                    "friends_count": 442,
+                                    "has_custom_timelines": false,
+                                    "is_translator": false,
+                                    "listed_count": 1,
+                                    "location": "Washington, DC",
+                                    "media_count": 0,
+                                    "muting": false,
+                                    "name": "Manav Garkel",
+                                    "normal_followers_count": 346,
+                                    "notifications": false,
+                                    "pinned_tweet_ids_str": [],
+                                    "possibly_sensitive": false,
+                                    "profile_banner_url": "https://pbs.twimg.com/profile_banners/2019804052217880576/1770670372",
+                                    "profile_image_url_https": "https://pbs.twimg.com/profile_images/2019889790427037696/RtIQ36rQ_normal.jpg",
+                                    "profile_interstitial_type": "",
+                                    "protected": false,
+                                    "screen_name": "ManavGarkel",
+                                    "statuses_count": 336,
+                                    "translator_type": "none",
+                                    "url": "https://t.co/Jjb2oReZgi",
+                                    "verified": false,
+                                    "want_retweets": false,
+                                    "withheld_in_countries": []
+                                  },
+                                  "parody_commentary_fan_label": "None",
+                                  "professional": {
+                                    "category": [
+                                      {
+                                        "icon_name": "IconBriefcaseStroke",
+                                        "id": 715,
+                                        "name": "Software Company"
+                                      }
+                                    ],
+                                    "professional_type": "Business",
+                                    "rest_id": "2020960411894603802"
+                                  },
+                                  "profile_image_shape": "Circle",
+                                  "rest_id": "2019804052217880576",
+                                  "super_follow_eligible": false,
+                                  "super_followed_by": false,
+                                  "super_following": false,
+                                  "tipjar_settings": {}
+                                }
+                              }
+                            },
+                            "edit_control": {
+                              "edit_tweet_ids": ["2026746489435746674"],
+                              "editable_until_msecs": "1772052592000",
+                              "edits_remaining": "5",
+                              "is_edit_eligible": false
+                            },
+                            "has_birdwatch_notes": false,
+                            "is_translatable": false,
+                            "legacy": {
+                              "bookmark_count": 0,
+                              "bookmarked": false,
+                              "conversation_id_str": "2026741518585794902",
+                              "created_at": "Wed Feb 25 19:49:52 +0000 2026",
+                              "display_text_range": [10, 45],
+                              "entities": {
+                                "hashtags": [],
+                                "symbols": [],
+                                "timestamps": [],
+                                "urls": [],
+                                "user_mentions": [
+                                  {
+                                    "id_str": "1149491655579279360",
+                                    "indices": [0, 9],
+                                    "name": "Txori",
+                                    "screen_name": "TxoriAGI"
+                                  }
+                                ]
+                              },
+                              "favorite_count": 0,
+                              "favorited": false,
+                              "full_text": "@TxoriAGI This is awesome! Congratulations 👏👏",
+                              "id_str": "2026746489435746674",
+                              "in_reply_to_screen_name": "TxoriAGI",
+                              "in_reply_to_status_id_str": "2026741518585794902",
+                              "in_reply_to_user_id_str": "1149491655579279360",
+                              "is_quote_status": false,
+                              "lang": "en",
+                              "quote_count": 0,
+                              "reply_count": 0,
+                              "retweet_count": 0,
+                              "retweeted": false,
+                              "user_id_str": "2019804052217880576"
+                            },
+                            "quick_promote_eligibility": {
+                              "eligibility": "IneligibleNotProfessional"
+                            },
+                            "rest_id": "2026746489435746674",
+                            "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+                            "unmention_data": {},
+                            "views": {
+                              "count": "3",
+                              "state": "EnabledWithCount"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ],
+                "metadata": {
+                  "conversationMetadata": {
+                    "allTweetIds": ["2026746489435746674"],
+                    "enableDeduplication": true
+                  }
+                }
+              },
+              "entryId": "conversationthread-2026746489435746674",
+              "sortIndex": "2026785335031103448"
+            },
+            {
+              "content": {
+                "__typename": "TimelineTimelineModule",
+                "clientEventInfo": {
+                  "component": "tweet",
+                  "details": {
+                    "conversationDetails": {
+                      "conversationSection": "HighQuality"
+                    },
+                    "timelinesDetails": {
+                      "controllerData": "DAACDAAEDAABCgABAAAAAAAAAAEKAAIAAAAAAAAAAAoAAwAAAZyW5xwpAAAAAA=="
+                    }
+                  }
+                },
+                "displayType": "VerticalConversation",
+                "entryType": "TimelineTimelineModule",
+                "items": [
+                  {
+                    "entryId": "conversationthread-2025690338208448988-promoted-tweet-2025690338208448988-b736d68063c8a4c",
+                    "item": {
+                      "clientEventInfo": {
+                        "component": "tweet",
+                        "details": {
+                          "conversationDetails": {
+                            "conversationSection": "HighQuality"
+                          },
+                          "timelinesDetails": {
+                            "controllerData": "DAACDAAEDAABCgABAAAAAAAAAAEKAAIAAAAAAAAAAAoAAwAAAZyW5xwpAAAAAA=="
+                          }
+                        },
+                        "element": "tweet"
+                      },
+                      "itemContent": {
+                        "__typename": "TimelineTweet",
+                        "itemType": "TimelineTweet",
+                        "promotedMetadata": {
+                          "adMetadataContainer": {
+                            "isQuickPromote": false,
+                            "renderLegacyWebsiteCard": false
+                          },
+                          "advertiser_results": {
+                            "result": {
+                              "__typename": "User",
+                              "affiliates_highlighted_label": {},
+                              "has_graduated_access": true,
+                              "id": "VXNlcjo5NDgyMjcwNjgzOTg5MzYwNjQ=",
+                              "is_blue_verified": true,
+                              "legacy": {
+                                "blocked_by": false,
+                                "blocking": false,
+                                "can_dm": false,
+                                "can_media_tag": true,
+                                "created_at": "Tue Jan 02 16:18:45 +0000 2018",
+                                "default_profile": true,
+                                "default_profile_image": false,
+                                "description": "The creators of Flavor Wrapped™ Popcorn Kernels and Peel + Pour Popcorn Cups. On a mission to liberate you from boring popcorn.",
+                                "entities": {
+                                  "description": {
+                                    "urls": []
+                                  },
+                                  "url": {
+                                    "urls": [
+                                      {
+                                        "display_url": "opopop.com",
+                                        "expanded_url": "http://opopop.com",
+                                        "indices": [0, 23],
+                                        "url": "https://t.co/f6FaNw2WEk"
+                                      }
+                                    ]
+                                  }
+                                },
+                                "fast_followers_count": 0,
+                                "favourites_count": 266,
+                                "follow_request_sent": false,
+                                "followed_by": false,
+                                "followers_count": 5415,
+                                "following": false,
+                                "friends_count": 19,
+                                "has_custom_timelines": false,
+                                "is_translator": false,
+                                "listed_count": 3,
+                                "location": "Denver, Colorado",
+                                "media_count": 82,
+                                "muting": false,
+                                "name": "Opopop",
+                                "normal_followers_count": 5415,
+                                "notifications": false,
+                                "pinned_tweet_ids_str": [],
+                                "possibly_sensitive": false,
+                                "profile_banner_url": "https://pbs.twimg.com/profile_banners/948227068398936064/1552332378",
+                                "profile_image_url_https": "https://pbs.twimg.com/profile_images/1105188277429055488/KNg6ddfI_normal.png",
+                                "profile_interstitial_type": "",
+                                "protected": false,
+                                "screen_name": "opopopco",
+                                "statuses_count": 220,
+                                "translator_type": "none",
+                                "url": "https://t.co/f6FaNw2WEk",
+                                "verified": false,
+                                "want_retweets": false,
+                                "withheld_in_countries": []
+                              },
+                              "parody_commentary_fan_label": "None",
+                              "profile_image_shape": "Circle",
+                              "rest_id": "948227068398936064",
+                              "super_follow_eligible": false,
+                              "super_followed_by": false,
+                              "super_following": false,
+                              "tipjar_settings": {}
+                            }
+                          },
+                          "clickTrackingInfo": {
+                            "urlParams": [
+                              {
+                                "key": "twclid",
+                                "value": "26i251bi8gf11uzgfrtuq1dm18"
+                              }
+                            ]
+                          },
+                          "disclosureType": "NoDisclosure",
+                          "experimentValues": [
+                            {
+                              "key": "ads_experiment_ids",
+                              "value": "402022"
+                            },
+                            {
+                              "key": "ads_budget_aware_experiment_id",
+                              "value": "-1"
+                            }
+                          ],
+                          "impressionId": "b736d68063c8a4c",
+                          "impressionString": "b736d68063c8a4c"
+                        },
+                        "tweetDisplayType": "Tweet",
+                        "tweet_results": {
+                          "result": {
+                            "__typename": "TweetWithVisibilityResults",
+                            "limitedActionResults": {
+                              "limited_actions": [
+                                {
+                                  "action": "Reply",
+                                  "prompt": {
+                                    "__typename": "CtaLimitedActionPrompt",
+                                    "cta_type": "SeeConversation",
+                                    "headline": {
+                                      "entities": [],
+                                      "text": "Who can reply?"
+                                    },
+                                    "subtext": {
+                                      "entities": [],
+                                      "text": "People the author mentioned can reply"
+                                    }
+                                  }
+                                }
+                              ]
+                            },
+                            "tweet": {
+                              "card": {
+                                "legacy": {
+                                  "binding_values": [
+                                    {
+                                      "key": "unified_card",
+                                      "value": {
+                                        "string_value": "{\"type\":\"video_website\",\"component_objects\":{\"details_1\":{\"type\":\"details\",\"data\":{\"title\":{\"content\":\"subscribe and save\",\"is_rtl\":false},\"subtitle\":{\"content\":\"opopop.com\",\"is_rtl\":false},\"destination\":\"override_browser_with_docked_media_1\"}},\"media_1\":{\"type\":\"media\",\"data\":{\"id\":\"13_2025689222103842816\",\"destination\":\"browser_with_docked_media_1\"}}},\"destination_objects\":{\"browser_with_docked_media_1\":{\"type\":\"browser_with_docked_media\",\"data\":{\"url_data\":{\"url\":\"https://opopop.com/pages/flavor-bundle-7b?tw_source=twitter&tw_campaign= 40962686&tw_adsetid= 54321538&utm_term= 54321538\",\"vanity\":\"opopop.com\"},\"media_id\":\"13_2025689222103842816\"}},\"override_browser_with_docked_media_1\":{\"type\":\"browser\",\"data\":{\"url_data\":{\"url\":\"https://opopop.com/pages/flavor-bundle-7b?tw_source=twitter&tw_campaign= 40962686&tw_adsetid= 54321538&utm_term= 54321538\",\"vanity\":\"opopop.com\"}}}},\"components\":[\"media_1\",\"details_1\"],\"media_entities\":{\"13_2025689222103842816\":{\"id\":2025689222103842816,\"id_str\":\"2025689222103842816\",\"indices\":[0,0],\"media_url\":\"\",\"media_url_https\":\"https://pbs.twimg.com/amplify_video_thumb/2025689222103842816/img/9JtmxRn9veka5HgW.jpg\",\"url\":\"\",\"display_url\":\"\",\"expanded_url\":\"\",\"type\":\"video\",\"original_info\":{\"width\":1080,\"height\":1920},\"sizes\":{\"medium\":{\"w\":675,\"h\":1200,\"resize\":\"fit\"},\"large\":{\"w\":1080,\"h\":1920,\"resize\":\"fit\"},\"thumb\":{\"w\":150,\"h\":150,\"resize\":\"crop\"},\"small\":{\"w\":383,\"h\":680,\"resize\":\"fit\"}},\"source_user_id\":948227068398936064,\"source_user_id_str\":\"948227068398936064\",\"video_info\":{\"aspect_ratio\":[9,16],\"duration_millis\":12846,\"variants\":[{\"bitrate\":950000,\"content_type\":\"video/mp4\",\"url\":\"https://video.twimg.com/amplify_video/2025689222103842816/vid/avc1/480x852/lDhXmjwKWw2i4nbS.mp4?tag=21\"},{\"bitrate\":2176000,\"content_type\":\"video/mp4\",\"url\":\"https://video.twimg.com/amplify_video/2025689222103842816/vid/avc1/720x1280/BEuaxkC0cTyiswxG.mp4?tag=21\"},{\"content_type\":\"application/x-mpegURL\",\"url\":\"https://video.twimg.com/amplify_video/2025689222103842816/pl/cGKxDcgq7Av4T03h.m3u8?tag=21\"},{\"bitrate\":632000,\"content_type\":\"video/mp4\",\"url\":\"https://video.twimg.com/amplify_video/2025689222103842816/vid/avc1/320x568/u8X1V1d3kNBvo--Q.mp4?tag=21\"},{\"bitrate\":10368000,\"content_type\":\"video/mp4\",\"url\":\"https://video.twimg.com/amplify_video/2025689222103842816/vid/avc1/1080x1920/RZfQSdM-kOI_lttO.mp4?tag=21\"}]},\"media_key\":\"13_2025689222103842816\",\"ext\":{\"mediaColor\":{\"r\":{\"ok\":{\"palette\":[{\"rgb\":{\"red\":11,\"green\":21,\"blue\":15},\"percentage\":67.73},{\"rgb\":{\"red\":80,\"green\":87,\"blue\":30},\"percentage\":10.43},{\"rgb\":{\"red\":124,\"green\":148,\"blue\":158},\"percentage\":8.24},{\"rgb\":{\"red\":16,\"green\":54,\"blue\":28},\"percentage\":5.67},{\"rgb\":{\"red\":113,\"green\":112,\"blue\":17},\"percentage\":2.71}]}},\"ttl\":-1}}}},\"experiment_signals\":{}}",
+                                        "type": "STRING"
+                                      }
+                                    },
+                                    {
+                                      "key": "card_url",
+                                      "value": {
+                                        "scribe_key": "card_url",
+                                        "string_value": "https://twitter.com",
+                                        "type": "STRING"
+                                      }
+                                    }
+                                  ],
+                                  "card_platform": {
+                                    "platform": {
+                                      "audience": {
+                                        "name": "production"
+                                      },
+                                      "device": {
+                                        "name": "Swift",
+                                        "version": "12"
+                                      }
+                                    }
+                                  },
+                                  "name": "unified_card",
+                                  "url": "card://2025690337340190720",
+                                  "user_refs_results": []
+                                },
+                                "rest_id": "card://2025690337340190720"
+                              },
+                              "core": {
+                                "user_results": {
+                                  "result": {
+                                    "__typename": "User",
+                                    "affiliates_highlighted_label": {},
+                                    "has_graduated_access": true,
+                                    "id": "VXNlcjo5NDgyMjcwNjgzOTg5MzYwNjQ=",
+                                    "is_blue_verified": true,
+                                    "legacy": {
+                                      "blocked_by": false,
+                                      "blocking": false,
+                                      "can_dm": false,
+                                      "can_media_tag": true,
+                                      "created_at": "Tue Jan 02 16:18:45 +0000 2018",
+                                      "default_profile": true,
+                                      "default_profile_image": false,
+                                      "description": "The creators of Flavor Wrapped™ Popcorn Kernels and Peel + Pour Popcorn Cups. On a mission to liberate you from boring popcorn.",
+                                      "entities": {
+                                        "description": {
+                                          "urls": []
+                                        },
+                                        "url": {
+                                          "urls": [
+                                            {
+                                              "display_url": "opopop.com",
+                                              "expanded_url": "http://opopop.com",
+                                              "indices": [0, 23],
+                                              "url": "https://t.co/f6FaNw2WEk"
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "fast_followers_count": 0,
+                                      "favourites_count": 266,
+                                      "follow_request_sent": false,
+                                      "followed_by": false,
+                                      "followers_count": 5415,
+                                      "following": false,
+                                      "friends_count": 19,
+                                      "has_custom_timelines": false,
+                                      "is_translator": false,
+                                      "listed_count": 3,
+                                      "location": "Denver, Colorado",
+                                      "media_count": 82,
+                                      "muting": false,
+                                      "name": "Opopop",
+                                      "normal_followers_count": 5415,
+                                      "notifications": false,
+                                      "pinned_tweet_ids_str": [],
+                                      "possibly_sensitive": false,
+                                      "profile_banner_url": "https://pbs.twimg.com/profile_banners/948227068398936064/1552332378",
+                                      "profile_image_url_https": "https://pbs.twimg.com/profile_images/1105188277429055488/KNg6ddfI_normal.png",
+                                      "profile_interstitial_type": "",
+                                      "protected": false,
+                                      "screen_name": "opopopco",
+                                      "statuses_count": 220,
+                                      "translator_type": "none",
+                                      "url": "https://t.co/f6FaNw2WEk",
+                                      "verified": false,
+                                      "want_retweets": false,
+                                      "withheld_in_countries": []
+                                    },
+                                    "parody_commentary_fan_label": "None",
+                                    "profile_image_shape": "Circle",
+                                    "rest_id": "948227068398936064",
+                                    "super_follow_eligible": false,
+                                    "super_followed_by": false,
+                                    "super_following": false,
+                                    "tipjar_settings": {}
+                                  }
+                                }
+                              },
+                              "edit_control": {
+                                "edit_tweet_ids": ["2025690338208448988"],
+                                "editable_until_msecs": "1771800786000",
+                                "edits_remaining": "5",
+                                "is_edit_eligible": false
+                              },
+                              "has_birdwatch_notes": false,
+                              "is_translatable": false,
+                              "legacy": {
+                                "bookmark_count": 71,
+                                "bookmarked": false,
+                                "conversation_control": {
+                                  "conversation_owner_results": {
+                                    "result": {
+                                      "__typename": "User",
+                                      "legacy": {
+                                        "screen_name": "opopopco"
+                                      }
+                                    }
+                                  },
+                                  "policy": "ByInvitation"
+                                },
+                                "conversation_id_str": "2025690338208448988",
+                                "created_at": "Sun Feb 22 21:53:06 +0000 2026",
+                                "display_text_range": [0, 50],
+                                "entities": {
+                                  "hashtags": [],
+                                  "symbols": [],
+                                  "timestamps": [],
+                                  "urls": [],
+                                  "user_mentions": []
+                                },
+                                "favorite_count": 129,
+                                "favorited": false,
+                                "full_text": "Want the perfect pop? Grab the Discovery Kit Today",
+                                "id_str": "2025690338208448988",
+                                "is_quote_status": false,
+                                "lang": "en",
+                                "quote_count": 4,
+                                "reply_count": 0,
+                                "retweet_count": 20,
+                                "retweeted": false,
+                                "scopes": {
+                                  "followers": false
+                                },
+                                "user_id_str": "948227068398936064"
+                              },
+                              "quick_promote_eligibility": {
+                                "eligibility": "IneligibleNotProfessional"
+                              },
+                              "rest_id": "2025690338208448988",
+                              "source": "<a href=\"https://help.twitter.com/en/using-twitter/how-to-tweet#source-labels\" rel=\"nofollow\">advertiser-interface</a>",
+                              "unmention_data": {},
+                              "views": {
+                                "count": "5628009",
+                                "state": "EnabledWithCount"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "entryId": "conversationthread-2025690338208448988",
+              "sortIndex": "2026785335031103438"
+            },
+            {
+              "content": {
+                "__typename": "TimelineTimelineModule",
+                "clientEventInfo": {
+                  "component": "related_tweet",
+                  "details": {
+                    "conversationDetails": {
+                      "conversationSection": "RelatedTweet"
+                    }
+                  }
+                },
+                "displayType": "Vertical",
+                "entryType": "TimelineTimelineModule",
+                "header": {
+                  "displayType": "Classic",
+                  "socialContext": {
+                    "contextType": "TextOnly",
+                    "text": "Sourced from across X",
+                    "type": "TimelineGeneralContext"
+                  },
+                  "sticky": true,
+                  "text": "Discover more"
+                },
+                "items": [
+                  {
+                    "entryId": "tweetdetailrelatedtweets-2026723634849407469-tweet-2026723634849407469",
+                    "item": {
+                      "clientEventInfo": {
+                        "component": "related_tweet",
+                        "details": {
+                          "conversationDetails": {
+                            "conversationSection": "RelatedTweet"
+                          }
+                        },
+                        "element": "tweet"
+                      },
+                      "itemContent": {
+                        "__typename": "TimelineTweet",
+                        "itemType": "TimelineTweet",
+                        "tweetDisplayType": "Tweet",
+                        "tweet_results": {
+                          "result": {
+                            "__typename": "Tweet",
+                            "core": {
+                              "user_results": {
+                                "result": {
+                                  "__typename": "User",
+                                  "affiliates_highlighted_label": {},
+                                  "has_graduated_access": true,
+                                  "id": "VXNlcjoxMTQ5NDkxNjU1NTc5Mjc5MzYw",
+                                  "is_blue_verified": true,
+                                  "legacy": {
+                                    "blocked_by": false,
+                                    "blocking": false,
+                                    "can_dm": true,
+                                    "can_media_tag": true,
+                                    "created_at": "Fri Jul 12 01:32:22 +0000 2019",
+                                    "default_profile": true,
+                                    "default_profile_image": false,
+                                    "description": "Building @rasgo_ai. Experimenting with @clawversee. Exploring what AI can become. 23 · learning by shipping",
+                                    "entities": {
+                                      "description": {
+                                        "urls": []
+                                      },
+                                      "url": {
+                                        "urls": [
+                                          {
+                                            "display_url": "rasgo.ai",
+                                            "expanded_url": "http://rasgo.ai",
+                                            "indices": [0, 23],
+                                            "url": "https://t.co/gOJuQ3hJdQ"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    "fast_followers_count": 0,
+                                    "favourites_count": 179,
+                                    "follow_request_sent": false,
+                                    "followed_by": false,
+                                    "followers_count": 87,
+                                    "following": false,
+                                    "friends_count": 219,
+                                    "has_custom_timelines": false,
+                                    "is_translator": false,
+                                    "listed_count": 1,
+                                    "location": "United Kingdom",
+                                    "media_count": 57,
+                                    "muting": false,
+                                    "name": "Txori",
+                                    "normal_followers_count": 87,
+                                    "notifications": false,
+                                    "pinned_tweet_ids_str": [
+                                      "2020560930224865327"
+                                    ],
+                                    "possibly_sensitive": false,
+                                    "profile_banner_url": "https://pbs.twimg.com/profile_banners/1149491655579279360/1770521784",
+                                    "profile_image_url_https": "https://pbs.twimg.com/profile_images/2020339399834144768/zO-xTv28_normal.jpg",
+                                    "profile_interstitial_type": "",
+                                    "protected": false,
+                                    "screen_name": "TxoriAGI",
+                                    "statuses_count": 475,
+                                    "translator_type": "none",
+                                    "url": "https://t.co/gOJuQ3hJdQ",
+                                    "verified": false,
+                                    "want_retweets": false,
+                                    "withheld_in_countries": []
+                                  },
+                                  "parody_commentary_fan_label": "None",
+                                  "professional": {
+                                    "category": [],
+                                    "professional_type": "Creator",
+                                    "rest_id": "2017432092708094009"
+                                  },
+                                  "profile_image_shape": "Circle",
+                                  "rest_id": "1149491655579279360",
+                                  "super_follow_eligible": false,
+                                  "super_followed_by": false,
+                                  "super_following": false,
+                                  "tipjar_settings": {}
+                                }
+                              }
+                            },
+                            "edit_control": {
+                              "edit_tweet_ids": ["2026723634849407469"],
+                              "editable_until_msecs": "1772047143000",
+                              "edits_remaining": "5",
+                              "is_edit_eligible": false
+                            },
+                            "has_birdwatch_notes": false,
+                            "is_translatable": false,
+                            "legacy": {
+                              "bookmark_count": 0,
+                              "bookmarked": false,
+                              "conversation_id_str": "2026723634849407469",
+                              "created_at": "Wed Feb 25 18:19:03 +0000 2026",
+                              "display_text_range": [0, 62],
+                              "entities": {
+                                "hashtags": [],
+                                "media": [
+                                  {
+                                    "allow_download_status": {
+                                      "allow_download": true
+                                    },
+                                    "display_url": "pic.x.com/ZrOPbBpycg",
+                                    "expanded_url": "https://x.com/TxoriAGI/status/2026723634849407469/photo/1",
+                                    "ext_media_availability": {
+                                      "status": "Available"
+                                    },
+                                    "features": {
+                                      "large": {
+                                        "faces": []
+                                      },
+                                      "medium": {
+                                        "faces": []
+                                      },
+                                      "orig": {
+                                        "faces": []
+                                      },
+                                      "small": {
+                                        "faces": []
+                                      }
+                                    },
+                                    "id_str": "2026723446827196416",
+                                    "indices": [63, 86],
+                                    "media_key": "3_2026723446827196416",
+                                    "media_results": {
+                                      "result": {
+                                        "media_key": "3_2026723446827196416"
+                                      }
+                                    },
+                                    "media_url_https": "https://pbs.twimg.com/media/HCBePKIXIAAyYKF.png",
+                                    "original_info": {
+                                      "focus_rects": [
+                                        {
+                                          "h": 266,
+                                          "w": 475,
+                                          "x": 0,
+                                          "y": 0
+                                        },
+                                        {
+                                          "h": 266,
+                                          "w": 266,
+                                          "x": 0,
+                                          "y": 0
+                                        },
+                                        {
+                                          "h": 266,
+                                          "w": 233,
+                                          "x": 0,
+                                          "y": 0
+                                        },
+                                        {
+                                          "h": 266,
+                                          "w": 133,
+                                          "x": 22,
+                                          "y": 0
+                                        },
+                                        {
+                                          "h": 266,
+                                          "w": 710,
+                                          "x": 0,
+                                          "y": 0
+                                        }
+                                      ],
+                                      "height": 266,
+                                      "width": 710
+                                    },
+                                    "sizes": {
+                                      "large": {
+                                        "h": 266,
+                                        "resize": "fit",
+                                        "w": 710
+                                      },
+                                      "medium": {
+                                        "h": 266,
+                                        "resize": "fit",
+                                        "w": 710
+                                      },
+                                      "small": {
+                                        "h": 255,
+                                        "resize": "fit",
+                                        "w": 680
+                                      },
+                                      "thumb": {
+                                        "h": 150,
+                                        "resize": "crop",
+                                        "w": 150
+                                      }
+                                    },
+                                    "type": "photo",
+                                    "url": "https://t.co/ZrOPbBpycg"
+                                  }
+                                ],
+                                "symbols": [],
+                                "timestamps": [],
+                                "urls": [],
+                                "user_mentions": []
+                              },
+                              "extended_entities": {
+                                "media": [
+                                  {
+                                    "allow_download_status": {
+                                      "allow_download": true
+                                    },
+                                    "display_url": "pic.x.com/ZrOPbBpycg",
+                                    "expanded_url": "https://x.com/TxoriAGI/status/2026723634849407469/photo/1",
+                                    "ext_media_availability": {
+                                      "status": "Available"
+                                    },
+                                    "features": {
+                                      "large": {
+                                        "faces": []
+                                      },
+                                      "medium": {
+                                        "faces": []
+                                      },
+                                      "orig": {
+                                        "faces": []
+                                      },
+                                      "small": {
+                                        "faces": []
+                                      }
+                                    },
+                                    "id_str": "2026723446827196416",
+                                    "indices": [63, 86],
+                                    "media_key": "3_2026723446827196416",
+                                    "media_results": {
+                                      "result": {
+                                        "media_key": "3_2026723446827196416"
+                                      }
+                                    },
+                                    "media_url_https": "https://pbs.twimg.com/media/HCBePKIXIAAyYKF.png",
+                                    "original_info": {
+                                      "focus_rects": [
+                                        {
+                                          "h": 266,
+                                          "w": 475,
+                                          "x": 0,
+                                          "y": 0
+                                        },
+                                        {
+                                          "h": 266,
+                                          "w": 266,
+                                          "x": 0,
+                                          "y": 0
+                                        },
+                                        {
+                                          "h": 266,
+                                          "w": 233,
+                                          "x": 0,
+                                          "y": 0
+                                        },
+                                        {
+                                          "h": 266,
+                                          "w": 133,
+                                          "x": 22,
+                                          "y": 0
+                                        },
+                                        {
+                                          "h": 266,
+                                          "w": 710,
+                                          "x": 0,
+                                          "y": 0
+                                        }
+                                      ],
+                                      "height": 266,
+                                      "width": 710
+                                    },
+                                    "sizes": {
+                                      "large": {
+                                        "h": 266,
+                                        "resize": "fit",
+                                        "w": 710
+                                      },
+                                      "medium": {
+                                        "h": 266,
+                                        "resize": "fit",
+                                        "w": 710
+                                      },
+                                      "small": {
+                                        "h": 255,
+                                        "resize": "fit",
+                                        "w": 680
+                                      },
+                                      "thumb": {
+                                        "h": 150,
+                                        "resize": "crop",
+                                        "w": 150
+                                      }
+                                    },
+                                    "type": "photo",
+                                    "url": "https://t.co/ZrOPbBpycg"
+                                  }
+                                ]
+                              },
+                              "favorite_count": 1,
+                              "favorited": false,
+                              "full_text": "Seedance 2.0 is now available.\nThis is capcut desktop version. https://t.co/ZrOPbBpycg",
+                              "id_str": "2026723634849407469",
+                              "is_quote_status": false,
+                              "lang": "en",
+                              "possibly_sensitive": false,
+                              "possibly_sensitive_editable": true,
+                              "quote_count": 0,
+                              "reply_count": 1,
+                              "retweet_count": 0,
+                              "retweeted": false,
+                              "user_id_str": "1149491655579279360"
+                            },
+                            "quick_promote_eligibility": {
+                              "eligibility": "IneligibleNotProfessional"
+                            },
+                            "rest_id": "2026723634849407469",
+                            "source": "<a href=\"https://mobile.twitter.com\" rel=\"nofollow\">Twitter Web App</a>",
+                            "unmention_data": {},
+                            "views": {
+                              "count": "203",
+                              "state": "EnabledWithCount"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "entryId": "tweetdetailrelatedtweets-2026723634849407469",
+              "sortIndex": "2026785335031103428"
+            },
+            {
+              "content": {
+                "__typename": "TimelineTimelineCursor",
+                "cursorType": "Bottom",
+                "entryType": "TimelineTimelineCursor",
+                "value": "DAAKCgABHCCWhhp__8ELAAIAAAB8RW1QQzZ3QUFBZlEvZ0dKTjB2R3AvQUFBQUFrY0lIUVJFNWZRd3h3Z2pFMXlsc0EySENDTVpjdlcwRzRjSUhFWWJKWlFMeHdnWG1ocEZtSHRIQ0NNUDI3V29KOGNJRzZzU3RlUlZod2djekdvbG5GeUhDQnZxQXJiRU9nPQgAAwAAAAILAAQAAAAGQm90dG9tAAA"
+              },
+              "entryId": "cursor-bottom-2026785335031103427",
+              "sortIndex": "2026785335031103427"
+            }
+          ],
+          "type": "TimelineAddEntries"
+        },
+        {
+          "direction": "Top",
+          "type": "TimelineTerminateTimeline"
+        },
+        {
+          "direction": "Bottom",
+          "type": "TimelineTerminateTimeline"
+        }
+      ],
+      "metadata": {
+        "scribeConfig": {
+          "page": "ranked_replies"
+        }
+      }
+    }
+  }
+}

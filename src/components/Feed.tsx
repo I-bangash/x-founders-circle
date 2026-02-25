@@ -5,9 +5,35 @@ import { useEffect, useState } from "react";
 
 import { CheckCircle2, ExternalLink, Search, XCircle } from "lucide-react";
 
-import { Engagement, Post, User } from "@/libs/db";
-
 import { TweetRow } from "./TwitterFeedMVP";
+
+export interface User {
+  _id: string;
+  id?: string;
+  username: string;
+  name?: string;
+  image?: string;
+  twitterId: string;
+}
+
+export interface Post {
+  _id: string;
+  id?: string;
+  tweetId: string;
+  authorUsername: string;
+  authorName: string;
+  authorAvatar: string;
+  content: string;
+  createdAt: number;
+  threadData?: any;
+}
+
+export interface Engagement {
+  _id: string;
+  id?: string;
+  postId: string;
+  twitterUserId: string;
+}
 
 export default function Feed() {
   const [members, setMembers] = useState<User[]>([]);
@@ -95,8 +121,8 @@ export default function Feed() {
                 className="flex w-14 shrink-0 flex-col items-center gap-1"
               >
                 <img
-                  src={member.profileImageUrl}
-                  alt={member.name}
+                  src={member.image || "/placeholder.svg"}
+                  alt={member.name || "Member"}
                   className="h-12 w-12 rounded-full border border-zinc-200 dark:border-zinc-800"
                 />
                 <span className="w-full truncate text-center text-[10px] text-zinc-500">
@@ -308,8 +334,8 @@ function PostCard({
                 className="group relative cursor-pointer"
               >
                 <img
-                  src={m.profileImageUrl}
-                  alt={m.name}
+                  src={m.image || "/placeholder.svg"}
+                  alt={m.name || "Member"}
                   className="h-8 w-8 rounded-full border border-zinc-200 dark:border-zinc-700"
                 />
                 <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1 -translate-x-1/2 rounded bg-zinc-900 px-2 py-1 text-xs whitespace-nowrap text-white opacity-0 transition-opacity group-hover:opacity-100">

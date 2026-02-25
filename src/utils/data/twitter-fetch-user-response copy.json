@@ -1,0 +1,87 @@
+{
+  "data": {
+    "user": {
+      "result": {
+        "__typename": "User",
+        "id": "VXNlcjo0NDE5NjM5Nw==",
+        "rest_id": "44196397",
+        "affiliates_highlighted_label": {
+          "label": {
+            "url": {
+              "url": "https://twitter.com/Twitter",
+              "urlType": "DeepLink"
+            },
+            "badge": {
+              "url": "https://pbs.twimg.com/profile_images/1488548719062654976/u6qfBBkF_bigger.jpg"
+            },
+            "description": "Twitter",
+            "userLabelType": "BusinessLabel",
+            "userLabelDisplayType": "Badge"
+          }
+        },
+        "is_blue_verified": true,
+        "profile_image_shape": "Circle",
+        "legacy": {
+          "created_at": "Tue Jun 02 20:12:29 +0000 2009",
+          "default_profile": false,
+          "default_profile_image": false,
+          "description": "",
+          "entities": {
+            "description": {
+              "urls": []
+            }
+          },
+          "fast_followers_count": 0,
+          "favourites_count": 23779,
+          "followers_count": 139990621,
+          "friends_count": 301,
+          "has_custom_timelines": true,
+          "is_translator": false,
+          "listed_count": 122242,
+          "location": "",
+          "media_count": 1553,
+          "name": "Elon Musk",
+          "normal_followers_count": 139990621,
+          "pinned_tweet_ids_str": ["1652849795336159233"],
+          "possibly_sensitive": false,
+          "profile_banner_url": "https://pbs.twimg.com/profile_banners/44196397/1576183471",
+          "profile_image_url_https": "https://pbs.twimg.com/profile_images/1590968738358079488/IY9Gx6Ok_normal.jpg",
+          "profile_interstitial_type": "",
+          "screen_name": "elonmusk",
+          "statuses_count": 26024,
+          "translator_type": "none",
+          "verified": false,
+          "withheld_in_countries": []
+        },
+        "business_account": {},
+        "legacy_extended_profile": {},
+        "is_profile_translatable": false,
+        "verification_info": {
+          "reason": {
+            "description": {
+              "text": "This account is verified because it's an affiliate of @Twitter on Twitter. Learn more",
+              "entities": [
+                {
+                  "from_index": 54,
+                  "to_index": 62,
+                  "ref": {
+                    "url": "https://twitter.com/Twitter",
+                    "url_type": "ExternalUrl"
+                  }
+                },
+                {
+                  "from_index": 75,
+                  "to_index": 85,
+                  "ref": {
+                    "url": "https://twitter.com/i/twitter_blue_sign_up",
+                    "url_type": "ExternalUrl"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

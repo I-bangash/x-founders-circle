@@ -1,0 +1,95 @@
+{
+  "data": {
+    "user": {
+      "result": {
+        "__typename": "User",
+        "affiliates_highlighted_label": {},
+        "business_account": {},
+        "has_graduated_access": true,
+        "has_nft_avatar": false,
+        "id": "VXNlcjoxMzgwMDg1MzAzODAxNzQxMzEz",
+        "is_blue_verified": true,
+        "is_profile_translatable": false,
+        "legacy": {
+          "blocked_by": false,
+          "blocking": false,
+          "can_dm": true,
+          "can_media_tag": true,
+          "created_at": "Thu Apr 08 09:09:22 +0000 2021",
+          "default_profile": true,
+          "default_profile_image": false,
+          "description": "Chef | Nerding out on AI | Building distribution 1 app at a time + sharing what I learn",
+          "entities": {
+            "description": {
+              "urls": []
+            },
+            "url": {
+              "urls": [
+                {
+                  "display_url": "virallaunch.ai",
+                  "expanded_url": "https://virallaunch.ai/",
+                  "indices": [0, 23],
+                  "url": "https://t.co/z1J0WCL4Yy"
+                }
+              ]
+            }
+          },
+          "fast_followers_count": 0,
+          "favourites_count": 7455,
+          "follow_request_sent": false,
+          "followed_by": false,
+          "followers_count": 1149,
+          "following": false,
+          "friends_count": 698,
+          "has_custom_timelines": false,
+          "is_translator": false,
+          "listed_count": 12,
+          "location": "Portugal",
+          "media_count": 139,
+          "muting": false,
+          "name": "Irteza Bangash",
+          "normal_followers_count": 1149,
+          "notifications": false,
+          "pinned_tweet_ids_str": ["2007828629103776139"],
+          "possibly_sensitive": false,
+          "profile_banner_url": "https://pbs.twimg.com/profile_banners/1380085303801741313/1768135077",
+          "profile_image_url_https": "https://pbs.twimg.com/profile_images/2008946944500994050/CjF6213I_normal.jpg",
+          "profile_interstitial_type": "",
+          "protected": false,
+          "screen_name": "ibangash_",
+          "statuses_count": 2503,
+          "translator_type": "none",
+          "url": "https://t.co/z1J0WCL4Yy",
+          "verified": false,
+          "want_retweets": false,
+          "withheld_in_countries": []
+        },
+        "legacy_extended_profile": {},
+        "profile_image_shape": "Circle",
+        "rest_id": "1380085303801741313",
+        "smart_blocked_by": false,
+        "smart_blocking": false,
+        "super_follow_eligible": false,
+        "super_followed_by": false,
+        "super_following": false,
+        "verification_info": {
+          "reason": {
+            "description": {
+              "entities": [
+                {
+                  "from_index": 26,
+                  "ref": {
+                    "url": "https://help.twitter.com/managing-your-account/about-twitter-verified-accounts",
+                    "url_type": "ExternalUrl"
+                  },
+                  "to_index": 36
+                }
+              ],
+              "text": "This account is verified. Learn more"
+            }
+          }
+        }
+      }
+    }
+  }
+}

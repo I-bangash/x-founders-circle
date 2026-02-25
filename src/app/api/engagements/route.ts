@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 
-import { getDb } from "@/libs/db";
+import { fetchQuery } from "convex/nextjs";
+
+import { api } from "../../../../convex/_generated/api";
 
 export async function GET() {
-  const db = getDb();
-  return NextResponse.json(db.engagements);
+  const engagements = await fetchQuery(api.mvp.getEngagements);
+  return NextResponse.json(engagements);
 }

@@ -28,43 +28,34 @@ export async function POST(req: Request) {
   try {
     let rawData;
 
-    if (process.env.RAPIDAPI_KEY) {
-      const options = {
-        method: "GET",
-        headers: {
-          "x-rapidapi-key": process.env.RAPIDAPI_KEY,
-          "x-rapidapi-host":
-            process.env.RAPIDAPI_HOST ||
-            "real-time-x-com-data-scraper.p.rapidapi.com",
-        },
-      };
-      const response = await fetch(
-        `https://${process.env.RAPIDAPI_HOST || "real-time-x-com-data-scraper.p.rapidapi.com"}/v2/TweetDetail?id=${tweetId}`,
-        options
+    if (!process.env.RAPIDAPI_KEY) {
+      throw new Error(
+        "Missing RAPIDAPI_KEY environment variable. Cannot securely fetch tweet data."
       );
-
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch tweet: ${response.status} ${response.statusText}`
-        );
-      }
-
-      rawData = await response.json();
-    } else {
-      // Mock fallback: read from our local twitter-response.json
-      const fs = await import("fs");
-      const path = await import("path");
-      const mockDataPath = path.join(
-        process.cwd(),
-        "data",
-        "twitter-response.json"
-      );
-      if (fs.existsSync(mockDataPath)) {
-        rawData = JSON.parse(fs.readFileSync(mockDataPath, "utf8"));
-      } else {
-        throw new Error("No mock data available");
-      }
     }
+
+    const options = {
+      method: "GET",
+      headers: {
+        "x-rapidapi-key": process.env.RAPIDAPI_KEY,
+        "x-rapidapi-host":
+          process.env.RAPIDAPI_HOST ||
+          "real-time-x-com-data-scraper.p.rapidapi.com",
+      },
+    };
+
+    const response = await fetch(
+      `https://${process.env.RAPIDAPI_HOST || "real-time-x-com-data-scraper.p.rapidapi.com"}/v2/TweetDetail?id=${tweetId}`,
+      options
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch tweet: ${response.status} ${response.statusText}`
+      );
+    }
+
+    rawData = await response.json();
 
     const parsedFeed = parseTwitterData(rawData);
 

@@ -32,6 +32,7 @@ export const addMember = mutation({
       // Update existing
       await ctx.db.patch(existing._id, {
         twitterUsername: args.twitterUsername,
+        username: args.twitterUsername,
         name: args.name,
         image: args.profileImageUrl,
         followersCount: args.followersCount,
@@ -46,6 +47,7 @@ export const addMember = mutation({
       name: args.name,
       twitterId: args.twitterId,
       twitterUsername: args.twitterUsername,
+      username: args.twitterUsername,
       followersCount: args.followersCount,
       joinedAt: args.joinedAt,
       image: args.profileImageUrl,
