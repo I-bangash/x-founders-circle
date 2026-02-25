@@ -1,0 +1,308 @@
+{
+  "data": {
+    "threaded_conversation_with_injections_v2": {
+      "instructions": [
+        {
+          "type": "TimelineClearCache"
+        },
+        {
+          "entries": [
+            {
+              "content": {
+                "__typename": "TimelineTimelineItem",
+                "clientEventInfo": {
+                  "component": "tweet",
+                  "element": "tweet"
+                },
+                "entryType": "TimelineTimelineItem",
+                "itemContent": {
+                  "__typename": "TimelineTweet",
+                  "itemType": "TimelineTweet",
+                  "tweetDisplayType": "SelfThread",
+                  "tweet_results": {
+                    "result": {
+                      "__typename": "Tweet",
+                      "core": {
+                        "user_results": {
+                          "result": {
+                            "__typename": "User",
+                            "legacy": {
+                              "name": "Francis Erokwu",
+                              "screen_name": "LightedCoach",
+                              "profile_image_url_https": "https://pbs.twimg.com/profile_images/1996549855401881600/a2fOwZsh_normal.jpg"
+                            }
+                          }
+                        }
+                      },
+                      "legacy": {
+                        "created_at": "Tue Feb 24 14:37:50 +0000 2026",
+                        "favorite_count": 13,
+                        "full_text": "The ACR framework is what transforms your Sales Numbers. \n\nATTRACT - The framework to generate leads that are your ICP. \n\nCONVERT - The framework that turns them into customers. \n\nRETAIN - The framework that reduces churn &amp; keeps your customers loyal to you. \n\nThe ACR framework",
+                        "id_str": "2026305572606210487",
+                        "reply_count": 3,
+                        "retweet_count": 0
+                      },
+                      "note_tweet": {
+                        "note_tweet_results": {
+                          "result": {
+                            "text": "The ACR framework is what transforms your Sales Numbers. \n\nATTRACT - The framework to generate leads that are your ICP. \n\nCONVERT - The framework that turns them into customers. \n\nRETAIN - The framework that reduces churn & keeps your customers loyal to you. \n\nThe ACR framework when combined with the CSA framework and AI integration, \nYour business starts printing MONEY!!!!!\n\nDistribution is the System that allows your business to start printing MONEY!! \n\nLearn and Master it today."
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "entryId": "tweet-2026305572606210487"
+            },
+            {
+              "content": {
+                "__typename": "TimelineTimelineModule",
+                "entryType": "TimelineTimelineModule",
+                "items": [
+                  {
+                    "entryId": "conversationthread-2026305581842042955-tweet-2026305581842042955",
+                    "item": {
+                      "itemContent": {
+                        "__typename": "TimelineTweet",
+                        "tweet_results": {
+                          "result": {
+                            "__typename": "Tweet",
+                            "core": {
+                              "user_results": {
+                                "result": {
+                                  "__typename": "User",
+                                  "legacy": {
+                                    "name": "Francis Erokwu",
+                                    "screen_name": "LightedCoach",
+                                    "profile_image_url_https": "https://pbs.twimg.com/profile_images/1996549855401881600/a2fOwZsh_normal.jpg"
+                                  }
+                                }
+                              }
+                            },
+                            "legacy": {
+                              "created_at": "Tue Feb 24 14:37:52 +0000 2026",
+                              "favorite_count": 3,
+                              "full_text": "I noticed a lot of businesses from SaaS to Ecom struggle with getting sales for their Products &amp; services. \n\nSo I curated the Distribution process that got one client from $800/m to $9k+ MRR. \nI documented it in a blueprint that shows other businesses how to get to $100k ARR.",
+                              "id_str": "2026305581842042955",
+                              "reply_count": 0,
+                              "retweet_count": 0
+                            },
+                            "note_tweet": {
+                              "note_tweet_results": {
+                                "result": {
+                                  "text": "I noticed a lot of businesses from SaaS to Ecom struggle with getting sales for their Products & services. \n\nSo I curated the Distribution process that got one client from $800/m to $9k+ MRR. \nI documented it in a blueprint that shows other businesses how to get to $100k ARR. \n\nIt contains resources on the CSA & ACR frameworks that will instantly improve your sales numbers & AI integration prompts that will speed up & automate your marketing. \n\nGet access to it for only $12. ⬇️\n\nhttps://t.co/3BXmHUr0LR\n\nhttps://t.co/2mPkooiI7m"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "entryId": "conversationthread-2026305581842042955"
+            },
+            {
+              "content": {
+                "__typename": "TimelineTimelineModule",
+                "entryType": "TimelineTimelineModule",
+                "items": [
+                  {
+                    "entryId": "conversationthread-2015469462808580414-promoted-tweet-2015469462808580414-826ff936b95e136",
+                    "item": {
+                      "itemContent": {
+                        "__typename": "TimelineTweet",
+                        "promotedMetadata": {
+                          "impressionId": "826ff936b95e136"
+                        },
+                        "tweet_results": {
+                          "result": {
+                            "__typename": "Tweet",
+                            "core": {
+                              "user_results": {
+                                "result": {
+                                  "__typename": "User",
+                                  "legacy": {
+                                    "name": "Starlink",
+                                    "screen_name": "Starlink",
+                                    "profile_image_url_https": "https://pbs.twimg.com/profile_images/1720501511271383040/FXz_jiJu_normal.jpg"
+                                  }
+                                }
+                              }
+                            },
+                            "legacy": {
+                              "created_at": "Sun Jan 25 16:59:00 +0000 2026",
+                              "favorite_count": 6370,
+                              "full_text": "Starlink’s high-speed internet is available in your area.\n\nExperience speeds up to 400+ Mbps to stream your favorite shows and sports, work from home, browse social media and more.",
+                              "id_str": "2015469462808580414",
+                              "reply_count": 446,
+                              "retweet_count": 1270
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "entryId": "conversationthread-2015469462808580414"
+            },
+            {
+              "content": {
+                "__typename": "TimelineTimelineModule",
+                "entryType": "TimelineTimelineModule",
+                "items": [
+                  {
+                    "entryId": "conversationthread-2026306621647810932-tweet-2026306621647810932",
+                    "item": {
+                      "itemContent": {
+                        "__typename": "TimelineTweet",
+                        "tweet_results": {
+                          "result": {
+                            "__typename": "Tweet",
+                            "core": {
+                              "user_results": {
+                                "result": {
+                                  "__typename": "User",
+                                  "legacy": {
+                                    "name": "Artyom Yatskevich",
+                                    "screen_name": "artyatskevich",
+                                    "profile_image_url_https": "https://pbs.twimg.com/profile_images/1888684387962662913/gwsq14YD_normal.jpg"
+                                  }
+                                }
+                              }
+                            },
+                            "legacy": {
+                              "created_at": "Tue Feb 24 14:42:00 +0000 2026",
+                              "favorite_count": 0,
+                              "full_text": "@LightedCoach It is quite logical but does it say how to do it?)",
+                              "id_str": "2026306621647810932",
+                              "reply_count": 1,
+                              "retweet_count": 0
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "entryId": "conversationthread-2026306621647810932-tweet-2026307342338339082",
+                    "item": {
+                      "itemContent": {
+                        "__typename": "TimelineTweet",
+                        "tweet_results": {
+                          "result": {
+                            "__typename": "Tweet",
+                            "core": {
+                              "user_results": {
+                                "result": {
+                                  "__typename": "User",
+                                  "legacy": {
+                                    "name": "Francis Erokwu",
+                                    "screen_name": "LightedCoach",
+                                    "profile_image_url_https": "https://pbs.twimg.com/profile_images/1996549855401881600/a2fOwZsh_normal.jpg"
+                                  }
+                                }
+                              }
+                            },
+                            "legacy": {
+                              "created_at": "Tue Feb 24 14:44:52 +0000 2026",
+                              "favorite_count": 1,
+                              "full_text": "@artyatskevich I didn’t want to just talk only frameworks, I made sure it can be implemented by any business with access to it. \n\nThere’s a DIY tool kit that includes AI integration prompts that help bring the frameworks to life for businesses.",
+                              "id_str": "2026307342338339082",
+                              "reply_count": 0,
+                              "retweet_count": 0
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "entryId": "conversationthread-2026306621647810932"
+            },
+            {
+              "content": {
+                "__typename": "TimelineTimelineModule",
+                "entryType": "TimelineTimelineModule",
+                "items": [
+                  {
+                    "entryId": "conversationthread-2026306183837978924-tweet-2026306183837978924",
+                    "item": {
+                      "itemContent": {
+                        "__typename": "TimelineTweet",
+                        "tweet_results": {
+                          "result": {
+                            "__typename": "Tweet",
+                            "core": {
+                              "user_results": {
+                                "result": {
+                                  "__typename": "User",
+                                  "legacy": {
+                                    "name": "Jose Sanchez",
+                                    "screen_name": "JoseInNorte",
+                                    "profile_image_url_https": "https://pbs.twimg.com/profile_images/1974369256977436673/eVOfur6P_normal.jpg"
+                                  }
+                                }
+                              }
+                            },
+                            "legacy": {
+                              "created_at": "Tue Feb 24 14:40:15 +0000 2026",
+                              "favorite_count": 0,
+                              "full_text": "@LightedCoach Frameworks are great till they hit with discipline.  You gotta enable the team to execute it.",
+                              "id_str": "2026306183837978924",
+                              "reply_count": 1,
+                              "retweet_count": 0
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "entryId": "conversationthread-2026306183837978924-tweet-2026306556204064814",
+                    "item": {
+                      "itemContent": {
+                        "__typename": "TimelineTweet",
+                        "tweet_results": {
+                          "result": {
+                            "__typename": "Tweet",
+                            "core": {
+                              "user_results": {
+                                "result": {
+                                  "__typename": "User",
+                                  "legacy": {
+                                    "name": "Francis Erokwu",
+                                    "screen_name": "LightedCoach",
+                                    "profile_image_url_https": "https://pbs.twimg.com/profile_images/1996549855401881600/a2fOwZsh_normal.jpg"
+                                  }
+                                }
+                              }
+                            },
+                            "legacy": {
+                              "created_at": "Tue Feb 24 14:41:44 +0000 2026",
+                              "favorite_count": 1,
+                              "full_text": "@JoseInNorte You’re right Jose, \n\nAnd That’s why we’ve set up AI integration to automate the process that’s repeatable for daily use.",
+                              "id_str": "2026306556204064814",
+                              "reply_count": 0,
+                              "retweet_count": 0
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "entryId": "conversationthread-2026306183837978924"
+            }
+          ],
+          "type": "TimelineAddEntries"
+        }
+      ]
+    }
+  }
+}
