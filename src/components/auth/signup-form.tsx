@@ -165,7 +165,7 @@ export function SignUpForm() {
                             },
                           }}
                           // redirectUrl="/"
-                          fallbackRedirectUrl={`${APP_ROOT_DOMAIN}/signup-complete`}
+                          fallbackRedirectUrl={`${APP_ROOT_DOMAIN}/dashboard`}
                           signInUrl={`${APP_ROOT_DOMAIN}/sign-in`}
                         />
                         {/* </motion.div>
