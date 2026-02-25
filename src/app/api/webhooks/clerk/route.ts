@@ -1,5 +1,11 @@
 import { headers } from "next/headers";
 
+import type {
+  OrganizationJSON,
+  OrganizationMembershipJSON,
+  UserDeletedJSON,
+  UserJSON,
+} from "@clerk/backend";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { fetchMutation, fetchQuery } from "convex/nextjs";
 import { Webhook } from "svix";
@@ -11,295 +17,233 @@ export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
 
   if (!WEBHOOK_SECRET) {
-    console.log("[WEBHOOK] Missing webhook secret");
-    throw new Error("Please add CLERK_WEBHOOK_SECRET to .env");
+    throw new Error("Missing CLERK_WEBHOOK_SECRET");
   }
 
-  // Get the headers
   const headerPayload = await headers();
-  const svix_id = headerPayload.get("svix-id");
-  const svix_timestamp = headerPayload.get("svix-timestamp");
-  const svix_signature = headerPayload.get("svix-signature");
+  const svixId = headerPayload.get("svix-id");
+  const svixTimestamp = headerPayload.get("svix-timestamp");
+  const svixSignature = headerPayload.get("svix-signature");
 
-  // If there are no headers, error out
-  if (!svix_id || !svix_timestamp || !svix_signature) {
-    console.log("[WEBHOOK] Missing svix headers");
-    return new Response("Error occurred -- no svix headers", {
-      status: 400,
-    });
+  if (!svixId || !svixTimestamp || !svixSignature) {
+    return new Response("Missing svix headers", { status: 400 });
   }
 
-  // Get the body
   const payload = await req.json();
-  console.log("[WEBHOOK] Received payload:", {
-    eventType: payload.type,
-    data: payload.data,
-  });
-
   const body = JSON.stringify(payload);
 
-  // Verify the webhook
   let evt: WebhookEvent;
   try {
     const wh = new Webhook(WEBHOOK_SECRET);
     evt = wh.verify(body, {
-      "svix-id": svix_id,
-      "svix-timestamp": svix_timestamp,
-      "svix-signature": svix_signature,
+      "svix-id": svixId,
+      "svix-timestamp": svixTimestamp,
+      "svix-signature": svixSignature,
     }) as WebhookEvent;
   } catch (err) {
     console.error("[WEBHOOK] Verification failed:", err);
-    return new Response("Error occurred", {
-      status: 400,
-    });
+    return new Response("Verification failed", { status: 400 });
   }
 
-  const eventType = evt.type;
+  try {
+    await processWebhookEvent(evt);
+    return new Response("Success", { status: 200 });
+  } catch (err) {
+    console.error(`[WEBHOOK] Error processing ${evt.type}:`, err);
+    return new Response("Internal Server Error", { status: 500 });
+  }
+}
 
-  if (eventType === "user.created") {
-    console.log("[USER.CREATED] Creating new user:", {
-      userId: payload.data.id,
-    });
-
-    // if user id is user_2rfFgTNPDKE9fhRMpMX9AlMGiLz then return success
-    if (payload.data.id === "user_2rfFgTNPDKE9fhRMpMX9AlMGiLz") {
-      return new Response("Success", { status: 200 });
-    }
-
-    try {
-      const userResult = await fetchMutation(
-        api.userFunctions.users.createUserInternal,
-        {
-          clerkId: payload.data.id,
-          firstname: payload.data.first_name || undefined,
-          lastname: payload.data.last_name || undefined,
-          name: payload.data.first_name
-            ? `${payload.data.first_name} ${payload.data.last_name || ""}`
-            : undefined,
-          email: payload.data.email_addresses[0]?.email_address || undefined,
-          emailVerified: payload.data.email_addresses[0]?.verified
-            ? Date.now()
-            : undefined,
-          image: payload.data.image_url || undefined,
-          username:
-            payload.data.username ||
-            payload.data.email_addresses[0]?.email_address?.split("@")[0] ||
-            undefined,
-        }
-      );
-
-      // Get user details for the email
-      const userEmail = payload.data.email_addresses[0]?.email_address;
-      const userName = payload.data.first_name || "Founder";
-
-      // After the user is created successfully in Convex, trigger the email
-      if (userResult.data && userEmail) {
-        // Send the welcome email
-        await sendWelcomeEmail({
-          email: userEmail,
-          name: userName,
-        });
-      } else if (userResult.error) {
-        console.error("[USER.CREATED] Error creating user:", userResult.error);
-        throw new Error(userResult.error.message);
+async function processWebhookEvent(evt: WebhookEvent) {
+  switch (evt.type) {
+    case "user.created":
+    case "user.updated":
+      if (evt.type === "user.created") {
+        await handleUserCreated(evt.data);
       } else {
-        console.warn(
-          "[USER.CREATED] User created but could not send welcome email: Missing email or user data."
-        );
+        await handleUserUpdated(evt.data);
       }
+      break;
+    case "user.deleted":
+      await handleUserDeleted(evt.data);
+      break;
+    case "organization.created":
+    case "organization.updated":
+      if (evt.type === "organization.created") {
+        await handleOrganizationCreated(evt.data);
+      } else {
+        await handleOrganizationUpdated(evt.data);
+      }
+      break;
+    case "organizationMembership.created":
+      await handleOrganizationMembershipCreated(evt.data);
+      break;
+    default:
+      break;
+  }
+}
 
-      console.log("[USER.CREATED] Created user successfully");
-    } catch (error) {
-      console.error("[USER.CREATED] Error:", error);
-      return new Response("Error occurred", { status: 500 });
-    }
+async function handleUserCreated(data: UserJSON) {
+  if (data.id === "user_2rfFgTNPDKE9fhRMpMX9AlMGiLz") {
+    return;
   }
 
-  if (eventType === "organization.created") {
-    console.log("[ORG.CREATED] Creating new organization:", {
-      orgId: payload.data.id,
-      createdBy: payload.data.created_by,
-    });
+  const primaryEmail = data.email_addresses?.[0];
+  const emailVerified =
+    primaryEmail?.verification?.status === "verified" ? Date.now() : undefined;
+  const username =
+    data.username || primaryEmail?.email_address?.split("@")[0] || undefined;
+  const name = data.first_name
+    ? `${data.first_name} ${data.last_name ?? ""}`.trim()
+    : undefined;
 
-    try {
-      const defaultPlanLookupKey = "free_trial";
-      const defaultPlanResult = await fetchQuery(
-        api.stripe.billing.getPlanByLookupKey,
-        { lookupKey: defaultPlanLookupKey }
-      );
-
-      if (!defaultPlanResult) {
-        console.error(
-          "[ORG.CREATED] Default free plan not found! Cannot initialize org."
-        );
-        throw new Error(
-          `Default plan (${defaultPlanLookupKey}) not found. Run plan sync.`
-        );
-      }
-
-      // Create organization using Convex
-      const organizationResult = await fetchMutation(
-        api.userFunctions.organizations.createOrganizationInternal,
-        {
-          orgId: payload.data.id,
-          userId: payload.data.created_by,
-          name: payload.data.name,
-          image: payload.data.image_url || undefined,
-          planId: defaultPlanResult._id,
-          lifetimeAccess: false,
-          activeLtdCampaign: undefined,
-          totalStacksRedeemed: 0,
-          isOnTrial: false,
-        }
-      );
-
-      if (organizationResult.error) {
-        throw new Error(organizationResult.error.message);
-      }
-
-      // Create organization limits from default plan
-      const limitsCreationResult = await fetchMutation(
-        api.userFunctions.organizationLimits.createOrganizationLimitsInternal,
-        {
-          organizationId: payload.data.id,
-          planId: defaultPlanResult._id,
-          planType: defaultPlanResult.planType,
-          monthlyCreditsUsed: 0,
-          monthlyCreditsLimit: defaultPlanResult.monthlyCreditsLimit ?? 0,
-          extraCredits: 0,
-          lastUsageReset: Date.now(),
-          projectsCurrent: 0,
-          projectsLimit: defaultPlanResult.projectsLimit ?? 0,
-          teamMembersCurrent: 1,
-          teamMembersLimit: defaultPlanResult.teamMembersLimit ?? 0,
-          storageUsedBytes: 0,
-          storageLimitBytes: defaultPlanResult.storageLimitBytes ?? 0,
-        }
-      );
-
-      if (limitsCreationResult.error) {
-        console.error(
-          "[ORG.CREATED] Error creating organization limits:",
-          limitsCreationResult.error
-        );
-        // TODO: log this issue
-      }
-
-      console.log("[ORG.CREATED] Created organization limits successfully");
-
-      // Update user's organization
-      await fetchMutation(api.userFunctions.users.updateUser, {
-        userId: payload.data.created_by,
-        organizationId: payload.data.id,
-      });
-    } catch (error) {
-      console.error("[ORG.CREATED] Error:", error);
-      return new Response("Error occurred", { status: 500 });
+  const userResult = await fetchMutation(
+    api.userFunctions.users.createUserInternal,
+    {
+      clerkId: data.id,
+      firstname: data.first_name ?? undefined,
+      lastname: data.last_name ?? undefined,
+      name,
+      email: primaryEmail?.email_address ?? undefined,
+      emailVerified,
+      image: data.image_url || undefined,
+      username,
     }
+  );
+
+  const userEmail = primaryEmail?.email_address;
+  const userName = data.first_name ?? "Founder";
+
+  if (userResult.data && userEmail) {
+    await sendWelcomeEmail({ email: userEmail, name: userName });
+  } else if (userResult.error) {
+    console.error("[USER.CREATED] Error creating user:", userResult.error);
+    throw new Error(userResult.error.message);
+  }
+}
+
+async function handleUserUpdated(data: UserJSON) {
+  const primaryEmail = data.email_addresses?.[0];
+  const emailVerified =
+    primaryEmail?.verification?.status === "verified" ? Date.now() : undefined;
+  const username =
+    data.username || primaryEmail?.email_address?.split("@")[0] || undefined;
+  const name = data.first_name
+    ? `${data.first_name} ${data.last_name ?? ""}`.trim()
+    : undefined;
+
+  await fetchMutation(api.userFunctions.users.updateUser, {
+    userId: data.id,
+    name,
+    firstName: data.first_name ?? undefined,
+    lastName: data.last_name ?? undefined,
+    email: primaryEmail?.email_address ?? undefined,
+    emailVerified,
+    image: data.image_url || undefined,
+    username,
+  });
+}
+
+async function handleUserDeleted(data: UserDeletedJSON) {
+  if (!data.id) return;
+
+  await fetchMutation(api.userFunctions.users.deleteUser, {
+    userId: data.id,
+  });
+}
+
+async function handleOrganizationCreated(data: OrganizationJSON) {
+  const defaultPlanLookupKey = "free_trial";
+  const defaultPlanResult = await fetchQuery(
+    api.stripe.billing.getPlanByLookupKey,
+    { lookupKey: defaultPlanLookupKey }
+  );
+
+  if (!defaultPlanResult) {
+    console.error("[ORG.CREATED] Default plan not found");
+    throw new Error(`Default plan (${defaultPlanLookupKey}) not found`);
   }
 
-  if (eventType === "organization.updated") {
-    try {
-      await fetchMutation(api.userFunctions.organizations.updateOrganization, {
-        organizationId: payload.data.id,
-        name: payload.data.name,
-        image: payload.data.image_url || undefined,
-      });
-
-      console.log("[ORG.UPDATED] Updated organization details");
-    } catch (error) {
-      console.error("[ORG.UPDATED] Error:", error);
+  const organizationResult = await fetchMutation(
+    api.userFunctions.organizations.createOrganizationInternal,
+    {
+      orgId: data.id,
+      userId: data.created_by!,
+      name: data.name,
+      image: data.image_url || undefined,
+      planId: defaultPlanResult._id,
+      lifetimeAccess: false,
+      activeLtdCampaign: undefined,
+      totalStacksRedeemed: 0,
+      isOnTrial: false,
     }
+  );
+
+  if (organizationResult.error) {
+    throw new Error(organizationResult.error.message);
   }
 
-  if (eventType === "organizationMembership.created") {
-    // --- Limit Check ---
-    // Fetch token for the *creating user* or use an internal API key if needed
-    // This check is tricky in webhooks. Often done on the UI side before inviting.
-    // If checking here, need a secure way to get token or use internal auth bypass.
-    // For simplicity, we'll assume check happened before invite, and just update usage.
-    // const limitCheckResult = await fetchQuery(api.limits.checkLimitAndCreditsQuery, {
-    //      organizationId: membershipOrgId,
-    //      feature: "teamMembers",
-    // });
-    // if (!limitCheckResult?.data?.allow) {
-    //      console.warn(`Team member limit reached for org ${membershipOrgId}. Membership created by Clerk, but limit exceeded.`);
-    //      // Log this potential issue
-    // }
-    // --- End Limit Check ---
+  const limitsCreationResult = await fetchMutation(
+    api.userFunctions.organizationLimits.createOrganizationLimitsInternal,
+    {
+      organizationId: data.id,
+      planId: defaultPlanResult._id,
+      planType: defaultPlanResult.planType,
+      monthlyCreditsUsed: 0,
+      monthlyCreditsLimit: defaultPlanResult.monthlyCreditsLimit ?? 0,
+      extraCredits: 0,
+      lastUsageReset: Date.now(),
+      projectsCurrent: 0,
+      projectsLimit: defaultPlanResult.projectsLimit ?? 0,
+      teamMembersCurrent: 1,
+      teamMembersLimit: defaultPlanResult.teamMembersLimit ?? 0,
+      storageUsedBytes: 0,
+      storageLimitBytes: defaultPlanResult.storageLimitBytes ?? 0,
+    }
+  );
 
-    // When a user is added to an organization
-    await fetchMutation(api.userFunctions.users.updateUser, {
-      userId: payload.data.public_user_data.user_id,
-      organizationId: payload.data.organization.id,
-    });
-
-    // --- Increment Usage Count ---
-    const usageUpdateResult = await fetchMutation(
-      api.userFunctions.organizationLimits.incrementUsage,
-      {
-        organizationId: payload.data.organization.id,
-        feature: "teamMembers",
-        amount: 1,
-      }
+  if (limitsCreationResult.error) {
+    console.error(
+      "[ORG.CREATED] Error creating organization limits:",
+      limitsCreationResult.error
     );
-    if (usageUpdateResult.error) {
-      console.error(
-        `Failed to increment team member count for org ${payload.data.organization.id}:`,
-        usageUpdateResult.error
-      );
+  }
+
+  await fetchMutation(api.userFunctions.users.updateUser, {
+    userId: data.created_by!,
+    organizationId: data.id,
+  });
+}
+
+async function handleOrganizationUpdated(data: OrganizationJSON) {
+  await fetchMutation(api.userFunctions.organizations.updateOrganization, {
+    organizationId: data.id,
+    name: data.name,
+    image: data.image_url || undefined,
+  });
+}
+
+async function handleOrganizationMembershipCreated(
+  data: OrganizationMembershipJSON
+) {
+  await fetchMutation(api.userFunctions.users.updateUser, {
+    userId: data.public_user_data.user_id,
+    organizationId: data.organization.id,
+  });
+
+  const usageUpdateResult = await fetchMutation(
+    api.userFunctions.organizationLimits.incrementUsage,
+    {
+      organizationId: data.organization.id,
+      feature: "teamMembers",
+      amount: 1,
     }
-    // --- End Increment Usage ---
+  );
+
+  if (usageUpdateResult.error) {
+    console.error(
+      `[ORG.MEMBERSHIP.CREATED] Failed to increment team members for org ${data.organization.id}:`,
+      usageUpdateResult.error
+    );
   }
-
-  if (eventType === "user.updated") {
-    // Update user in database
-    await fetchMutation(api.userFunctions.users.updateUser, {
-      userId: payload.data.id,
-      name: payload.data.first_name
-        ? `${payload.data.first_name} ${payload.data.last_name || ""}`
-        : undefined,
-      firstName: payload.data.first_name || undefined,
-      lastName: payload.data.last_name || undefined,
-      email: payload.data.email_addresses[0]?.email_address || undefined,
-      emailVerified: payload.data.email_addresses[0]?.verified
-        ? Date.now()
-        : undefined,
-      image: payload.data.image_url || undefined,
-      username:
-        payload.data.username ||
-        payload.data.email_addresses[0]?.email_address?.split("@")[0] ||
-        undefined,
-    });
-  }
-
-  if (eventType === "user.deleted") {
-    // Delete user from database
-
-    try {
-      // --- Decrement Usage Count ---
-      const usageUpdateResult = await fetchMutation(
-        api.userFunctions.organizationLimits.incrementUsage,
-        {
-          organizationId: payload.data.organization.id,
-          feature: "teamMembers",
-          amount: -1, // Decrement
-        }
-      );
-      if (usageUpdateResult.error) {
-        console.error(
-          `Failed to decrement team member count for org ${payload.data.organization.id}:`,
-          usageUpdateResult.error
-        );
-      }
-      // --- End Decrement Usage ---
-      await fetchMutation(api.userFunctions.users.deleteUser, {
-        userId: payload.data.id,
-      });
-    } catch (error) {
-      console.error("[ORG.MEMBERSHIP.DELETED] Error:", error);
-    }
-  }
-
-  return new Response("", { status: 200 });
 }
