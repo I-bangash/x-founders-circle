@@ -13,5 +13,5 @@ export const APP_NON_NGROK_DOMAIN =
 
 export const APP_ROOT_DOMAIN =
   process.env.NODE_ENV === "development"
-    ? process.env.NGROK_URL
+    ? process.env.NGROK_URL || "http://localhost:3000"
     : process.env.NEXT_PUBLIC_APP_URL;

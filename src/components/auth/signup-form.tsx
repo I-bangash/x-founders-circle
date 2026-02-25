@@ -72,7 +72,7 @@ export function SignUpForm() {
                     transition={{ duration: 1, delay: 0.5 }}
                   >
                     <Link
-                      href={APP_ROOT_DOMAIN || "https://remarkable.sh"}
+                      href={APP_ROOT_DOMAIN || "https://foundersonx.com"}
                       className="block w-9 opacity-60 transition-opacity duration-300 hover:opacity-100"
                     >
                       <Button variant="link" className="px-0">
@@ -96,7 +96,7 @@ export function SignUpForm() {
                     transition={{ duration: 1, delay: 0.5 }}
                   >
                     <Link
-                      href={APP_ROOT_DOMAIN || "https://remarkable.sh"}
+                      href={APP_ROOT_DOMAIN || "https://foundersonx.com"}
                       className="block w-9 opacity-60 transition-opacity duration-300 hover:opacity-100"
                     >
                       <Button variant="link" className="px-0">

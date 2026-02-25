@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Login | Remarkable.sh",
+  title: "Login | Founders on X",
 };
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
