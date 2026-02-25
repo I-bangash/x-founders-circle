@@ -7,10 +7,23 @@ import {
   QueryCtx,
   internalMutation,
   internalQuery,
+  query,
 } from "../_generated/server";
 
 type LimitsPatchData = Partial<Doc<"organizationLimits">>;
 type OrgPatchData = Partial<Doc<"organizations">>;
+
+export const getPlanByLookupKey = query({
+  args: { lookupKey: v.string() },
+  handler: async (ctx, args) => {
+    const plan = await ctx.db
+      .query("plans")
+      .withIndex("by_lookup_key", (q) => q.eq("lookupKey", args.lookupKey))
+      .filter((q) => q.eq(q.field("isActive"), true))
+      .unique();
+    return plan;
+  },
+});
 
 export const getPlanByLookupKeyInternal = internalQuery({
   args: { lookupKey: v.string() },

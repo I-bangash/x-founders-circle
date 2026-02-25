@@ -512,15 +512,8 @@ export const getOrgSubscriptionStatus = query({
       if (org.planId) {
         const plan = await ctx.db.get(org.planId);
         planLookupKey = plan?.lookupKey ?? null;
-        // Determine planType based on lookupKey or plan record
-        if (plan?.lookupKey === "free_trial") {
-          planType = "free_trial";
-        } else {
-          planType =
-            (plan?.planType as OrgSubscriptionStatus["planType"]) ?? null;
-        }
-      } else if (org.isOnTrial) {
-        planType = "free_trial";
+        planType =
+          (plan?.planType as OrgSubscriptionStatus["planType"]) ?? null;
       }
 
       const statusData: OrgSubscriptionStatus = {

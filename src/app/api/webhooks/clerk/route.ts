@@ -5,8 +5,7 @@ import { fetchMutation, fetchQuery } from "convex/nextjs";
 import { Webhook } from "svix";
 
 import { sendWelcomeEmail } from "@/app/actions/email-actions/welcome-email-action";
-import { api, internal } from "@/convex/_generated/api";
-import { TRIAL_DURATION_MS } from "@/utils/constants";
+import { api } from "@/convex/_generated/api";
 
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
@@ -117,32 +116,26 @@ export async function POST(req: Request) {
   }
 
   if (eventType === "organization.created") {
-    const now = Date.now();
-    const trialEndDate = now + TRIAL_DURATION_MS; // Calculate end date
-
     console.log("[ORG.CREATED] Creating new organization:", {
       orgId: payload.data.id,
       createdBy: payload.data.created_by,
     });
 
     try {
-      // --- Find Default Plan ---
-      // Using lookupKey is more robust than assuming the first plan
-      // TODO: use a free plan
-      const trialPlanLookupKey = "free_trial"; // Must match plansData.ts
-      const trialPlanResult = await fetchQuery(api., {
-        lookupKey: trialPlanLookupKey,
-      });
+      const defaultPlanLookupKey = "free_trial";
+      const defaultPlanResult = await fetchQuery(
+        api.stripe.billing.getPlanByLookupKey,
+        { lookupKey: defaultPlanLookupKey }
+      );
 
-      if (trialPlanResult.error || !trialPlanResult.data) {
+      if (!defaultPlanResult) {
         console.error(
-          "[ORG.CREATED] Free Trial plan not found! Cannot initialize org.",
-          trialPlanResult.error
+          "[ORG.CREATED] Default free plan not found! Cannot initialize org."
         );
-        throw new Error(`Free Trial plan (${trialPlanLookupKey}) not found.`);
+        throw new Error(
+          `Default plan (${defaultPlanLookupKey}) not found. Run plan sync.`
+        );
       }
-      const trialPlan = trialPlanResult.data;
-      // --- End Find Free Trial Plan ---
 
       // Create organization using Convex
       const organizationResult = await fetchMutation(
@@ -152,12 +145,11 @@ export async function POST(req: Request) {
           userId: payload.data.created_by,
           name: payload.data.name,
           image: payload.data.image_url || undefined,
-          planId: trialPlan._id, // Assign the TRIAL plan ID
-          lifetimeAccess: false, // Default for new org
+          planId: defaultPlanResult._id,
+          lifetimeAccess: false,
           activeLtdCampaign: undefined,
           totalStacksRedeemed: 0,
-          isOnTrial: true, // Set trial flag
-          trialEndDate: trialEndDate, // Set expiry date
+          isOnTrial: false,
         }
       );
 
@@ -165,23 +157,23 @@ export async function POST(req: Request) {
         throw new Error(organizationResult.error.message);
       }
 
-      // Create organization limits (Populate ALL limits from defaultPlan)
+      // Create organization limits from default plan
       const limitsCreationResult = await fetchMutation(
-        api.userFunctions.organizationLimits.createOrganizationLimitsInternal, // Use the existing mutation
+        api.userFunctions.organizationLimits.createOrganizationLimitsInternal,
         {
           organizationId: payload.data.id,
-          planId: trialPlan._id, // Store planId in limits too
-          planType: trialPlan.planType, // Store planType
+          planId: defaultPlanResult._id,
+          planType: defaultPlanResult.planType,
           monthlyCreditsUsed: 0,
-          monthlyCreditsLimit: trialPlan.monthlyCreditsLimit, // Copy from plan
-          extraCredits: 0, // Start with 0 extra
-          lastUsageReset: Date.now(), // Set initial reset time
-          projectsCurrent: 0, // Start at 0 projects
-          projectsLimit: trialPlan.projectsLimit, // Copy from plan
-          teamMembersCurrent: 1, // Creator counts as 1
-          teamMembersLimit: trialPlan.teamMembersLimit, // Copy from plan
+          monthlyCreditsLimit: defaultPlanResult.monthlyCreditsLimit ?? 0,
+          extraCredits: 0,
+          lastUsageReset: Date.now(),
+          projectsCurrent: 0,
+          projectsLimit: defaultPlanResult.projectsLimit ?? 0,
+          teamMembersCurrent: 1,
+          teamMembersLimit: defaultPlanResult.teamMembersLimit ?? 0,
           storageUsedBytes: 0,
-          storageLimitBytes: trialPlan.storageLimitBytes, // Copy from plan
+          storageLimitBytes: defaultPlanResult.storageLimitBytes ?? 0,
         }
       );
 
@@ -208,14 +200,11 @@ export async function POST(req: Request) {
 
   if (eventType === "organization.updated") {
     try {
-      await fetchMutation(
-        api.userFunctions.organizations.updateOrganization,
-        {
-          organizationId: payload.data.id,
-          name: payload.data.name,
-          image: payload.data.image_url || undefined,
-        }
-      );
+      await fetchMutation(api.userFunctions.organizations.updateOrganization, {
+        organizationId: payload.data.id,
+        name: payload.data.name,
+        image: payload.data.image_url || undefined,
+      });
 
       console.log("[ORG.UPDATED] Updated organization details");
     } catch (error) {
@@ -270,8 +259,8 @@ export async function POST(req: Request) {
       name: payload.data.first_name
         ? `${payload.data.first_name} ${payload.data.last_name || ""}`
         : undefined,
-        firstName: payload.data.first_name || undefined,
-        lastName: payload.data.last_name || undefined,
+      firstName: payload.data.first_name || undefined,
+      lastName: payload.data.last_name || undefined,
       email: payload.data.email_addresses[0]?.email_address || undefined,
       emailVerified: payload.data.email_addresses[0]?.verified
         ? Date.now()
