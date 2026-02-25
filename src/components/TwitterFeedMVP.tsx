@@ -85,9 +85,14 @@ export function TweetRow({
               Member
             </span>
             <span className="text-zinc-500 dark:text-zinc-400">·</span>
-            <span className="shrink-0 text-zinc-500 hover:underline dark:text-zinc-400">
+            <a
+              href={`https://x.com/${author.username}/status/${tweet.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="shrink-0 text-zinc-500 hover:underline dark:text-zinc-400"
+            >
               {author.timeAgo}
-            </span>
+            </a>
           </div>
           <button className="ml-2 shrink-0 rounded-full p-1.5 text-zinc-500 transition hover:bg-blue-500/10 hover:text-blue-500">
             <MoreHorizontal className="h-[18px] w-[18px]" />

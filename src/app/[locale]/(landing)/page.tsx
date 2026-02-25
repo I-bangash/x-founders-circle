@@ -16,7 +16,9 @@ export default function MVPLandingPage() {
   const posts = useQuery(api.mvp.getPosts) || [];
   const engagements = useQuery(api.mvp.getEngagements) || [];
 
-  const [activeTab, setActiveTab] = useState<"today" | "all">("today");
+  const [activeTab, setActiveTab] = useState<"today" | "all" | "leaderboard">(
+    "today"
+  );
   const [sortBy, setSortBy] = useState<"latest" | "most" | "least">("latest");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -123,57 +125,77 @@ export default function MVPLandingPage() {
             >
               All Posts
             </button>
+            <button
+              onClick={() => setActiveTab("leaderboard")}
+              className={cn(
+                "border-b-2 pb-2 transition-colors",
+                activeTab === "leaderboard"
+                  ? "border-blue-500 text-zinc-900 dark:text-white"
+                  : "border-transparent text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+              )}
+            >
+              Leaderboard
+            </button>
           </div>
 
-          <div className="flex gap-2">
-            <div className="relative">
-              <Search className="absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 text-zinc-400" />
-              <input
-                type="text"
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-full border border-zinc-200 bg-zinc-100 py-1.5 pr-3 pl-8 text-sm transition-all outline-none focus:ring-2 focus:ring-blue-500 sm:w-40 dark:border-zinc-800 dark:bg-zinc-900"
+          {activeTab !== "leaderboard" && (
+            <div className="flex gap-2">
+              <div className="relative">
+                <Search className="absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full rounded-full border border-zinc-200 bg-zinc-100 py-1.5 pr-3 pl-8 text-sm transition-all outline-none focus:ring-2 focus:ring-blue-500 sm:w-40 dark:border-zinc-800 dark:bg-zinc-900"
+                  suppressHydrationWarning
+                />
+              </div>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                className="cursor-pointer appearance-none rounded-full border border-zinc-200 bg-zinc-100 px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-blue-500 dark:border-zinc-800 dark:bg-zinc-900"
                 suppressHydrationWarning
-              />
+              >
+                <option value="latest">Latest</option>
+                <option value="most">Most Engaged</option>
+                <option value="least">Least Engaged</option>
+              </select>
             </div>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
-              className="cursor-pointer appearance-none rounded-full border border-zinc-200 bg-zinc-100 px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-blue-500 dark:border-zinc-800 dark:bg-zinc-900"
-              suppressHydrationWarning
-            >
-              <option value="latest">Latest</option>
-              <option value="most">Most Engaged</option>
-              <option value="least">Least Engaged</option>
-            </select>
-          </div>
+          )}
         </div>
       </div>
 
-      {/* Feed */}
-      <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
-        {posts.length === 0 ? (
-          <div className="p-10 text-center text-zinc-500">
-            Loading or no posts found.
-          </div>
-        ) : sortedPosts.length === 0 ? (
-          <div className="p-10 text-center text-zinc-500">
-            No posts match your filters.
-          </div>
-        ) : (
-          sortedPosts.map((post) => (
-            <PostCard
-              key={post._id}
-              post={post}
-              members={members as any}
-              engagements={
-                engagements.filter((e: any) => e.postId === post._id) as any
-              }
-            />
-          ))
-        )}
-      </div>
+      {/* Content Area */}
+      {activeTab === "leaderboard" ? (
+        <Leaderboard
+          members={members as any}
+          engagements={engagements as any}
+        />
+      ) : (
+        <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
+          {posts.length === 0 ? (
+            <div className="p-10 text-center text-zinc-500">
+              Loading or no posts found.
+            </div>
+          ) : sortedPosts.length === 0 ? (
+            <div className="p-10 text-center text-zinc-500">
+              No posts match your filters.
+            </div>
+          ) : (
+            sortedPosts.map((post) => (
+              <PostCard
+                key={post._id}
+                post={post}
+                members={members as any}
+                engagements={
+                  engagements.filter((e: any) => e.postId === post._id) as any
+                }
+              />
+            ))
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -315,4 +337,101 @@ function PostCard({
 
 function cn(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(" ");
+}
+
+function Leaderboard({
+  members,
+  engagements,
+}: {
+  members: any[];
+  engagements: any[];
+}) {
+  const [mode, setMode] = useState<"global" | "daily">("global");
+
+  const todayStr = new Date().toDateString();
+
+  const getEngagementCount = (twitterId: string) => {
+    return engagements.filter((e) => {
+      if (e.twitterUserId !== twitterId) return false;
+      if (mode === "daily") {
+        return new Date(e.engagedAt).toDateString() === todayStr;
+      }
+      return true;
+    }).length;
+  };
+
+  const rankedMembers = [...members]
+    .map((m) => ({ ...m, engagements: getEngagementCount(m.twitterId) }))
+    .sort((a, b) => b.engagements - a.engagements);
+
+  return (
+    <div className="p-4">
+      <div className="mx-auto mb-6 flex w-fit gap-2 rounded-lg bg-zinc-100 p-1 dark:bg-zinc-900">
+        <button
+          onClick={() => setMode("global")}
+          className={cn(
+            "rounded-md px-4 py-1.5 text-sm font-medium transition",
+            mode === "global"
+              ? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-800 dark:text-white"
+              : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+          )}
+        >
+          Global
+        </button>
+        <button
+          onClick={() => setMode("daily")}
+          className={cn(
+            "rounded-md px-4 py-1.5 text-sm font-medium transition",
+            mode === "daily"
+              ? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-800 dark:text-white"
+              : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+          )}
+        >
+          Daily
+        </button>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        {rankedMembers.map((member, idx) => (
+          <div
+            key={member._id}
+            className="flex items-center justify-between rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950"
+          >
+            <div className="flex items-center gap-4">
+              <span className="w-6 text-center text-lg font-bold text-zinc-400">
+                {idx + 1}
+              </span>
+              <img
+                src={
+                  member.image ||
+                  `https://picsum.photos/seed/${member._id}/200/200`
+                }
+                alt={member.name}
+                className="h-12 w-12 rounded-full border border-zinc-200 dark:border-zinc-800"
+              />
+              <div className="flex flex-col">
+                <span className="font-semibold text-zinc-900 dark:text-white">
+                  {member.name || member.username}
+                </span>
+                <span className="text-xs text-zinc-500">
+                  @{member.twitterUsername || member.username}
+                </span>
+              </div>
+            </div>
+            <div className="flex flex-col items-end">
+              <span className="text-2xl font-bold">{member.engagements}</span>
+              <span className="text-[10px] font-semibold tracking-wider text-zinc-500 uppercase">
+                Engagements
+              </span>
+            </div>
+          </div>
+        ))}
+        {rankedMembers.length === 0 && (
+          <div className="py-10 text-center text-sm text-zinc-500">
+            No members found.
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
