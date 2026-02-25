@@ -197,7 +197,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
           {members.map((member) => (
             <div
-              key={member.id}
+              key={member._id || member.id}
               className="flex items-center justify-between rounded border p-3 dark:border-zinc-800"
             >
               <div className="flex items-center gap-3">
@@ -214,7 +214,7 @@ export default function Dashboard() {
                 </div>
               </div>
               <button
-                onClick={() => handleDeleteMember(member.id)}
+                onClick={() => handleDeleteMember(member._id || member.id)}
                 className="rounded p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-950"
               >
                 <Trash2 className="h-4 w-4" />
@@ -248,7 +248,7 @@ export default function Dashboard() {
         <div className="space-y-3">
           {posts.map((post) => (
             <div
-              key={post.id}
+              key={post._id || post.id}
               className="flex items-start justify-between rounded border p-4 dark:border-zinc-800"
             >
               <div className="flex gap-3">
@@ -281,7 +281,7 @@ export default function Dashboard() {
                   <RefreshCw className="h-4 w-4" />
                 </button>
                 <button
-                  onClick={() => handleDeletePost(post.id)}
+                  onClick={() => handleDeletePost(post._id || post.id)}
                   className="rounded p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-950"
                   title="Delete Post"
                 >

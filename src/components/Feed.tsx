@@ -53,8 +53,12 @@ export default function Feed() {
 
   // Sort posts
   const sortedPosts = [...filteredPosts].sort((a, b) => {
-    const aEngagements = engagements.filter((e) => e.postId === a.id).length;
-    const bEngagements = engagements.filter((e) => e.postId === b.id).length;
+    const aEngagements = engagements.filter(
+      (e) => e.postId === (a._id || a.id)
+    ).length;
+    const bEngagements = engagements.filter(
+      (e) => e.postId === (b._id || b.id)
+    ).length;
 
     if (sortBy === "latest") return b.createdAt - a.createdAt;
     if (sortBy === "most") return bEngagements - aEngagements;
@@ -87,7 +91,7 @@ export default function Feed() {
             .sort((a, b) => a.username.localeCompare(b.username))
             .map((member) => (
               <div
-                key={member.id}
+                key={member._id || member.id}
                 className="flex w-14 shrink-0 flex-col items-center gap-1"
               >
                 <img
@@ -167,10 +171,12 @@ export default function Feed() {
         ) : (
           sortedPosts.map((post) => (
             <PostCard
-              key={post.id}
+              key={post._id || post.id}
               post={post}
               members={members}
-              engagements={engagements.filter((e) => e.postId === post.id)}
+              engagements={engagements.filter(
+                (e) => e.postId === (post._id || post.id)
+              )}
             />
           ))
         )}
@@ -297,7 +303,10 @@ function PostCard({
             </div>
           ) : (
             displayMembers.map((m) => (
-              <div key={m.id} className="group relative cursor-pointer">
+              <div
+                key={m._id || m.id}
+                className="group relative cursor-pointer"
+              >
                 <img
                   src={m.profileImageUrl}
                   alt={m.name}
