@@ -143,10 +143,6 @@ export default defineSchema({
     ])
     .index("by_code", ["ltdCodeId"]),
 
-  activeLandingGiveaways: defineTable({
-    giveawayId: v.string(),
-  }).index("by_giveawayId", ["giveawayId"]),
-
   plans: defineTable({
     // --- Identity ---
     name: v.string(),
