@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 
 import {
@@ -13,7 +14,7 @@ import {
   IconSparkles,
 } from "@tabler/icons-react";
 
-import { ChatMaxingIconColoured } from "@/components/logo";
+// import { ChatMaxingIconColoured } from "@/components/logo";
 import { NavDocuments } from "@/components/sidebar-components/nav-documents";
 import { NavMain } from "@/components/sidebar-components/nav-main";
 import { NavSecondary } from "@/components/sidebar-components/nav-secondary";
@@ -89,8 +90,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <Link href="/">
-                <ChatMaxingIconColoured className="!size-6" />
-                <span className="text-base font-semibold">Launch Day</span>
+                <Image
+                  src="/logo.png"
+                  alt="Founders on X Logo"
+                  width={24}
+                  height={24}
+                  className="!size-6 rounded-md"
+                />
+                <span className="text-base font-semibold">Founders on X</span>
                 <Badge
                   variant="outline"
                   className="text-muted-foreground text-xs"

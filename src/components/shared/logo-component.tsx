@@ -55,15 +55,15 @@ const LogoComponent = ({
       >
         {useImage ? (
           <Image
-            src="/images/viral-launch-logo.png"
-            alt="ViralLaunch Logo"
+            src="/logo.png"
+            alt="Founders on X Logo"
             width={sizeClass.image.width}
             height={sizeClass.image.height}
           />
         ) : (
           <Image
-            src="/images/viral-launch-logo.png"
-            alt="ViralLaunch Logo"
+            src="/logo.png"
+            alt="Founders on X Logo"
             width={sizeClass.image.width}
             height={sizeClass.image.height}
           />
@@ -78,7 +78,7 @@ const LogoComponent = ({
             isLoading && "animate-pulse"
           )}
         >
-          ViralLaunch
+          Founders on X
         </span>
       </div>
     </Link>

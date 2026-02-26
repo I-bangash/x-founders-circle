@@ -97,7 +97,7 @@ export default function Feed() {
       {/* Header */}
       <div className="sticky top-0 z-20 border-b border-zinc-200 bg-white/80 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/80">
         <div className="flex items-center justify-between px-4 py-3">
-          <h1 className="text-xl font-bold">OutliersX</h1>
+          <h1 className="text-xl font-bold">Founders on X</h1>
           <div className="flex gap-4 text-sm">
             <Link
               href="/leaderboard"
@@ -258,10 +258,10 @@ function PostCard({
   return (
     <div className="border-b border-zinc-200 pb-4 dark:border-zinc-800">
       {/* Main Tweet */}
-      <TweetRow
+      {/* <TweetRow
         tweet={mainTweet}
         hasThreadLine={post.threadData && post.threadData.length > 0}
-      />
+      /> */}
 
       {/* Replies / Threads */}
       {post.threadData && post.threadData.length > 0 && (

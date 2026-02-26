@@ -22,31 +22,60 @@ const geistMono = Geist_Mono({
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains-mono" });
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains-mono",
+});
 
 const BODY_CLASS_NAME = `bg-background text-foreground relative overflow-x-hidden overscroll-none pb-10 antialiased selection:bg-emerald-500/30 selection:text-emerald-800 dark:selection:text-emerald-200`;
 
 export const metadata: Metadata = {
-  title: "OutliersX | Engagement Intelligence Board",
-  description: "A precision interface for tracking social engagement behavior.",
-
-  generator: "v0.app",
+  title: "Founders on X | Real engagement. Real growth.",
+  description:
+    "A tight circle of tech founders helping each other grow on X. Real engagement, real connections.",
   icons: {
     icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
       {
-        url: "/icon-light-32x32.png",
-        media: "(prefers-color-scheme: light)",
+        url: "/android-chrome-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
       },
       {
-        url: "/icon-dark-32x32.png",
-        media: "(prefers-color-scheme: dark)",
-      },
-      {
-        url: "/icon.svg",
-        type: "image/svg+xml",
+        url: "/android-chrome-512x512.png",
+        sizes: "512x512",
+        type: "image/png",
       },
     ],
-    apple: "/apple-icon.png",
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+  openGraph: {
+    title: "Founders on X | Real engagement. Real growth.",
+    description:
+      "A tight circle of tech founders helping each other grow on X. Real engagement, real connections.",
+    url: "https://foundersonx.com",
+    siteName: "Founders on X",
+    images: [
+      {
+        url: "/founders-on-x-og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Founders on X Open Graph Image",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Founders on X | Real engagement. Real growth.",
+    description:
+      "A tight circle of tech founders helping each other grow on X. Real engagement, real connections.",
+    images: ["/founders-on-x-og-image.png"],
   },
 };
 
