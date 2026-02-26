@@ -19,7 +19,15 @@ import {
   useMotionValue,
 } from "framer-motion";
 import gsap from "gsap";
-import { ExternalLink, MessageSquare, Moon, Search, Sun } from "lucide-react";
+import {
+  ExternalLink,
+  LayoutGrid,
+  List,
+  MessageSquare,
+  Moon,
+  Search,
+  Sun,
+} from "lucide-react";
 import { useTheme } from "next-themes";
 // Already installed in package.json
 import useMeasure from "react-use-measure";
@@ -188,6 +196,7 @@ export default function SignalTerminal() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [viewMode, setViewMode] = useState<"feed" | "members">("feed");
+  const [postView, setPostView] = useState<"list" | "grid">("list");
 
   // Scroll listener for Navbar background
   useEffect(() => {
@@ -412,6 +421,31 @@ export default function SignalTerminal() {
               <option value="least">Least Engaged</option>
             </select>
 
+            <div className="bg-card border-border hidden items-center rounded-full border p-1 sm:flex">
+              <button
+                onClick={() => setPostView("list")}
+                className={`rounded-full p-1.5 transition-all ${
+                  postView === "list"
+                    ? "bg-muted text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+                aria-label="List View"
+              >
+                <List className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => setPostView("grid")}
+                className={`rounded-full p-1.5 transition-all ${
+                  postView === "grid"
+                    ? "bg-muted text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+                aria-label="Grid View"
+              >
+                <LayoutGrid className="h-4 w-4" />
+              </button>
+            </div>
+
             {mounted && (
               <button
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
@@ -546,7 +580,13 @@ export default function SignalTerminal() {
       `}</style>
 
       {/* Layout Wrapper for Timeline & Leaderboard */}
-      <div className="mx-auto flex max-w-[720px] flex-col gap-12 px-4 py-8">
+      <div
+        className={`mx-auto flex flex-col gap-12 px-4 py-8 transition-all duration-300 ${
+          viewMode === "feed" && postView === "grid"
+            ? "max-w-6xl"
+            : "max-w-[720px]"
+        }`}
+      >
         <AnimatePresence mode="wait">
           {viewMode === "feed" ? (
             <motion.div
@@ -560,19 +600,31 @@ export default function SignalTerminal() {
               {/* C. MAIN TIMELINE - "Post Column" */}
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={`${activeTab}-${sortBy}`}
+                  key={`${activeTab}-${sortBy}-${postView}`}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-                  className="flex flex-col gap-6"
+                  className={
+                    postView === "grid"
+                      ? "grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+                      : "flex flex-col gap-6"
+                  }
                 >
                   {posts.length === 0 ? (
-                    <div className="text-muted-foreground border-border bg-card/50 rounded-3xl border border-dashed py-20 text-center">
+                    <div
+                      className={`text-muted-foreground border-border bg-card/50 rounded-3xl border border-dashed py-20 text-center ${
+                        postView === "grid" ? "col-span-full" : ""
+                      }`}
+                    >
                       Initializing signal feed...
                     </div>
                   ) : sortedPosts.length === 0 ? (
-                    <div className="text-muted-foreground border-border bg-card/50 rounded-3xl border border-dashed py-20 text-center">
+                    <div
+                      className={`text-muted-foreground border-border bg-card/50 rounded-3xl border border-dashed py-20 text-center ${
+                        postView === "grid" ? "col-span-full" : ""
+                      }`}
+                    >
                       No posts found.
                     </div>
                   ) : (
@@ -582,6 +634,7 @@ export default function SignalTerminal() {
                         post={post}
                         members={members as any}
                         engagements={engagementsByPostId.get(post._id) || []}
+                        layout={postView}
                       />
                     ))
                   )}
@@ -662,10 +715,12 @@ function PostCard({
   post,
   members,
   engagements,
+  layout = "list",
 }: {
   post: any;
   members: any[];
   engagements: any[];
+  layout?: "list" | "grid";
 }) {
   const [view, setView] = useState<EngagementMode>("engaged");
   const [showComments, setShowComments] = useState(false);
@@ -693,7 +748,11 @@ function PostCard({
   );
 
   return (
-    <div className="post-card bg-card border-border rounded-3xl border p-5 shadow-sm transition-all duration-300 hover:-translate-y-[2px] sm:p-6">
+    <div
+      className={`post-card bg-card border-border flex flex-col rounded-3xl border p-5 shadow-sm transition-all duration-300 hover:-translate-y-[2px] sm:p-6 ${
+        layout === "grid" ? "h-full" : ""
+      }`}
+    >
       {/* 1. Header Row */}
       <div className="mb-4 flex items-start justify-between">
         <div className="flex items-center gap-3">
@@ -706,11 +765,15 @@ function PostCard({
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
               <span className="text-foreground font-semibold tracking-tight">
-                {post.authorName}
+                {layout === "grid" && post.authorName?.length > 15
+                  ? `${post.authorName.substring(0, 15)}...`
+                  : post.authorName}
               </span>
-              <span className="text-muted-foreground text-sm">
-                @{post.authorUsername}
-              </span>
+              {layout === "list" && (
+                <span className="text-muted-foreground text-sm">
+                  @{post.authorUsername}
+                </span>
+              )}
             </div>
             <div className="text-muted-foreground text-xs">
               {new Date(post.createdAt).toLocaleString(undefined, {
@@ -723,19 +786,21 @@ function PostCard({
           </div>
         </div>
         <div className="flex items-center gap-4">
-          {post.threadData && post.threadData.length > 0 && (
-            <button
-              onClick={() => setShowComments(!showComments)}
-              className={`hover:text-foreground flex items-center gap-1.5 text-xs font-medium transition-colors ${
-                showComments ? "text-foreground" : "text-muted-foreground"
-              }`}
-            >
-              <MessageSquare className="h-4 w-4" />
-              <span className="font-['JetBrains_Mono',monospace]">
-                {post.threadData.length}
-              </span>
-            </button>
-          )}
+          {post.threadData &&
+            post.threadData.length > 0 &&
+            layout === "list" && (
+              <button
+                onClick={() => setShowComments(!showComments)}
+                className={`hover:text-foreground flex items-center gap-1.5 text-xs font-medium transition-colors ${
+                  showComments ? "text-foreground" : "text-muted-foreground"
+                }`}
+              >
+                <MessageSquare className="h-4 w-4" />
+                <span className="font-['JetBrains_Mono',monospace]">
+                  {post.threadData.length}
+                </span>
+              </button>
+            )}
           {/* <div className="text-muted-foreground bg-muted border-border rounded-md border px-2 py-1 font-['JetBrains_Mono',monospace] text-xs">
             <span className="text-blue-500">{engagedMembers.length}</span> /{" "}
             {members.length}
@@ -757,73 +822,90 @@ function PostCard({
         href={`https://x.com/${post.authorUsername}/status/${post.tweetId}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-foreground mb-6 block cursor-pointer text-[15px] leading-relaxed text-wrap whitespace-pre-wrap transition-opacity hover:opacity-80"
+        className={`text-foreground mb-6 cursor-pointer text-[15px] leading-relaxed text-wrap whitespace-pre-wrap transition-opacity hover:opacity-80 ${
+          layout === "grid" ? "line-clamp-4" : "block"
+        }`}
       >
         {post.content}
       </a>
 
       {/* Threads / Comments */}
-      {showComments && post.threadData && post.threadData.length > 0 && (
-        <div className="border-border/50 mt-4 mb-6 flex flex-col gap-8 border-t pt-6">
-          {post.threadData.map((thread: any) => (
-            <div key={thread.id} className="flex flex-col">
-              {thread.tweets.map((tweet: any, index: number) => {
-                const isLast = index === thread.tweets.length - 1;
-                return (
-                  <div key={tweet.id} className="group relative flex gap-3">
-                    {/* Left column: Avatar + Thread Line */}
-                    <div className="flex min-w-[32px] flex-col items-center">
-                      <Avatar className="border-border bg-card z-10 h-8 w-8 shrink-0 border">
-                        <AvatarImage
-                          src={tweet.author.avatar}
-                          alt={tweet.author.name}
-                        />
-                        <AvatarFallback className="bg-muted text-foreground text-xs">
-                          {(tweet.author.name || "U").charAt(0).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      {!isLast && (
-                        <div className="bg-border my-1 w-[2px] grow rounded-full transition-colors group-hover:bg-blue-500/40" />
-                      )}
-                    </div>
-
-                    {/* Right column: Content */}
-                    <div
-                      className={`flex min-w-0 flex-1 flex-col ${!isLast ? "pb-6" : ""}`}
-                    >
-                      <div className="mb-1.5 flex items-center gap-2">
-                        <span className="text-foreground text-[15px] font-semibold tracking-tight">
-                          {tweet.author.name}
-                        </span>
-                        <span className="text-muted-foreground text-[13px]">
-                          @{tweet.author.username}
-                        </span>
+      {showComments &&
+        post.threadData &&
+        post.threadData.length > 0 &&
+        layout === "list" && (
+          <div className="border-border/50 mt-4 mb-6 flex flex-col gap-8 border-t pt-6">
+            {post.threadData.map((thread: any) => (
+              <div key={thread.id} className="flex flex-col">
+                {thread.tweets.map((tweet: any, index: number) => {
+                  const isLast = index === thread.tweets.length - 1;
+                  return (
+                    <div key={tweet.id} className="group relative flex gap-3">
+                      {/* Left column: Avatar + Thread Line */}
+                      <div className="flex min-w-[32px] flex-col items-center">
+                        <Avatar className="border-border bg-card z-10 h-8 w-8 shrink-0 border">
+                          <AvatarImage
+                            src={tweet.author.avatar}
+                            alt={tweet.author.name}
+                          />
+                          <AvatarFallback className="bg-muted text-foreground text-xs">
+                            {(tweet.author.name || "U").charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        {!isLast && (
+                          <div className="bg-border my-1 w-[2px] grow rounded-full transition-colors group-hover:bg-blue-500/40" />
+                        )}
                       </div>
-                      <a
-                        href={`https://x.com/${tweet.author.username}/status/${tweet.id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-foreground block cursor-pointer text-[14px] leading-relaxed text-wrap wrap-break-word whitespace-pre-wrap transition-opacity hover:opacity-80"
+
+                      {/* Right column: Content */}
+                      <div
+                        className={`flex min-w-0 flex-1 flex-col ${!isLast ? "pb-6" : ""}`}
                       >
-                        {tweet.content.text}
-                      </a>
+                        <div className="mb-1.5 flex items-center gap-2">
+                          <span className="text-foreground text-[15px] font-semibold tracking-tight">
+                            {tweet.author.name}
+                          </span>
+                          <span className="text-muted-foreground text-[13px]">
+                            @{tweet.author.username}
+                          </span>
+                        </div>
+                        <a
+                          href={`https://x.com/${tweet.author.username}/status/${tweet.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-foreground block cursor-pointer text-[14px] leading-relaxed text-wrap wrap-break-word whitespace-pre-wrap transition-opacity hover:opacity-80"
+                        >
+                          {tweet.content.text}
+                        </a>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-          ))}
-        </div>
-      )}
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        )}
 
       {/* 3. Engagement Panel */}
-      <div className="border-border bg-background/50 rounded-2xl border p-4">
+      <div
+        className={`border-border bg-background/50 rounded-2xl border ${
+          layout === "grid" ? "mt-auto p-2" : "p-4"
+        }`}
+      >
         {/* Toggle Switch */}
-        <div className="border-border mb-4 flex items-center justify-between border-b pb-3">
-          <div className="flex gap-2">
+        <div
+          className={`border-border flex items-center justify-between border-b ${
+            layout === "grid" ? "mb-2 pb-2" : "mb-4 pb-3"
+          }`}
+        >
+          <div className={`flex ${layout === "grid" ? "gap-1" : "gap-2"}`}>
             <button
               onClick={() => setView("engaged")}
-              className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-300 ${
+              className={`rounded-full font-medium transition-all duration-300 ${
+                layout === "grid"
+                  ? "px-2 py-1 text-[10px]"
+                  : "px-3 py-1.5 text-xs"
+              } ${
                 view === "engaged"
                   ? "bg-emerald-500/10 text-emerald-500"
                   : "text-muted-foreground hover:text-foreground"
@@ -833,7 +915,11 @@ function PostCard({
             </button>
             <button
               onClick={() => setView("missing")}
-              className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-300 ${
+              className={`rounded-full font-medium transition-all duration-300 ${
+                layout === "grid"
+                  ? "px-2 py-1 text-[10px]"
+                  : "px-3 py-1.5 text-xs"
+              } ${
                 view === "missing"
                   ? "bg-destructive/10 text-destructive"
                   : "text-muted-foreground hover:text-foreground"
@@ -857,7 +943,13 @@ function PostCard({
         </div>
 
         {/* Avatars Grid */}
-        <div className="flex flex-wrap gap-2">
+        <div
+          className={`flex flex-wrap gap-2 ${
+            layout === "grid"
+              ? "hide-scrollbar h-[76px] content-start overflow-y-auto pr-1"
+              : ""
+          }`}
+        >
           {displayMembers.length === 0 ? (
             <div className="text-muted-foreground w-full py-1.5 text-center text-sm">
               {view === "engaged"
