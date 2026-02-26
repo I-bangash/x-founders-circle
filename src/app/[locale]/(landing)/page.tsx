@@ -25,7 +25,6 @@ import { useTheme } from "next-themes";
 import useMeasure from "react-use-measure";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { cn } from "@/lib/utils";
 
@@ -182,7 +181,7 @@ export default function SignalTerminal() {
   const engagements = useQuery(api.mvp.getEngagements) || [];
 
   // --- State ---
-  const [activeTab, setActiveTab] = useState<Tab>("today");
+  const [activeTab, setActiveTab] = useState<Tab>("all");
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [sortBy, setSortBy] = useState<SortOption>("latest");
   const [searchQuery, setSearchQuery] = useState("");
@@ -574,7 +573,7 @@ export default function SignalTerminal() {
                     </div>
                   ) : sortedPosts.length === 0 ? (
                     <div className="text-muted-foreground border-border bg-card/50 rounded-3xl border border-dashed py-20 text-center">
-                      No signals match criteria.
+                      No posts found.
                     </div>
                   ) : (
                     sortedPosts.map((post) => (
@@ -644,7 +643,7 @@ export default function SignalTerminal() {
                         <span className="text-foreground font-bold group-hover:text-blue-500">
                           {globalEngagements}
                         </span>{" "}
-                        Signals
+                        Engagements
                       </div>
                     </a>
                   );
@@ -862,8 +861,8 @@ function PostCard({
           {displayMembers.length === 0 ? (
             <div className="text-muted-foreground w-full py-1.5 text-center text-sm">
               {view === "engaged"
-                ? "No signals detected yet."
-                : "Maximum engagement achieved. No missing signals."}
+                ? "No posts found yet."
+                : "Maximum engagement achieved. No missing posts."}
             </div>
           ) : (
             displayMembers.map((m) => (
@@ -932,6 +931,7 @@ function Leaderboard({
 
   const rankedMembers = useMemo(() => {
     return [...members]
+      .filter((m) => m.username !== "ibangash_")
       .map((m) => ({
         ...m,
         count: getEngagementCount(m.twitterId, m.totalEngagements),
@@ -944,9 +944,14 @@ function Leaderboard({
   return (
     <div className="leaderboard-section border-border border-t pt-12 pb-20">
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-foreground text-xl font-bold tracking-tight">
-          Hall of Fame
-        </h2>
+        <div>
+          <h2 className="text-foreground text-xl font-bold tracking-tight">
+            Hall of Fame
+          </h2>
+          <p className="text-muted-foreground mt-1 text-xs">
+            Members with most engagements
+          </p>
+        </div>
         <div className="bg-card border-border flex items-center rounded-full border p-1">
           <button
             onClick={() => setTab("global")}
