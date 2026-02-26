@@ -153,18 +153,18 @@ export default function AdminConsole() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0E1116] text-[#E6EDF3] font-['Inter',sans-serif] p-6 sm:p-12">
+    <div className="min-h-screen bg-background text-foreground font-['Inter',sans-serif] p-6 sm:p-12">
       <div className="mx-auto max-w-4xl space-y-12">
-        <div className="border-b border-[#242C38] pb-6">
+        <div className="border-b border-border pb-6">
           <h1 className="text-2xl font-bold tracking-tight">Admin Console</h1>
-          <p className="text-sm text-[#8B98A5] mt-1">Precise control over tracking and members.</p>
+          <p className="text-sm text-muted-foreground mt-1">Precise control over tracking and members.</p>
         </div>
 
         {/* Section 1 — Add Member */}
-        <section className="space-y-6 bg-[#151A22] rounded-3xl border border-[#242C38] p-6 sm:p-8">
+        <section className="space-y-6 bg-card rounded-3xl border border-border p-6 sm:p-8">
           <div>
-            <h2 className="text-lg font-semibold text-[#E6EDF3]">Members</h2>
-            <p className="text-sm text-[#8B98A5]">Manage operators in the engagement pool.</p>
+            <h2 className="text-lg font-semibold text-foreground">Members</h2>
+            <p className="text-sm text-muted-foreground">Manage operators in the engagement pool.</p>
           </div>
 
           <form onSubmit={handleAddMember} className="flex gap-3">
@@ -173,13 +173,13 @@ export default function AdminConsole() {
               value={newMember}
               onChange={(e) => setNewMember(e.target.value)}
               placeholder="Username (no @)"
-              className="flex-1 bg-[#0E1116] border border-[#242C38] rounded-xl px-4 py-2 text-sm text-[#E6EDF3] focus:outline-none focus:border-[#4C8DFF]/50 transition-colors"
+              className="flex-1 bg-background border border-border rounded-xl px-4 py-2 text-sm text-foreground focus:outline-none focus:border-blue-500/50 transition-colors"
               disabled={loading}
             />
             <button
               type="submit"
               disabled={loading}
-              className="bg-[#1C222C] border border-[#242C38] hover:bg-[#242C38] hover:border-[#4C8DFF]/50 text-[#E6EDF3] rounded-xl px-6 py-2 text-sm font-medium transition-all"
+              className="bg-muted border border-border hover:bg-border hover:border-blue-500/50 text-foreground rounded-xl px-6 py-2 text-sm font-medium transition-all"
             >
               Fetch & Save
             </button>
@@ -189,27 +189,27 @@ export default function AdminConsole() {
             {members.map((member) => (
               <div
                 key={member._id}
-                className="flex items-center justify-between border border-[#242C38] bg-[#0E1116]/50 rounded-2xl p-4 transition-all hover:bg-[#1C222C]/50"
+                className="flex items-center justify-between border border-border bg-background/50 rounded-2xl p-4 transition-all hover:bg-muted/50"
               >
                 <div className="flex items-center gap-4">
-                  <Avatar className="h-10 w-10 border border-[#242C38]">
+                  <Avatar className="h-10 w-10 border border-border">
                     <AvatarImage src={member.image || "/placeholder.svg"} alt={member.name || "Member"} />
-                    <AvatarFallback className="bg-[#1C222C] text-[#E6EDF3]">
+                    <AvatarFallback className="bg-muted text-foreground">
                       {(member.name || member.username || "M").charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">
-                    <span className="text-sm font-semibold text-[#E6EDF3]">{member.name || member.username}</span>
-                    <span className="text-xs text-[#8B98A5]">@{member.twitterUsername || member.username}</span>
+                    <span className="text-sm font-semibold text-foreground">{member.name || member.username}</span>
+                    <span className="text-xs text-muted-foreground">@{member.twitterUsername || member.username}</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-6">
-                  <span className="text-xs text-[#8B98A5] font-['JetBrains_Mono',monospace] bg-[#151A22] px-2 py-1 rounded border border-[#242C38]">
+                  <span className="text-xs text-muted-foreground font-['JetBrains_Mono',monospace] bg-card px-2 py-1 rounded border border-border">
                     {member.twitterId || "Pending"}
                   </span>
                   <button
                     onClick={() => handleDeleteMember(member._id)}
-                    className="text-[#8B98A5] hover:text-[#F85149] transition-colors p-2"
+                    className="text-muted-foreground hover:text-destructive transition-colors p-2"
                     title="Delete Member"
                   >
                     <Trash2 className="h-4 w-4" />
@@ -218,7 +218,7 @@ export default function AdminConsole() {
               </div>
             ))}
             {members.length === 0 && (
-              <div className="text-center text-[#8B98A5] py-4 text-sm border border-dashed border-[#242C38] rounded-2xl">
+              <div className="text-center text-muted-foreground py-4 text-sm border border-dashed border-border rounded-2xl">
                 No members found.
               </div>
             )}
@@ -226,10 +226,10 @@ export default function AdminConsole() {
         </section>
 
         {/* Section 2 — Add Post */}
-        <section className="space-y-6 bg-[#151A22] rounded-3xl border border-[#242C38] p-6 sm:p-8">
+        <section className="space-y-6 bg-card rounded-3xl border border-border p-6 sm:p-8">
           <div>
-            <h2 className="text-lg font-semibold text-[#E6EDF3]">Posts</h2>
-            <p className="text-sm text-[#8B98A5]">Track engagement signals.</p>
+            <h2 className="text-lg font-semibold text-foreground">Posts</h2>
+            <p className="text-sm text-muted-foreground">Track engagement signals.</p>
           </div>
 
           <form onSubmit={handleAddPost} className="flex gap-3">
@@ -238,13 +238,13 @@ export default function AdminConsole() {
               value={newPost}
               onChange={(e) => setNewPost(e.target.value)}
               placeholder="Tweet ID"
-              className="flex-1 bg-[#0E1116] border border-[#242C38] rounded-xl px-4 py-2 text-sm text-[#E6EDF3] focus:outline-none focus:border-[#4C8DFF]/50 transition-colors font-['JetBrains_Mono',monospace]"
+              className="flex-1 bg-background border border-border rounded-xl px-4 py-2 text-sm text-foreground focus:outline-none focus:border-blue-500/50 transition-colors font-['JetBrains_Mono',monospace]"
               disabled={loading}
             />
             <button
               type="submit"
               disabled={loading}
-              className="bg-[#1C222C] border border-[#242C38] hover:bg-[#242C38] hover:border-[#4C8DFF]/50 text-[#E6EDF3] rounded-xl px-6 py-2 text-sm font-medium transition-all"
+              className="bg-muted border border-border hover:bg-border hover:border-blue-500/50 text-foreground rounded-xl px-6 py-2 text-sm font-medium transition-all"
             >
               Fetch & Save
             </button>
@@ -256,30 +256,30 @@ export default function AdminConsole() {
               return (
                 <div
                   key={post._id}
-                  className="flex items-center justify-between border border-[#242C38] bg-[#0E1116]/50 rounded-2xl p-4 transition-all hover:bg-[#1C222C]/50"
+                  className="flex items-center justify-between border border-border bg-background/50 rounded-2xl p-4 transition-all hover:bg-muted/50"
                 >
                   <div className="flex items-center gap-4">
-                    <Avatar className="h-10 w-10 border border-[#242C38]">
+                    <Avatar className="h-10 w-10 border border-border">
                       <AvatarImage src={post.authorAvatar} alt={post.authorName} />
-                      <AvatarFallback className="bg-[#1C222C] text-[#E6EDF3]">
+                      <AvatarFallback className="bg-muted text-foreground">
                         {(post.authorName || "P").charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
-                      <span className="text-xs text-[#8B98A5] font-['JetBrains_Mono',monospace] mb-1">
+                      <span className="text-xs text-muted-foreground font-['JetBrains_Mono',monospace] mb-1">
                         {post.tweetId}
                       </span>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold text-[#E6EDF3]">{post.authorName}</span>
-                        <span className="text-xs text-[#8B98A5]">@{post.authorUsername}</span>
+                        <span className="text-sm font-semibold text-foreground">{post.authorName}</span>
+                        <span className="text-xs text-muted-foreground">@{post.authorUsername}</span>
                       </div>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-6">
                     <div className="flex flex-col items-end gap-1">
-                      <span className="text-[10px] text-[#8B98A5] uppercase tracking-wider font-semibold">Engaged</span>
-                      <span className="text-sm text-[#4C8DFF] font-['JetBrains_Mono',monospace] bg-[#151A22] px-2 py-0.5 rounded border border-[#242C38]">
+                      <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Engaged</span>
+                      <span className="text-sm text-blue-500 font-['JetBrains_Mono',monospace] bg-card px-2 py-0.5 rounded border border-border">
                         {engCount}
                       </span>
                     </div>
@@ -287,14 +287,14 @@ export default function AdminConsole() {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleRefreshPost(post.tweetId)}
-                        className="text-[#8B98A5] hover:text-[#4C8DFF] transition-colors p-2"
+                        className="text-muted-foreground hover:text-blue-500 transition-colors p-2"
                         title="Refresh Engagements"
                       >
                         <RefreshCw className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => handleDeletePost(post._id)}
-                        className="text-[#8B98A5] hover:text-[#F85149] transition-colors p-2"
+                        className="text-muted-foreground hover:text-destructive transition-colors p-2"
                         title="Delete Post"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -305,7 +305,7 @@ export default function AdminConsole() {
               );
             })}
             {posts.length === 0 && (
-              <div className="text-center text-[#8B98A5] py-4 text-sm border border-dashed border-[#242C38] rounded-2xl">
+              <div className="text-center text-muted-foreground py-4 text-sm border border-dashed border-border rounded-2xl">
                 No signals tracking.
               </div>
             )}
