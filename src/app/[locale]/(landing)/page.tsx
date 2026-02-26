@@ -340,26 +340,26 @@ export default function SignalTerminal() {
             : "bg-background/80 border-border/50 border-b backdrop-blur-sm"
         }`}
       >
-        <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6">
+        <div className="mx-auto flex h-full max-w-7xl items-center justify-between gap-1 px-2 sm:gap-0 sm:px-6">
           {/* Left: Logotype */}
-          <div className="flex-1">
+          <div className="flex flex-none items-center sm:flex-1">
             <Link
               href="/"
-              className="text-foreground text-lg font-bold tracking-tight"
+              className="text-foreground text-[11px] font-bold tracking-tight whitespace-nowrap sm:text-lg"
             >
               Founders on X
             </Link>
           </div>
 
           {/* Center: Tab Switcher */}
-          <div className="flex flex-1 justify-center">
-            <div className="bg-card border-border flex items-center gap-1 rounded-full border p-1">
+          <div className="flex justify-center sm:flex-1">
+            <div className="bg-card border-border flex items-center gap-0.5 rounded-full border p-0.5 sm:gap-1 sm:p-1">
               <button
                 onClick={() => {
                   setActiveTab("today");
                   setSelectedDate(undefined);
                 }}
-                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
+                className={`rounded-full px-2 py-1 text-[10px] font-medium transition-all sm:px-4 sm:py-1.5 sm:text-sm ${
                   activeTab === "today"
                     ? "bg-muted text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
@@ -372,7 +372,7 @@ export default function SignalTerminal() {
                   setActiveTab("all");
                   setSelectedDate(undefined);
                 }}
-                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
+                className={`rounded-full px-2 py-1 text-[10px] font-medium transition-all sm:px-4 sm:py-1.5 sm:text-sm ${
                   activeTab === "all"
                     ? "bg-muted text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
@@ -381,7 +381,7 @@ export default function SignalTerminal() {
                 All Posts
               </button>
 
-              <div className="bg-border mx-1 h-4 w-[1px]" />
+              <div className="bg-border mx-0.5 h-4 w-[1px] sm:mx-1" />
 
               <DateRangePicker
                 date={selectedDate}
@@ -390,17 +390,17 @@ export default function SignalTerminal() {
                   if (date) setActiveTab("date");
                   else setActiveTab("today");
                 }}
-                className={
+                className={`${
                   activeTab === "date"
                     ? "bg-muted text-foreground border-transparent shadow-sm"
                     : "hover:bg-muted/50 text-muted-foreground hover:text-foreground border-transparent bg-transparent"
-                }
+                } h-auto px-2 py-1 text-[10px] sm:px-4 sm:py-1.5 sm:text-xs`}
               />
             </div>
           </div>
 
           {/* Right: Search & Sort */}
-          <div className="flex flex-1 items-center justify-end gap-3">
+          <div className="flex flex-none items-center justify-end gap-1 sm:flex-1 sm:gap-3">
             <div className="group relative hidden sm:block">
               <Search className="text-muted-foreground absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 transition-colors group-focus-within:text-blue-500" />
               <input
@@ -414,7 +414,7 @@ export default function SignalTerminal() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as SortOption)}
-              className="bg-card border-border text-foreground cursor-pointer appearance-none rounded-full border px-3 py-1.5 text-sm transition-all focus:border-blue-500/50 focus:outline-none"
+              className="bg-card border-border text-foreground hidden cursor-pointer appearance-none rounded-full border px-3 py-1.5 text-sm transition-all focus:border-blue-500/50 focus:outline-none sm:block"
             >
               <option value="latest">Latest</option>
               <option value="most">Most Engaged</option>
