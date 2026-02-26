@@ -1,16 +1,162 @@
 "use client";
 
+// --- Imports ---
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { CSSProperties, useEffect, useRef, useState } from "react";
 
 import { useQuery } from "convex/react";
+import {
+  AnimatePresence,
+  animate,
+  motion,
+  useMotionValue,
+} from "framer-motion";
 import gsap from "gsap";
 import { ExternalLink, MessageSquare, Moon, Search, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+// Already installed in package.json
+import useMeasure from "react-use-measure";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/utils/utils";
 
 import { api } from "../../../../convex/_generated/api";
+
+// --- Infinite Slider Components ---
+type InfiniteSliderProps = {
+  children: React.ReactNode;
+  gap?: number;
+  speed?: number;
+  speedOnHover?: number;
+  direction?: "horizontal" | "vertical";
+  reverse?: boolean;
+  className?: string;
+};
+
+function InfiniteSlider({
+  children,
+  gap = 16,
+  speed = 100,
+  speedOnHover,
+  direction = "horizontal",
+  reverse = false,
+  className,
+}: InfiniteSliderProps) {
+  const [currentSpeed, setCurrentSpeed] = useState(speed);
+  const [ref, { width, height }] = useMeasure();
+  const translation = useMotionValue(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [key, setKey] = useState(0);
+
+  useEffect(() => {
+    let controls: any;
+    const size = direction === "horizontal" ? width : height;
+    if (size === 0) return;
+
+    const contentSize = size + gap;
+    const from = reverse ? -contentSize / 2 : 0;
+    const to = reverse ? 0 : -contentSize / 2;
+
+    const distanceToTravel = Math.abs(to - from);
+    const duration = distanceToTravel / currentSpeed;
+
+    if (isTransitioning) {
+      const remainingDistance = Math.abs(translation.get() - to);
+      const transitionDuration = remainingDistance / currentSpeed;
+      controls = animate(translation, [translation.get(), to], {
+        ease: "linear",
+        duration: transitionDuration,
+        onComplete: () => {
+          setIsTransitioning(false);
+          setKey((prevKey) => prevKey + 1);
+        },
+      });
+    } else {
+      controls = animate(translation, [from, to], {
+        ease: "linear",
+        duration: duration,
+        repeat: Infinity,
+        repeatType: "loop",
+        repeatDelay: 0,
+        onRepeat: () => {
+          translation.set(from);
+        },
+      });
+    }
+
+    return () => controls?.stop();
+  }, [
+    key,
+    translation,
+    currentSpeed,
+    width,
+    height,
+    gap,
+    isTransitioning,
+    direction,
+    reverse,
+  ]);
+
+  const hoverProps = speedOnHover
+    ? {
+        onHoverStart: () => {
+          setIsTransitioning(true);
+          setCurrentSpeed(speedOnHover);
+        },
+        onHoverEnd: () => {
+          setIsTransitioning(true);
+          setCurrentSpeed(speed);
+        },
+      }
+    : {};
+
+  return (
+    <div className={cn("overflow-hidden", className)}>
+      <motion.div
+        className="flex w-max"
+        style={{
+          ...(direction === "horizontal"
+            ? { x: translation }
+            : { y: translation }),
+          gap: `${gap}px`,
+          flexDirection: direction === "horizontal" ? "row" : "column",
+        }}
+        ref={ref}
+        {...hoverProps}
+      >
+        {children}
+        {children}
+      </motion.div>
+    </div>
+  );
+}
+
+type BlurredInfiniteSliderProps = InfiniteSliderProps & {
+  fadeWidth?: number;
+  containerClassName?: string;
+};
+
+function BlurredInfiniteSlider({
+  children,
+  fadeWidth = 80,
+  containerClassName,
+  ...sliderProps
+}: BlurredInfiniteSliderProps) {
+  const maskStyle: CSSProperties = {
+    maskImage: `linear-gradient(to right, transparent, black ${fadeWidth}px, black calc(100% - ${fadeWidth}px), transparent)`,
+    WebkitMaskImage: `linear-gradient(to right, transparent, black ${fadeWidth}px, black calc(100% - ${fadeWidth}px), transparent)`,
+  };
+
+  return (
+    <div
+      className={cn("relative w-full", containerClassName)}
+      style={maskStyle}
+    >
+      <InfiniteSlider {...sliderProps}>{children}</InfiniteSlider>
+    </div>
+  );
+}
 
 // --- Types ---
 type Tab = "today" | "all";
@@ -33,6 +179,7 @@ export default function SignalTerminal() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [viewMode, setViewMode] = useState<"feed" | "members">("feed");
 
   // Scroll listener for Navbar background
   useEffect(() => {
@@ -45,19 +192,27 @@ export default function SignalTerminal() {
   }, []);
 
   // --- GSAP Animations ---
+  // 1. Initial Load for Operator Grid
   useEffect(() => {
-    if (!members.length && !posts.length) return; // Wait for data
+    if (!members.length) return;
 
     const ctx = gsap.context(() => {
-      // Timeline for coordinated entrance
-      const tl = gsap.timeline();
-
-      // Top member bar fades in and slides down
-      tl.fromTo(
+      gsap.fromTo(
         ".operator-grid",
         { opacity: 0, y: -10 },
         { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }
       );
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, [members.length]);
+
+  // 2. Timeline and Leaderboard Animations (Trigger on filter/tab changes)
+  useEffect(() => {
+    if (!posts.length && viewMode === "feed") return;
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline();
 
       // Posts cascade upward
       tl.fromTo(
@@ -69,8 +224,7 @@ export default function SignalTerminal() {
           duration: 0.6,
           stagger: 0.06,
           ease: "power3.out",
-        },
-        "-=0.4"
+        }
       );
 
       // Leaderboard slides in
@@ -78,12 +232,12 @@ export default function SignalTerminal() {
         ".leaderboard-section",
         { opacity: 0, y: 20 },
         { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
-        "-=0.2"
+        "-=0.4"
       );
     }, containerRef);
 
     return () => ctx.revert();
-  }, [members.length, posts.length, activeTab, sortBy]); // Re-trigger on data or filter change
+  }, [posts.length, activeTab, sortBy, viewMode]);
 
   // --- Derived Data ---
   const sortedMembers = [...members].sort((a, b) =>
@@ -156,7 +310,7 @@ export default function SignalTerminal() {
               href="/"
               className="text-foreground text-lg font-bold tracking-tight"
             >
-              OutliersX
+              Founders on X
             </Link>
           </div>
 
@@ -226,46 +380,71 @@ export default function SignalTerminal() {
       <div className="pt-[64px]" />
 
       {/* B. TOP MEMBER STRIP - "Operator Grid" */}
-      <div className="operator-grid border-border bg-background border-b">
-        {/* Horizontal scrollable row */}
-        <div className="hide-scrollbar mask-edges flex overflow-x-auto px-6 py-4">
-          <div className="mx-auto flex min-w-max gap-4">
-            {sortedMembers.map((member) => {
-              const globalEngagements = engagements.filter(
-                (e: any) => e.twitterUserId === member.twitterId
-              ).length;
+      <div className="operator-grid border-border bg-background border-b pt-6 pb-2">
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-6 md:flex-row md:gap-8">
+          <div className="md:border-border flex shrink-0 flex-col items-center justify-center text-center md:max-w-44 md:items-end md:border-r md:pr-6 md:text-right">
+            <p className="text-muted-foreground mt-1 text-xs">
+              Meet the A-Team:
+            </p>
+            <button
+              onClick={() =>
+                setViewMode(viewMode === "feed" ? "members" : "feed")
+              }
+              className="text-foreground mt-1 cursor-pointer rounded-full px-2 py-0 text-[11px] font-bold tracking-widest uppercase transition-transform hover:scale-[1.03] active:scale-[0.97]"
+              style={{
+                transitionTimingFunction:
+                  "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+              }}
+            >
+              {viewMode === "feed" ? "View All" : "Show Feed"}
+            </button>
+          </div>
 
-              return (
-                <div
-                  key={member._id}
-                  className="group relative flex flex-col items-center gap-2"
-                >
-                  <div className="relative">
-                    <Avatar className="h-12 w-12 cursor-pointer border-2 border-transparent transition-all duration-300 group-hover:border-blue-500 group-hover:shadow-lg group-hover:shadow-blue-500/30">
-                      <AvatarImage
-                        src={member.image}
-                        alt={member.name || member.username}
-                      />
-                      <AvatarFallback className="bg-muted text-foreground">
-                        {(member.name || member.username || "M")
-                          .charAt(0)
-                          .toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    {globalEngagements > 0 && (
-                      <div className="bg-card border-border text-foreground absolute -right-1 -bottom-1 flex h-5 min-w-[20px] items-center justify-center rounded-full border px-1 font-['JetBrains_Mono',monospace] text-[10px]">
-                        {globalEngagements}
+          <div className="w-full py-4 md:w-auto md:flex-1">
+            {members.length > 0 ? (
+              <BlurredInfiniteSlider
+                speedOnHover={20}
+                speed={40}
+                gap={32}
+                fadeWidth={40}
+              >
+                {sortedMembers.map((member) => {
+                  const globalEngagements = engagements.filter(
+                    (e: any) => e.twitterUserId === member.twitterId
+                  ).length;
+
+                  return (
+                    <div
+                      key={member._id}
+                      className="group relative flex flex-col items-center gap-2"
+                    >
+                      <div className="relative">
+                        <Avatar className="h-12 w-12 cursor-pointer border-2 border-transparent transition-all duration-300 group-hover:border-blue-500 group-hover:shadow-lg group-hover:shadow-blue-500/30">
+                          <AvatarImage
+                            src={member.image}
+                            alt={member.name || member.username}
+                          />
+                          <AvatarFallback className="bg-muted text-foreground">
+                            {(member.name || member.username || "M")
+                              .charAt(0)
+                              .toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        {globalEngagements > 0 && (
+                          <div className="bg-card border-border text-foreground absolute -right-1 -bottom-1 flex h-5 min-w-[20px] items-center justify-center rounded-full border px-1 font-['JetBrains_Mono',monospace] text-[10px]">
+                            {globalEngagements}
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                  <div className="bg-muted border-border text-foreground pointer-events-none absolute top-full left-1/2 z-50 mt-2 -translate-x-1/2 rounded border px-2 py-1 text-xs whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100">
-                    @{member.twitterUsername || member.username}
-                  </div>
-                </div>
-              );
-            })}
-            {members.length === 0 && (
-              <div className="text-muted-foreground py-2 text-sm">
+                      <div className="bg-muted border-border text-foreground pointer-events-none absolute top-full left-1/2 z-50 mt-2 -translate-x-1/2 rounded border px-2 py-1 text-xs whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100">
+                        @{member.twitterUsername || member.username}
+                      </div>
+                    </div>
+                  );
+                })}
+              </BlurredInfiniteSlider>
+            ) : (
+              <div className="text-muted-foreground w-full py-2 text-center text-sm">
                 No operators found.
               </div>
             )}
@@ -294,32 +473,105 @@ export default function SignalTerminal() {
 
       {/* Layout Wrapper for Timeline & Leaderboard */}
       <div className="mx-auto flex max-w-[720px] flex-col gap-12 px-4 py-8">
-        {/* C. MAIN TIMELINE - "Post Column" */}
-        <div className="flex flex-col gap-6">
-          {posts.length === 0 ? (
-            <div className="text-muted-foreground border-border bg-card/50 rounded-3xl border border-dashed py-20 text-center">
-              Initializing signal feed...
-            </div>
-          ) : sortedPosts.length === 0 ? (
-            <div className="text-muted-foreground border-border bg-card/50 rounded-3xl border border-dashed py-20 text-center">
-              No signals match criteria.
-            </div>
-          ) : (
-            sortedPosts.map((post) => (
-              <PostCard
-                key={post._id}
-                post={post}
-                members={members as any}
-                engagements={
-                  engagements.filter((e: any) => e.postId === post._id) as any
-                }
-              />
-            ))
-          )}
-        </div>
+        <AnimatePresence mode="wait">
+          {viewMode === "feed" ? (
+            <motion.div
+              key="feed"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="flex flex-col gap-12"
+            >
+              {/* C. MAIN TIMELINE - "Post Column" */}
+              <div className="flex flex-col gap-6">
+                {posts.length === 0 ? (
+                  <div className="text-muted-foreground border-border bg-card/50 rounded-3xl border border-dashed py-20 text-center">
+                    Initializing signal feed...
+                  </div>
+                ) : sortedPosts.length === 0 ? (
+                  <div className="text-muted-foreground border-border bg-card/50 rounded-3xl border border-dashed py-20 text-center">
+                    No signals match criteria.
+                  </div>
+                ) : (
+                  sortedPosts.map((post) => (
+                    <PostCard
+                      key={post._id}
+                      post={post}
+                      members={members as any}
+                      engagements={
+                        engagements.filter(
+                          (e: any) => e.postId === post._id
+                        ) as any
+                      }
+                    />
+                  ))
+                )}
+              </div>
 
-        {/* E. LEADERBOARD - "Performance Index" */}
-        <Leaderboard members={members} engagements={engagements} />
+              {/* E. LEADERBOARD - "Performance Index" */}
+              <Leaderboard members={members} engagements={engagements} />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="members"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="flex flex-col gap-6"
+            >
+              <div className="mb-2 flex items-center justify-between px-2">
+                <h2 className="text-foreground text-xl font-bold tracking-tight">
+                  All Operators
+                </h2>
+                <span className="text-muted-foreground bg-muted border-border rounded-full border px-3 py-1 font-['JetBrains_Mono',monospace] text-xs">
+                  {members.length} Total
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                {sortedMembers.map((member) => {
+                  const globalEngagements = engagements.filter(
+                    (e: any) => e.twitterUserId === member.twitterId
+                  ).length;
+                  return (
+                    <div
+                      key={member._id}
+                      className="group bg-card border-border flex flex-col items-center gap-4 rounded-3xl border p-6 shadow-sm transition-all duration-300 hover:-translate-y-[2px] hover:border-blue-500/40"
+                    >
+                      <Avatar className="border-border h-16 w-16 border transition-all duration-300 group-hover:border-blue-500 group-hover:shadow-lg group-hover:shadow-blue-500/30">
+                        <AvatarImage
+                          src={member.image}
+                          alt={member.name || member.username}
+                        />
+                        <AvatarFallback className="bg-muted text-foreground">
+                          {(member.name || member.username || "M")
+                            .charAt(0)
+                            .toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col items-center text-center">
+                        <span className="text-foreground text-sm font-semibold tracking-tight">
+                          {member.name || member.username}
+                        </span>
+                        <span className="text-muted-foreground mt-0.5 text-xs">
+                          @{member.twitterUsername || member.username}
+                        </span>
+                      </div>
+                      <div className="bg-background border-border text-muted-foreground mt-1 rounded-full border px-3 py-1.5 font-['JetBrains_Mono',monospace] text-xs transition-colors group-hover:border-blue-500/30 group-hover:bg-blue-500/10 group-hover:text-blue-500">
+                        <span className="text-foreground font-bold group-hover:text-blue-500">
+                          {globalEngagements}
+                        </span>{" "}
+                        Signals
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
