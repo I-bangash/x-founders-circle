@@ -727,9 +727,14 @@ function PostCard({
       </div>
 
       {/* 2. Content */}
-      <div className="text-foreground mb-6 text-[15px] leading-relaxed text-wrap whitespace-pre-wrap">
+      <a
+        href={`https://x.com/${post.authorUsername}/status/${post.tweetId}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-foreground mb-6 block cursor-pointer text-[15px] leading-relaxed text-wrap whitespace-pre-wrap transition-opacity hover:opacity-80"
+      >
         {post.content}
-      </div>
+      </a>
 
       {/* Threads / Comments */}
       {showComments && post.threadData && post.threadData.length > 0 && (
@@ -768,9 +773,14 @@ function PostCard({
                           @{tweet.author.username}
                         </span>
                       </div>
-                      <div className="text-foreground text-[14px] leading-relaxed text-wrap wrap-break-word whitespace-pre-wrap">
+                      <a
+                        href={`https://x.com/${tweet.author.username}/status/${tweet.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-foreground block cursor-pointer text-[14px] leading-relaxed text-wrap wrap-break-word whitespace-pre-wrap transition-opacity hover:opacity-80"
+                      >
                         {tweet.content.text}
-                      </div>
+                      </a>
                     </div>
                   </div>
                 );
