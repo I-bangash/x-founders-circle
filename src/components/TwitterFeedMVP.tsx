@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   ParsedFeed,
   ParsedThread,
@@ -48,11 +49,10 @@ export function TweetRow({
     <div className="relative flex cursor-pointer gap-3 bg-white px-4 pt-3 pb-2 transition hover:bg-zinc-50 dark:bg-zinc-950 dark:hover:bg-zinc-900/50">
       {/* Left Column: Avatar & Line */}
       <div className="flex w-10 shrink-0 flex-col items-center">
-        <img
-          src={author.avatar}
-          alt={author.name}
-          className="z-10 h-10 w-10 rounded-full object-cover"
-        />
+        <Avatar className="z-10 h-10 w-10">
+          <AvatarImage src={author.avatar} alt={author.name} />
+          <AvatarFallback>{author.name.charAt(0).toUpperCase()}</AvatarFallback>
+        </Avatar>
         {hasThreadLine && (
           <div className="absolute top-[52px] bottom-[-12px] z-0 w-0.5 bg-zinc-200 dark:bg-zinc-800" />
         )}

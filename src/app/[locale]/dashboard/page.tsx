@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 
 import { RefreshCw, Trash2 } from "lucide-react";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Doc } from "@/convex/_generated/dataModel";
 
 export default function Dashboard() {
@@ -177,21 +180,21 @@ export default function Dashboard() {
       <section className="space-y-4">
         <h2 className="text-2xl font-semibold">Members ({members.length})</h2>
         <form onSubmit={handleAddMember} className="flex gap-2">
-          <input
+          <Input
             type="text"
             value={newMember}
             onChange={(e) => setNewMember(e.target.value)}
             placeholder="Twitter Username (e.g. elonmusk)"
-            className="flex-1 rounded border px-3 py-2 dark:border-zinc-800 dark:bg-zinc-900"
+            className="flex-1 dark:bg-zinc-900"
             disabled={loading}
           />
-          <button
+          <Button
             type="submit"
             disabled={loading}
-            className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:opacity-50"
+            className="bg-blue-500 text-white hover:bg-blue-600"
           >
             Add Member
-          </button>
+          </Button>
         </form>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
@@ -201,11 +204,17 @@ export default function Dashboard() {
               className="flex items-center justify-between rounded border p-3 dark:border-zinc-800"
             >
               <div className="flex items-center gap-3">
-                <img
-                  src={member.image || "/placeholder.svg"}
-                  alt={member.name || "Member"}
-                  className="h-10 w-10 rounded-full"
-                />
+                <Avatar className="h-10 w-10">
+                  <AvatarImage
+                    src={member.image || "/placeholder.svg"}
+                    alt={member.name || "Member"}
+                  />
+                  <AvatarFallback>
+                    {(member.name || member.username || "M")
+                      .charAt(0)
+                      .toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
                 <div>
                   <div className="text-sm font-semibold">{member.name}</div>
                   <div className="text-xs text-zinc-500">
@@ -213,12 +222,14 @@ export default function Dashboard() {
                   </div>
                 </div>
               </div>
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => handleDeleteMember(member._id || "")}
-                className="rounded p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-950"
+                className="text-red-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950"
               >
                 <Trash2 className="h-4 w-4" />
-              </button>
+              </Button>
             </div>
           ))}
         </div>
@@ -228,21 +239,21 @@ export default function Dashboard() {
       <section className="space-y-4">
         <h2 className="text-2xl font-semibold">Posts ({posts.length})</h2>
         <form onSubmit={handleAddPost} className="flex gap-2">
-          <input
+          <Input
             type="text"
             value={newPost}
             onChange={(e) => setNewPost(e.target.value)}
             placeholder="Tweet ID (e.g. 1234567890)"
-            className="flex-1 rounded border px-3 py-2 dark:border-zinc-800 dark:bg-zinc-900"
+            className="flex-1 dark:bg-zinc-900"
             disabled={loading}
           />
-          <button
+          <Button
             type="submit"
             disabled={loading}
-            className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:opacity-50"
+            className="bg-blue-500 text-white hover:bg-blue-600"
           >
             Add Post
-          </button>
+          </Button>
         </form>
 
         <div className="space-y-3">
@@ -252,11 +263,12 @@ export default function Dashboard() {
               className="flex items-start justify-between rounded border p-4 dark:border-zinc-800"
             >
               <div className="flex gap-3">
-                <img
-                  src={post.authorAvatar}
-                  alt={post.authorName}
-                  className="h-10 w-10 rounded-full"
-                />
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={post.authorAvatar} alt={post.authorName} />
+                  <AvatarFallback>
+                    {(post.authorName || "P").charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
                 <div>
                   <div className="text-sm font-semibold">
                     {post.authorName}{" "}
@@ -273,20 +285,24 @@ export default function Dashboard() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <button
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={() => handleRefreshPost(post.tweetId)}
-                  className="rounded p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950"
+                  className="text-blue-500 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950"
                   title="Refresh Engagements"
                 >
                   <RefreshCw className="h-4 w-4" />
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={() => handleDeletePost(post._id || "")}
-                  className="rounded p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-950"
+                  className="text-red-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950"
                   title="Delete Post"
                 >
                   <Trash2 className="h-4 w-4" />
-                </button>
+                </Button>
               </div>
             </div>
           ))}
