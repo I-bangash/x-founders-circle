@@ -406,7 +406,7 @@ export default function SignalTerminal() {
       <div className="pt-[64px]" />
 
       {/* B. TOP MEMBER STRIP - "Operator Grid" */}
-      <div className="operator-grid border-border bg-background border-b pt-6 pb-2">
+      <div className="operator-grid border-border bg-background border-b pt-4 pb-2">
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-6 md:flex-row md:gap-8">
           <div className="md:border-border flex shrink-0 flex-col items-center justify-center text-center md:max-w-44 md:items-end md:border-r md:pr-6 md:text-right">
             <p className="text-muted-foreground mt-1 text-xs">

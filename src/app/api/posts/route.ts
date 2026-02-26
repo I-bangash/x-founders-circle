@@ -79,6 +79,21 @@ export async function POST(req: Request) {
       );
     }
 
+    // Fetch members early to filter threads
+    const members = await fetchQuery(api.mvp.getMembers);
+
+    // Filter threads to only keep those where a member participated
+    const memberThreads = parsedFeed.threads.filter((thread) => {
+      return thread.tweets.some((tweet) => {
+        return members.some(
+          (m) =>
+            m.twitterUsername?.toLowerCase() ===
+              tweet.author.username.toLowerCase() ||
+            m.username?.toLowerCase() === tweet.author.username.toLowerCase()
+        );
+      });
+    });
+
     // Check if post already exists
     let post = await fetchQuery(api.mvp.getPostByTweetId, {
       tweetId: parsedFeed.mainTweet!.id,
@@ -96,7 +111,7 @@ export async function POST(req: Request) {
         content: parsedFeed.mainTweet.content.text,
         createdAt: new Date(parsedFeed.mainTweet.createdAt).getTime(), // Parsed from tweet
         fetchedAt: Date.now(),
-        threadData: parsedFeed.threads,
+        threadData: memberThreads,
       });
       // Mock post object for response
       post = {
@@ -114,15 +129,14 @@ export async function POST(req: Request) {
         content: parsedFeed.mainTweet.content.text,
         createdAt: post.createdAt,
         fetchedAt: Date.now(),
-        threadData: parsedFeed.threads,
+        threadData: memberThreads,
       });
     }
 
     // Process engagements (replies)
     const newEngagementsToInsert = [];
-    const members = await fetchQuery(api.mvp.getMembers);
 
-    for (const thread of parsedFeed.threads) {
+    for (const thread of memberThreads) {
       for (const tweet of thread.tweets) {
         // Skip self-engagements (if the author replies to their own post)
         if (
