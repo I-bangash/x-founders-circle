@@ -38,7 +38,7 @@ type InfiniteSliderProps = {
 function InfiniteSlider({
   children,
   gap = 16,
-  speed = 100,
+  speed = 50,
   speedOnHover,
   direction = "horizontal",
   reverse = false,
@@ -434,7 +434,7 @@ export default function SignalTerminal() {
             {members.length > 0 ? (
               <BlurredInfiniteSlider
                 speedOnHover={20}
-                speed={40}
+                speed={30}
                 gap={32}
                 fadeWidth={40}
               >
@@ -444,8 +444,11 @@ export default function SignalTerminal() {
                   ).length;
 
                   return (
-                    <div
+                    <a
                       key={member._id}
+                      href={`https://x.com/${member.twitterUsername || member.username}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="group relative flex flex-col items-center gap-2"
                     >
                       <div className="relative">
@@ -469,7 +472,7 @@ export default function SignalTerminal() {
                       <div className="bg-muted border-border text-foreground pointer-events-none absolute top-full left-1/2 z-50 mt-2 -translate-x-1/2 rounded border px-2 py-1 text-xs whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100">
                         @{member.twitterUsername || member.username}
                       </div>
-                    </div>
+                    </a>
                   );
                 })}
               </BlurredInfiniteSlider>
@@ -575,8 +578,11 @@ export default function SignalTerminal() {
                     (e: any) => e.twitterUserId === member.twitterId
                   ).length;
                   return (
-                    <div
+                    <a
                       key={member._id}
+                      href={`https://x.com/${member.twitterUsername || member.username}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="group bg-card border-border flex flex-col items-center gap-4 rounded-3xl border p-6 shadow-sm transition-all duration-300 hover:-translate-y-[2px] hover:border-blue-500/40"
                     >
                       <Avatar className="border-border h-16 w-16 border transition-all duration-300 group-hover:border-blue-500 group-hover:shadow-lg group-hover:shadow-blue-500/30">
@@ -604,7 +610,7 @@ export default function SignalTerminal() {
                         </span>{" "}
                         Signals
                       </div>
-                    </div>
+                    </a>
                   );
                 })}
               </div>
@@ -809,7 +815,13 @@ function PostCard({
             </div>
           ) : (
             displayMembers.map((m) => (
-              <div key={m._id} className="group relative">
+              <a
+                key={m._id}
+                href={`https://x.com/${m.twitterUsername || m.username}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative block"
+              >
                 <Avatar
                   className={`h-8 w-8 cursor-pointer transition-all duration-300 group-hover:scale-105 ${
                     view === "missing"
@@ -832,7 +844,7 @@ function PostCard({
                     </span>
                   )}
                 </div>
-              </div>
+              </a>
             ))
           )}
         </div>
@@ -866,7 +878,8 @@ function Leaderboard({
   const rankedMembers = [...members]
     .map((m) => ({ ...m, count: getEngagementCount(m.twitterId) }))
     .filter((m) => m.count > 0 || tab === "global") // Hide zeroes on today tab usually, but let's keep all for ranking
-    .sort((a, b) => b.count - a.count);
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
 
   return (
     <div className="leaderboard-section border-border border-t pt-12 pb-20">
