@@ -270,12 +270,8 @@ export default function SignalTerminal() {
   });
 
   const sortedPosts = [...filteredPosts].sort((a, b) => {
-    const aEngagements = engagements.filter(
-      (e: any) => e.postId === a._id
-    ).length;
-    const bEngagements = engagements.filter(
-      (e: any) => e.postId === b._id
-    ).length;
+    const aEngagements = a.engagementCount || 0;
+    const bEngagements = b.engagementCount || 0;
 
     if (sortBy === "latest") return b.createdAt - a.createdAt;
     if (sortBy === "most") return bEngagements - aEngagements;
@@ -439,9 +435,7 @@ export default function SignalTerminal() {
                 fadeWidth={40}
               >
                 {sortedMembers.map((member) => {
-                  const globalEngagements = engagements.filter(
-                    (e: any) => e.twitterUserId === member.twitterId
-                  ).length;
+                  const globalEngagements = member.totalEngagements || 0;
 
                   return (
                     <a
@@ -574,9 +568,7 @@ export default function SignalTerminal() {
 
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
                 {sortedMembers.map((member) => {
-                  const globalEngagements = engagements.filter(
-                    (e: any) => e.twitterUserId === member.twitterId
-                  ).length;
+                  const globalEngagements = member.totalEngagements || 0;
                   return (
                     <a
                       key={member._id}
@@ -865,18 +857,21 @@ function Leaderboard({
 
   const todayStr = new Date().toDateString();
 
-  const getEngagementCount = (twitterId: string) => {
+  const getEngagementCount = (twitterId: string, totalEngagements?: number) => {
+    if (tab === "global") {
+      return totalEngagements || 0;
+    }
     return engagements.filter((e) => {
       if (e.twitterUserId !== twitterId) return false;
-      if (tab === "today") {
-        return new Date(e.engagedAt).toDateString() === todayStr;
-      }
-      return true;
+      return new Date(e.engagedAt).toDateString() === todayStr;
     }).length;
   };
 
   const rankedMembers = [...members]
-    .map((m) => ({ ...m, count: getEngagementCount(m.twitterId) }))
+    .map((m) => ({
+      ...m,
+      count: getEngagementCount(m.twitterId, m.totalEngagements),
+    }))
     .filter((m) => m.count > 0 || tab === "global") // Hide zeroes on today tab usually, but let's keep all for ranking
     .sort((a, b) => b.count - a.count)
     .slice(0, 5);

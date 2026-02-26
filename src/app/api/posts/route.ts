@@ -94,7 +94,7 @@ export async function POST(req: Request) {
         authorName: parsedFeed.mainTweet.author.name,
         authorAvatar: parsedFeed.mainTweet.author.avatar,
         content: parsedFeed.mainTweet.content.text,
-        createdAt: Date.now(), // Should parse from tweet, using now for mock
+        createdAt: new Date(parsedFeed.mainTweet.createdAt).getTime(), // Parsed from tweet
         fetchedAt: Date.now(),
         threadData: parsedFeed.threads,
       });
@@ -144,7 +144,7 @@ export async function POST(req: Request) {
           newEngagementsToInsert.push({
             postId: postId as any,
             twitterUserId: member.twitterId,
-            engagedAt: Date.now(),
+            engagedAt: new Date(tweet.createdAt).getTime(),
           });
         }
       }

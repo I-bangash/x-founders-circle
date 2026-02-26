@@ -23,6 +23,7 @@ export function getTimeAgo(dateString: string) {
 // --- Types ---
 export interface ParsedTweet {
   id: string;
+  createdAt: string;
   author: {
     name: string;
     username: string;
@@ -103,6 +104,7 @@ export function parseTwitterData(rawData: any): ParsedFeed {
 
       return {
         id: legacy.id_str,
+        createdAt: legacy.created_at || new Date().toISOString(),
         author: {
           name: core.legacy?.name || "Unknown",
           username: core.legacy?.screen_name || "unknown",
