@@ -582,7 +582,7 @@ export default function SignalTerminal() {
             >
               <div className="mb-2 flex items-center justify-between px-2">
                 <h2 className="text-foreground text-xl font-bold tracking-tight">
-                  All Operators
+                  All Members
                 </h2>
                 <span className="text-muted-foreground bg-muted border-border rounded-full border px-3 py-1 font-['JetBrains_Mono',monospace] text-xs">
                   {members.length} Total
@@ -710,10 +710,10 @@ function PostCard({
               </span>
             </button>
           )}
-          <div className="text-muted-foreground bg-muted border-border rounded-md border px-2 py-1 font-['JetBrains_Mono',monospace] text-xs">
+          {/* <div className="text-muted-foreground bg-muted border-border rounded-md border px-2 py-1 font-['JetBrains_Mono',monospace] text-xs">
             <span className="text-blue-500">{engagedMembers.length}</span> /{" "}
             {members.length}
-          </div>
+          </div> */}
           <a
             href={`https://x.com/${post.authorUsername}/status/${post.tweetId}`}
             target="_blank"
@@ -903,7 +903,7 @@ function Leaderboard({
     <div className="leaderboard-section border-border border-t pt-12 pb-20">
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-foreground text-xl font-bold tracking-tight">
-          Performance Index
+          Hall of Fame
         </h2>
         <div className="bg-card border-border flex items-center rounded-full border p-1">
           <button
