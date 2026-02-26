@@ -19,6 +19,7 @@ import useMeasure from "react-use-measure";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { cn } from "@/lib/utils";
 
 import { api } from "../../../../convex/_generated/api";
@@ -159,7 +160,7 @@ function BlurredInfiniteSlider({
 }
 
 // --- Types ---
-type Tab = "today" | "all";
+type Tab = "today" | "all" | "date";
 type SortOption = "latest" | "most" | "least";
 type EngagementMode = "engaged" | "missing";
 type LeaderboardTab = "global" | "today";
@@ -175,6 +176,7 @@ export default function SignalTerminal() {
 
   // --- State ---
   const [activeTab, setActiveTab] = useState<Tab>("today");
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [sortBy, setSortBy] = useState<SortOption>("latest");
   const [searchQuery, setSearchQuery] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
@@ -251,6 +253,12 @@ export default function SignalTerminal() {
       if (!isToday) return false;
     }
 
+    if (activeTab === "date" && selectedDate) {
+      const isSelectedDate =
+        new Date(post.createdAt).toDateString() === selectedDate.toDateString();
+      if (!isSelectedDate) return false;
+    }
+
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       return (
@@ -316,9 +324,12 @@ export default function SignalTerminal() {
 
           {/* Center: Tab Switcher */}
           <div className="flex flex-1 justify-center">
-            <div className="bg-card border-border flex items-center rounded-full border p-1">
+            <div className="bg-card border-border flex items-center gap-1 rounded-full border p-1">
               <button
-                onClick={() => setActiveTab("today")}
+                onClick={() => {
+                  setActiveTab("today");
+                  setSelectedDate(undefined);
+                }}
                 className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
                   activeTab === "today"
                     ? "bg-muted text-foreground shadow-sm"
@@ -328,7 +339,10 @@ export default function SignalTerminal() {
                 Today
               </button>
               <button
-                onClick={() => setActiveTab("all")}
+                onClick={() => {
+                  setActiveTab("all");
+                  setSelectedDate(undefined);
+                }}
                 className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
                   activeTab === "all"
                     ? "bg-muted text-foreground shadow-sm"
@@ -337,6 +351,22 @@ export default function SignalTerminal() {
               >
                 All Posts
               </button>
+
+              <div className="bg-border mx-1 h-4 w-[1px]" />
+
+              <DateRangePicker
+                date={selectedDate}
+                onDateChange={(date) => {
+                  setSelectedDate(date);
+                  if (date) setActiveTab("date");
+                  else setActiveTab("today");
+                }}
+                className={
+                  activeTab === "date"
+                    ? "bg-muted text-foreground border-transparent shadow-sm"
+                    : "hover:bg-muted/50 text-muted-foreground hover:text-foreground border-transparent bg-transparent"
+                }
+              />
             </div>
           </div>
 
