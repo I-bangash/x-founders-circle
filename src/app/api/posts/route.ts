@@ -124,6 +124,14 @@ export async function POST(req: Request) {
 
     for (const thread of parsedFeed.threads) {
       for (const tweet of thread.tweets) {
+        // Skip self-engagements (if the author replies to their own post)
+        if (
+          tweet.author.username.toLowerCase() ===
+          parsedFeed.mainTweet.author.username.toLowerCase()
+        ) {
+          continue;
+        }
+
         // Find if this user is a member
         const member = members.find(
           (u) =>

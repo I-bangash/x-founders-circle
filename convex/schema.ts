@@ -64,6 +64,7 @@ export default defineSchema({
     twitterUsername: v.optional(v.string()), // screen_name
     followersCount: v.optional(v.number()),
     joinedAt: v.optional(v.number()),
+    totalEngagements: v.optional(v.number()),
   })
     .index("by_email", ["email"])
     .index("by_clerkId", ["clerkId"])
@@ -81,6 +82,7 @@ export default defineSchema({
     createdAt: v.number(),
     fetchedAt: v.number(),
     threadData: v.optional(v.any()), // Store the parsed thread structure
+    engagementCount: v.optional(v.number()),
   })
     .index("by_tweetId", ["tweetId"])
     .index("by_createdAt", ["createdAt"]),

@@ -53,6 +53,7 @@ export const addMember = mutation({
       image: args.profileImageUrl,
       email: `dummy_${args.twitterId}@founderx.com`, // dummy
       clerkId: `dummy_${args.twitterId}`, // dummy
+      totalEngagements: 0,
     });
 
     return await ctx.db.get(newUserId);
@@ -133,7 +134,7 @@ export const addPost = mutation({
       return existing._id;
     }
 
-    return await ctx.db.insert("posts", args);
+    return await ctx.db.insert("posts", { ...args, engagementCount: 0 });
   },
 });
 
@@ -184,6 +185,27 @@ export const addEngagements = mutation({
       if (!existing) {
         await ctx.db.insert("engagements", eng);
         addedCount++;
+
+        // Update user's total engagements
+        const user = await ctx.db
+          .query("users")
+          .withIndex("by_twitterId", (q) =>
+            q.eq("twitterId", eng.twitterUserId)
+          )
+          .first();
+        if (user) {
+          await ctx.db.patch(user._id, {
+            totalEngagements: (user.totalEngagements || 0) + 1,
+          });
+        }
+
+        // Update post's engagement count
+        const post = await ctx.db.get(eng.postId);
+        if (post) {
+          await ctx.db.patch(eng.postId, {
+            engagementCount: (post.engagementCount || 0) + 1,
+          });
+        }
       }
     }
     return addedCount;
