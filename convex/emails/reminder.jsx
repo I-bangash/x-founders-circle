@@ -1,6 +1,6 @@
 import { ConvexError, v } from "convex/values";
 
-import { resend } from "@/libs/resend";
+import { resend } from "@/lib/resend";
 
 import { internalAction } from "../_generated/server";
 

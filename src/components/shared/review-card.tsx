@@ -1,6 +1,6 @@
 import { type ReactNode } from "react";
 
-import { cn } from "@/utils/utils";
+import { cn } from "@/lib/utils";
 
 const ACCENT_TEXT_COLORS = {
   emerald: "text-emerald-600 dark:text-emerald-500",

@@ -1,4 +1,4 @@
-import { redis } from "@/libs/redis";
+import { redis } from "@/lib/redis";
 
 const Page = async () => {
   const count = await redis.get<number>("count");

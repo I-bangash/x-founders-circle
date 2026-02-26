@@ -10,7 +10,7 @@ import type {
   Variants,
 } from "motion/react";
 
-import { cn } from "@/utils/utils";
+import { cn } from "@/lib/utils";
 
 export type PresetType = "blur" | "fade-in-blur" | "scale" | "fade" | "slide";
 

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 import { fetchMutation, fetchQuery } from "convex/nextjs";
 
-import { parseTwitterData } from "@/libs/twitter";
+import { parseTwitterData } from "@/lib/twitter";
 
 import { api } from "../../../../convex/_generated/api";
 

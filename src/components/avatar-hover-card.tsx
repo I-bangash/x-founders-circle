@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/utils/utils";
+import { cn } from "@/lib/utils";
 
 export interface NativeHoverCardProps {
   /**

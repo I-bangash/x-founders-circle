@@ -3,7 +3,7 @@ import type { LocalizationResource } from "@clerk/types";
 import type { LocalePrefixMode } from "next-intl/routing";
 
 export const AppConfig = {
-  name: "Remarkable.sh",
+  name: "Founders on X",
   locales: ["en", "fr"],
   defaultLocale: "en",
   localePrefix: "as-needed" as LocalePrefixMode,

@@ -1,7 +1,7 @@
 "use server";
 
 import { UserNotificationEmail } from "@/convex/emails/templates/userNotificationEmail";
-import { resend } from "@/libs/resend";
+import { resend } from "@/lib/resend";
 
 export async function sendUserNotificationEmailFunction({
   userName,

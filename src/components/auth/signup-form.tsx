@@ -11,8 +11,8 @@ import Cookies from "js-cookie";
 import { ChevronLeft } from "lucide-react";
 import { useTheme } from "next-themes";
 
+import { cn } from "@/lib/utils";
 import { APP_ROOT_DOMAIN } from "@/utils/constants";
-import { cn } from "@/utils/utils";
 
 import BackdropGradient from "../shared/backdrop-gradient";
 import GlassCard from "../shared/glass-card";

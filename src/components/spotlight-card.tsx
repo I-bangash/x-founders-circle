@@ -2,7 +2,7 @@
 
 import { type ReactNode, useEffect, useRef } from "react";
 
-import { cn } from "@/utils/utils";
+import { cn } from "@/lib/utils";
 
 interface SpotlightCardProps {
   children: ReactNode;

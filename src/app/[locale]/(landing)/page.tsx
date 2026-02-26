@@ -19,7 +19,7 @@ import useMeasure from "react-use-measure";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/utils/utils";
+import { cn } from "@/lib/utils";
 
 import { api } from "../../../../convex/_generated/api";
 

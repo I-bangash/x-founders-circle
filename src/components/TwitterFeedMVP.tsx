@@ -20,7 +20,7 @@ import {
   ParsedThread,
   ParsedTweet,
   parseTwitterData,
-} from "@/libs/twitter";
+} from "@/lib/twitter";
 
 // --- Utility for Tailwind classes ---
 export function cn(...inputs: ClassValue[]) {

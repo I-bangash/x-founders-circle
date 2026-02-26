@@ -13,7 +13,7 @@ import {
   X,
 } from "lucide-react";
 
-import { cn } from "@/utils/utils";
+import { cn } from "@/lib/utils";
 
 export interface Story {
   id: string;

@@ -1,7 +1,7 @@
 "use server";
 
 import { WelcomeEmail } from "@/convex/emails/templates/WelcomeEmail";
-import { resend } from "@/libs/resend";
+import { resend } from "@/lib/resend";
 import {
   APP_ROOT_DOMAIN,
   DEFAULT_APP_URL,

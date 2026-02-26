@@ -1,6 +1,6 @@
 import { useTheme } from "next-themes";
 
-import { cn } from "@/utils/utils";
+import { cn } from "@/lib/utils";
 
 type Props = {
   children: React.ReactNode;
