@@ -421,39 +421,39 @@ export default function SignalTerminal() {
               <option value="least">Least Engaged</option>
             </select>
 
-            <div className="bg-card border-border hidden items-center rounded-full border p-1 sm:flex">
+            <div className="bg-card border-border flex items-center rounded-full border p-0.5 sm:p-1">
               <button
                 onClick={() => setPostView("list")}
-                className={`rounded-full p-1.5 transition-all ${
+                className={`rounded-full p-1 transition-all sm:p-1.5 ${
                   postView === "list"
                     ? "bg-muted text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
                 aria-label="List View"
               >
-                <List className="h-4 w-4" />
+                <List className="h-3 w-3 sm:h-4 sm:w-4" />
               </button>
               <button
                 onClick={() => setPostView("grid")}
-                className={`rounded-full p-1.5 transition-all ${
+                className={`rounded-full p-1 transition-all sm:p-1.5 ${
                   postView === "grid"
                     ? "bg-muted text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
                 aria-label="Grid View"
               >
-                <LayoutGrid className="h-4 w-4" />
+                <LayoutGrid className="h-3 w-3 sm:h-4 sm:w-4" />
               </button>
             </div>
 
             {mounted && (
               <button
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="bg-card border-border text-muted-foreground hover:text-foreground flex h-8 w-8 items-center justify-center rounded-full border transition-colors focus:border-blue-500/50 focus:outline-none"
+                className="bg-card border-border text-muted-foreground hover:text-foreground flex h-6 w-6 items-center justify-center rounded-full border transition-colors focus:border-blue-500/50 focus:outline-none sm:h-8 sm:w-8"
                 aria-label="Toggle Theme"
               >
-                <Sun className="h-4 w-4 dark:hidden" />
-                <Moon className="hidden h-4 w-4 dark:block" />
+                <Sun className="h-3 w-3 sm:h-4 sm:w-4 dark:hidden" />
+                <Moon className="hidden h-3 w-3 sm:h-4 sm:w-4 dark:block" />
               </button>
             )}
           </div>
