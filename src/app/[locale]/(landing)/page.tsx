@@ -237,7 +237,7 @@ export default function SignalTerminal() {
     }, containerRef);
 
     return () => ctx.revert();
-  }, [posts.length, activeTab, sortBy, viewMode]);
+  }, [posts.length, viewMode]);
 
   // --- Derived Data ---
   const sortedMembers = [...members].sort((a, b) =>
@@ -484,30 +484,39 @@ export default function SignalTerminal() {
               className="flex flex-col gap-12"
             >
               {/* C. MAIN TIMELINE - "Post Column" */}
-              <div className="flex flex-col gap-6">
-                {posts.length === 0 ? (
-                  <div className="text-muted-foreground border-border bg-card/50 rounded-3xl border border-dashed py-20 text-center">
-                    Initializing signal feed...
-                  </div>
-                ) : sortedPosts.length === 0 ? (
-                  <div className="text-muted-foreground border-border bg-card/50 rounded-3xl border border-dashed py-20 text-center">
-                    No signals match criteria.
-                  </div>
-                ) : (
-                  sortedPosts.map((post) => (
-                    <PostCard
-                      key={post._id}
-                      post={post}
-                      members={members as any}
-                      engagements={
-                        engagements.filter(
-                          (e: any) => e.postId === post._id
-                        ) as any
-                      }
-                    />
-                  ))
-                )}
-              </div>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={`${activeTab}-${sortBy}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+                  className="flex flex-col gap-6"
+                >
+                  {posts.length === 0 ? (
+                    <div className="text-muted-foreground border-border bg-card/50 rounded-3xl border border-dashed py-20 text-center">
+                      Initializing signal feed...
+                    </div>
+                  ) : sortedPosts.length === 0 ? (
+                    <div className="text-muted-foreground border-border bg-card/50 rounded-3xl border border-dashed py-20 text-center">
+                      No signals match criteria.
+                    </div>
+                  ) : (
+                    sortedPosts.map((post) => (
+                      <PostCard
+                        key={post._id}
+                        post={post}
+                        members={members as any}
+                        engagements={
+                          engagements.filter(
+                            (e: any) => e.postId === post._id
+                          ) as any
+                        }
+                      />
+                    ))
+                  )}
+                </motion.div>
+              </AnimatePresence>
 
               {/* E. LEADERBOARD - "Performance Index" */}
               <Leaderboard members={members} engagements={engagements} />
@@ -763,7 +772,7 @@ function PostCard({
         {/* Avatars Grid */}
         <div className="flex flex-wrap gap-2">
           {displayMembers.length === 0 ? (
-            <div className="text-muted-foreground w-full py-4 text-center text-sm">
+            <div className="text-muted-foreground w-full py-1.5 text-center text-sm">
               {view === "engaged"
                 ? "No signals detected yet."
                 : "Maximum engagement achieved. No missing signals."}
