@@ -1,48 +1,96 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useState } from "react";
-
 import { useQuery } from "convex/react";
-import { CheckCircle2, Search, XCircle } from "lucide-react";
+import gsap from "gsap";
+import { ExternalLink, MessageSquare, Search } from "lucide-react";
 
-import { TweetRow } from "@/components/TwitterFeedMVP";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 import { api } from "../../../../convex/_generated/api";
-import { Id } from "../../../../convex/_generated/dataModel";
 
-export default function MVPLandingPage() {
+// --- Types ---
+type Tab = "today" | "all";
+type SortOption = "latest" | "most" | "least";
+type EngagementMode = "engaged" | "missing";
+type LeaderboardTab = "global" | "today";
+
+export default function SignalTerminal() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // --- Data Fetching ---
   const members = useQuery(api.mvp.getMembers) || [];
   const posts = useQuery(api.mvp.getPosts) || [];
   const engagements = useQuery(api.mvp.getEngagements) || [];
 
-  const [activeTab, setActiveTab] = useState<"today" | "all" | "leaderboard">(
-    "today"
-  );
-  const [sortBy, setSortBy] = useState<"latest" | "most" | "least">("latest");
+  // --- State ---
+  const [activeTab, setActiveTab] = useState<Tab>("today");
+  const [sortBy, setSortBy] = useState<SortOption>("latest");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isScrolled, setIsScrolled] = useState(false);
 
-  // Filter posts
+  // Scroll listener for Navbar background
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // --- GSAP Animations ---
+  useEffect(() => {
+    if (!members.length && !posts.length) return; // Wait for data
+
+    const ctx = gsap.context(() => {
+      // Timeline for coordinated entrance
+      const tl = gsap.timeline();
+
+      // Top member bar fades in and slides down
+      tl.fromTo(
+        ".operator-grid",
+        { opacity: 0, y: -10 },
+        { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }
+      );
+
+      // Posts cascade upward
+      tl.fromTo(
+        ".post-card",
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          stagger: 0.06,
+          ease: "power3.out",
+        },
+        "-=0.4"
+      );
+
+      // Leaderboard slides in
+      tl.fromTo(
+        ".leaderboard-section",
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
+        "-=0.2"
+      );
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, [members.length, posts.length, activeTab, sortBy]); // Re-trigger on data or filter change
+
+  // --- Derived Data ---
+  const sortedMembers = [...members].sort((a, b) =>
+    (a.username || "").localeCompare(b.username || "")
+  );
+
   const filteredPosts = posts.filter((post: any) => {
-    // Tab filter
     if (activeTab === "today") {
       const isToday =
         new Date(post.createdAt).toDateString() === new Date().toDateString();
       if (!isToday) return false;
     }
 
-    // Search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       return (
@@ -50,18 +98,12 @@ export default function MVPLandingPage() {
         post.content.toLowerCase().includes(query)
       );
     }
-
     return true;
   });
 
-  // Sort posts
   const sortedPosts = [...filteredPosts].sort((a, b) => {
-    const aEngagements = engagements.filter(
-      (e: any) => e.postId === a._id
-    ).length;
-    const bEngagements = engagements.filter(
-      (e: any) => e.postId === b._id
-    ).length;
+    const aEngagements = engagements.filter((e: any) => e.postId === a._id).length;
+    const bEngagements = engagements.filter((e: any) => e.postId === b._id).length;
 
     if (sortBy === "latest") return b.createdAt - a.createdAt;
     if (sortBy === "most") return bEngagements - aEngagements;
@@ -70,154 +112,179 @@ export default function MVPLandingPage() {
   });
 
   return (
-    <div className="relative min-h-screen">
-      {/* Background pattern */}
-      <div
-        className="pointer-events-none fixed inset-0 z-0 opacity-20"
-        style={{
-          backgroundImage:
-            "url('https://www.transparenttextures.com/patterns/cubes.png')",
-          mixBlendMode: "overlay",
-        }}
-      />
-
-      {/* Dashed lines background */}
-      <div className="pointer-events-none fixed inset-0 z-0 mx-auto flex w-full max-w-7xl justify-center px-6">
-        <div className="relative flex h-full w-full justify-center border-x border-dashed border-black/5 dark:border-white/5">
-          <div className="bg-dashed absolute left-1/4 h-full w-px bg-black/5 dark:bg-white/5" />
-          <div className="h-full w-px bg-black/5 dark:bg-white/5" />
-          <div className="bg-dashed absolute right-1/4 h-full w-px bg-black/5 dark:bg-white/5" />
-        </div>
+    <div
+      ref={containerRef}
+      className="relative min-h-screen bg-[#0E1116] text-[#E6EDF3] font-['Inter',sans-serif] selection:bg-[#4C8DFF]/30"
+    >
+      {/* Noise Overlay */}
+      <div className="pointer-events-none fixed inset-0 z-50 opacity-[0.04] mix-blend-overlay">
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <filter id="noise">
+            <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+          </filter>
+          <rect width="100%" height="100%" filter="url(#noise)" />
+        </svg>
       </div>
 
-      <div className="relative z-10 mx-auto min-h-screen max-w-2xl border-x border-zinc-200 bg-white/95 shadow-2xl backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/95">
-        {/* Header */}
-        <div className="sticky top-0 z-20 border-b border-zinc-200 bg-white/80 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/80">
-          <div className="flex items-center justify-between px-4 py-3">
-            <h1 className="text-xl font-bold">FoundersOnX</h1>
-            <div className="flex gap-4 text-sm">
-              <Button asChild variant="ghost" size="sm">
-                <Link href="/dashboard">Admin</Link>
-              </Button>
+      {/* A. NAVBAR - "Control Header" */}
+      <header
+        className={`fixed top-0 left-0 right-0 z-40 h-[64px] transition-all duration-300 ${
+          isScrolled
+            ? "bg-[#151A22] border-b border-[#242C38]"
+            : "bg-[#0E1116]/80 backdrop-blur-sm border-b border-[#242C38]/50"
+        }`}
+      >
+        <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6">
+          {/* Left: Logotype */}
+          <div className="flex-1">
+            <Link href="/" className="text-lg font-bold tracking-tight text-[#E6EDF3]">
+              OutliersX
+            </Link>
+          </div>
+
+          {/* Center: Tab Switcher */}
+          <div className="flex justify-center flex-1">
+            <div className="flex items-center rounded-full bg-[#151A22] border border-[#242C38] p-1">
+              <button
+                onClick={() => setActiveTab("today")}
+                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
+                  activeTab === "today"
+                    ? "bg-[#1C222C] text-[#E6EDF3] shadow-sm"
+                    : "text-[#8B98A5] hover:text-[#E6EDF3]"
+                }`}
+              >
+                Today
+              </button>
+              <button
+                onClick={() => setActiveTab("all")}
+                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
+                  activeTab === "all"
+                    ? "bg-[#1C222C] text-[#E6EDF3] shadow-sm"
+                    : "text-[#8B98A5] hover:text-[#E6EDF3]"
+                }`}
+              >
+                All Posts
+              </button>
             </div>
           </div>
 
-          {/* Member Bar */}
-          <div className="hide-scrollbar flex gap-3 overflow-x-auto border-t border-zinc-100 px-4 py-3 dark:border-zinc-900">
-            {[...members]
-              .sort((a, b) =>
-                (a.username || "").localeCompare(b.username || "")
-              )
-              .map((member) => (
-                <div
-                  key={member._id}
-                  className="flex w-14 shrink-0 flex-col items-center gap-1"
-                >
-                  <Avatar className="h-12 w-12 border border-zinc-200 dark:border-zinc-800">
-                    <AvatarImage
-                      src={
-                        member.image ||
-                        `https://picsum.photos/seed/${member._id}/200/200`
-                      }
-                      alt={member.name || member.username || "Member"}
-                    />
-                    <AvatarFallback>
-                      {(member.name || member.username || "M")
-                        .charAt(0)
-                        .toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="w-full truncate text-center text-[10px] text-zinc-500">
-                    @{member.twitterUsername || member.username}
-                  </span>
-                </div>
-              ))}
-            {members.length === 0 && (
-              <div className="py-2 text-sm text-zinc-500">
-                No members added yet.
-              </div>
-            )}
-          </div>
-
-          {/* Controls */}
-          <div className="flex flex-col justify-between gap-3 border-t border-zinc-100 px-4 py-2 sm:flex-row dark:border-zinc-900">
-            <Tabs
-              value={activeTab}
-              onValueChange={(val) => setActiveTab(val as any)}
-              className="w-full sm:w-auto"
+          {/* Right: Search & Sort */}
+          <div className="flex items-center justify-end gap-3 flex-1">
+            <div className="relative group hidden sm:block">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8B98A5] transition-colors group-focus-within:text-[#4C8DFF]" />
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-48 rounded-full bg-[#151A22] border border-[#242C38] py-1.5 pl-9 pr-4 text-sm text-[#E6EDF3] placeholder-[#8B98A5] focus:outline-none focus:border-[#4C8DFF]/50 transition-all"
+              />
+            </div>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortOption)}
+              className="rounded-full bg-[#151A22] border border-[#242C38] px-3 py-1.5 text-sm text-[#E6EDF3] focus:outline-none focus:border-[#4C8DFF]/50 transition-all appearance-none cursor-pointer"
             >
-              <TabsList>
-                <TabsTrigger value="today">Today</TabsTrigger>
-                <TabsTrigger value="all">All Posts</TabsTrigger>
-                <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
-              </TabsList>
-            </Tabs>
+              <option value="latest">Latest</option>
+              <option value="most">Most Engaged</option>
+              <option value="least">Least Engaged</option>
+            </select>
+          </div>
+        </div>
+      </header>
 
-            {activeTab !== "leaderboard" && (
-              <div className="flex gap-2">
-                <div className="relative">
-                  <Search className="absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 text-zinc-400" />
-                  <Input
-                    type="text"
-                    placeholder="Search..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full rounded-full bg-zinc-100 pl-8 focus-visible:ring-blue-500 sm:w-40 dark:bg-zinc-900"
-                  />
+      {/* Main Content Spacer */}
+      <div className="pt-[64px]" />
+
+      {/* B. TOP MEMBER STRIP - "Operator Grid" */}
+      <div className="operator-grid border-b border-[#242C38] bg-[#0E1116]">
+        {/* Horizontal scrollable row */}
+        <div className="hide-scrollbar flex overflow-x-auto px-6 py-4 mask-edges">
+          <div className="flex gap-4 mx-auto min-w-max">
+            {sortedMembers.map((member) => {
+              const globalEngagements = engagements.filter(
+                (e: any) => e.twitterUserId === member.twitterId
+              ).length;
+
+              return (
+                <div key={member._id} className="group relative flex flex-col items-center gap-2">
+                  <div className="relative">
+                    <Avatar className="h-12 w-12 border-2 border-transparent transition-all duration-300 group-hover:border-[#4C8DFF] group-hover:shadow-[0_0_12px_rgba(76,141,255,0.3)] cursor-pointer">
+                      <AvatarImage src={member.image} alt={member.name || member.username} />
+                      <AvatarFallback className="bg-[#1C222C] text-[#E6EDF3]">
+                        {(member.name || member.username || "M").charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    {globalEngagements > 0 && (
+                      <div className="absolute -bottom-1 -right-1 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[#151A22] border border-[#242C38] px-1 text-[10px] font-['JetBrains_Mono',monospace] text-[#E6EDF3]">
+                        {globalEngagements}
+                      </div>
+                    )}
+                  </div>
+                  <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 rounded bg-[#1C222C] border border-[#242C38] px-2 py-1 text-xs text-[#E6EDF3] opacity-0 transition-opacity group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50">
+                    @{member.twitterUsername || member.username}
+                  </div>
                 </div>
-                <Select
-                  value={sortBy}
-                  onValueChange={(val) => setSortBy(val as any)}
-                >
-                  <SelectTrigger className="w-[140px] rounded-full border-zinc-200 bg-zinc-100 focus:ring-blue-500 dark:border-zinc-800 dark:bg-zinc-900">
-                    <SelectValue placeholder="Sort By" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="latest">Latest</SelectItem>
-                    <SelectItem value="most">Most Engaged</SelectItem>
-                    <SelectItem value="least">Least Engaged</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              );
+            })}
+            {members.length === 0 && (
+              <div className="text-sm text-[#8B98A5] py-2">No operators found.</div>
             )}
           </div>
         </div>
+      </div>
 
-        {/* Content Area */}
-        {activeTab === "leaderboard" ? (
-          <Leaderboard
-            members={members as any}
-            engagements={engagements as any}
-          />
-        ) : (
-          <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
-            {posts.length === 0 ? (
-              <div className="p-10 text-center text-zinc-500">
-                Loading or no posts found.
-              </div>
-            ) : sortedPosts.length === 0 ? (
-              <div className="p-10 text-center text-zinc-500">
-                No posts match your filters.
-              </div>
-            ) : (
-              sortedPosts.map((post) => (
-                <PostCard
-                  key={post._id}
-                  post={post}
-                  members={members as any}
-                  engagements={
-                    engagements.filter((e: any) => e.postId === post._id) as any
-                  }
-                />
-              ))
-            )}
-          </div>
-        )}
+      <style jsx global>{`
+        .mask-edges {
+          mask-image: linear-gradient(
+            to right,
+            transparent,
+            black 5%,
+            black 95%,
+            transparent
+          );
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
+
+      {/* Layout Wrapper for Timeline & Leaderboard */}
+      <div className="mx-auto max-w-[720px] px-4 py-8 flex flex-col gap-12">
+        {/* C. MAIN TIMELINE - "Post Column" */}
+        <div className="flex flex-col gap-6">
+          {posts.length === 0 ? (
+            <div className="py-20 text-center text-[#8B98A5] border border-dashed border-[#242C38] rounded-3xl bg-[#151A22]/50">
+              Initializing signal feed...
+            </div>
+          ) : sortedPosts.length === 0 ? (
+            <div className="py-20 text-center text-[#8B98A5] border border-dashed border-[#242C38] rounded-3xl bg-[#151A22]/50">
+              No signals match criteria.
+            </div>
+          ) : (
+            sortedPosts.map((post) => (
+              <PostCard
+                key={post._id}
+                post={post}
+                members={members as any}
+                engagements={engagements.filter((e: any) => e.postId === post._id) as any}
+              />
+            ))
+          )}
+        </div>
+
+        {/* E. LEADERBOARD - "Performance Index" */}
+        <Leaderboard members={members} engagements={engagements} />
       </div>
     </div>
   );
 }
 
+// --- D. POST CARD - "Engagement Unit" ---
 function PostCard({
   post,
   members,
@@ -227,7 +294,8 @@ function PostCard({
   members: any[];
   engagements: any[];
 }) {
-  const [showEngaged, setShowEngaged] = useState(true);
+  const [view, setView] = useState<EngagementMode>("engaged");
+  const [showComments, setShowComments] = useState(false);
 
   const engagedTwitterIds = new Set(engagements.map((e) => e.twitterUserId));
   const engagedMembers = members.filter(
@@ -237,51 +305,109 @@ function PostCard({
     (m) => m.twitterId && !engagedTwitterIds.has(m.twitterId)
   );
 
-  const displayMembers = showEngaged ? engagedMembers : missingMembers;
+  const displayMembers = view === "engaged" ? engagedMembers : missingMembers;
 
-  const mainTweet = {
-    id: post.tweetId,
-    author: {
-      name: post.authorName,
-      username: post.authorUsername,
-      avatar: post.authorAvatar,
-      timeAgo: new Date(post.createdAt).toLocaleDateString(),
-      isVerified: true,
-    },
-    content: {
-      text: post.content,
-    },
-    engagement: {
-      likes: 0,
-      comments: 0,
-      shares: 0,
-      views: 0,
-      isLiked: false,
-      isBookmarked: false,
-    },
+  const getEngagementTimestamp = (twitterId: string) => {
+    const eng = engagements.find((e) => e.twitterUserId === twitterId);
+    if (!eng) return null;
+    return new Date(eng.engagedAt).toLocaleString();
   };
 
   return (
-    <div className="border-b border-zinc-200 pb-4 dark:border-zinc-800">
-      {/* Main Tweet */}
-      <TweetRow
-        tweet={mainTweet}
-        hasThreadLine={post.threadData && post.threadData.length > 0}
-      />
+    <div className="post-card bg-[#151A22] rounded-3xl border border-[#242C38] p-5 sm:p-6 transition-all duration-300 hover:-translate-y-[2px] shadow-sm">
+      {/* 1. Header Row */}
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <Avatar className="h-10 w-10 border border-[#242C38]">
+            <AvatarImage src={post.authorAvatar} alt={post.authorName} />
+            <AvatarFallback className="bg-[#1C222C] text-[#E6EDF3]">
+              {(post.authorName || "U").charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex flex-col">
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-[#E6EDF3] tracking-tight">
+                {post.authorName}
+              </span>
+              <span className="text-sm text-[#8B98A5]">@{post.authorUsername}</span>
+            </div>
+            <div className="text-xs text-[#8B98A5]">
+              {new Date(post.createdAt).toLocaleString(undefined, {
+                month: "short",
+                day: "numeric",
+                hour: "numeric",
+                minute: "2-digit",
+              })}
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center gap-4">
+          {post.threadData && post.threadData.length > 0 && (
+            <button
+              onClick={() => setShowComments(!showComments)}
+              className={`flex items-center gap-1.5 text-xs font-medium transition-colors hover:text-[#E6EDF3] ${
+                showComments ? "text-[#E6EDF3]" : "text-[#8B98A5]"
+              }`}
+            >
+              <MessageSquare className="h-4 w-4" />
+              <span className="font-['JetBrains_Mono',monospace]">{post.threadData.length}</span>
+            </button>
+          )}
+          <div className="text-[#8B98A5] text-xs font-['JetBrains_Mono',monospace] bg-[#1C222C] px-2 py-1 rounded-md border border-[#242C38]">
+            <span className="text-[#4C8DFF]">{engagedMembers.length}</span> / {members.length}
+          </div>
+          <a
+            href={`https://x.com/${post.authorUsername}/status/${post.tweetId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#8B98A5] hover:text-[#E6EDF3] transition-colors hover:scale-[1.02] active:scale-[0.98]"
+            title="Open in X"
+          >
+            <ExternalLink className="h-4 w-4" />
+          </a>
+        </div>
+      </div>
 
-      {/* Replies / Threads */}
-      {post.threadData && post.threadData.length > 0 && (
-        <div className="flex flex-col">
+      {/* 2. Content */}
+      <div className="text-[#E6EDF3] text-[15px] leading-relaxed whitespace-pre-wrap text-wrap mb-6">
+        {post.content}
+      </div>
+
+      {/* Threads / Comments */}
+      {showComments && post.threadData && post.threadData.length > 0 && (
+        <div className="mb-6 mt-4 flex flex-col gap-8 border-t border-[#242C38]/50 pt-6">
           {post.threadData.map((thread: any) => (
             <div key={thread.id} className="flex flex-col">
               {thread.tweets.map((tweet: any, index: number) => {
                 const isLast = index === thread.tweets.length - 1;
                 return (
-                  <TweetRow
-                    key={tweet.id}
-                    tweet={tweet}
-                    hasThreadLine={!isLast}
-                  />
+                  <div key={tweet.id} className="group relative flex gap-3">
+                    {/* Left column: Avatar + Thread Line */}
+                    <div className="flex flex-col items-center min-w-[32px]">
+                      <Avatar className="h-8 w-8 shrink-0 border border-[#242C38] z-10 bg-[#151A22]">
+                        <AvatarImage src={tweet.author.avatar} alt={tweet.author.name} />
+                        <AvatarFallback className="bg-[#1C222C] text-[#E6EDF3] text-xs">
+                          {(tweet.author.name || "U").charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      {!isLast && (
+                        <div className="w-[2px] grow bg-[#242C38] my-1 group-hover:bg-[#4C8DFF]/40 transition-colors rounded-full" />
+                      )}
+                    </div>
+                    
+                    {/* Right column: Content */}
+                    <div className={`flex min-w-0 flex-1 flex-col ${!isLast ? "pb-6" : ""}`}>
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className="font-semibold text-[#E6EDF3] tracking-tight text-[15px]">
+                          {tweet.author.name}
+                        </span>
+                        <span className="text-[13px] text-[#8B98A5]">@{tweet.author.username}</span>
+                      </div>
+                      <div className="text-[#E6EDF3] text-[14px] leading-relaxed whitespace-pre-wrap text-wrap break-words">
+                        {tweet.content.text}
+                      </div>
+                    </div>
+                  </div>
                 );
               })}
             </div>
@@ -289,55 +415,72 @@ function PostCard({
         </div>
       )}
 
-      {/* Engagement Row */}
-      <div className="mx-4 mt-4 rounded-xl border border-zinc-100 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="mb-3 flex items-center justify-between">
-          <Tabs
-            value={showEngaged ? "engaged" : "missing"}
-            onValueChange={(v) => setShowEngaged(v === "engaged")}
-          >
-            <TabsList className="h-8">
-              <TabsTrigger value="engaged" className="text-xs">
-                <CheckCircle2 className="mr-1.5 h-3.5 w-3.5 text-green-500" />
-                Engaged ({engagedMembers.length})
-              </TabsTrigger>
-              <TabsTrigger value="missing" className="text-xs">
-                <XCircle className="mr-1.5 h-3.5 w-3.5 text-red-500" />
-                Missing ({missingMembers.length})
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-          <div className="text-xs font-medium text-zinc-500">
-            {Math.round(
-              (engagedMembers.length / Math.max(members.length, 1)) * 100
-            )}
-            % Participation
+      {/* 3. Engagement Panel */}
+      <div className="rounded-2xl border border-[#242C38] bg-[#0E1116]/50 p-4">
+        {/* Toggle Switch */}
+        <div className="flex items-center justify-between mb-4 border-b border-[#242C38] pb-3">
+          <div className="flex gap-2">
+            <button
+              onClick={() => setView("engaged")}
+              className={`text-xs font-medium px-3 py-1.5 rounded-full transition-all duration-300 ${
+                view === "engaged"
+                  ? "bg-[#3FB950]/10 text-[#3FB950]"
+                  : "text-[#8B98A5] hover:text-[#E6EDF3]"
+              }`}
+            >
+              Engaged ({engagedMembers.length})
+            </button>
+            <button
+              onClick={() => setView("missing")}
+              className={`text-xs font-medium px-3 py-1.5 rounded-full transition-all duration-300 ${
+                view === "missing"
+                  ? "bg-[#F85149]/10 text-[#F85149]"
+                  : "text-[#8B98A5] hover:text-[#E6EDF3]"
+              }`}
+            >
+              Missing ({missingMembers.length})
+            </button>
+          </div>
+          
+          {/* Progress Indicator */}
+          <div className="hidden sm:flex items-center gap-2">
+            <div className="h-1.5 w-24 bg-[#1C222C] rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-[#3FB950] transition-all duration-700 ease-out" 
+                style={{ width: `${members.length > 0 ? (engagedMembers.length / members.length) * 100 : 0}%` }}
+              />
+            </div>
           </div>
         </div>
 
+        {/* Avatars Grid */}
         <div className="flex flex-wrap gap-2">
           {displayMembers.length === 0 ? (
-            <div className="py-1 text-sm text-zinc-500">
-              {showEngaged
-                ? "No one has engaged yet."
-                : "Everyone has engaged!"}
+            <div className="w-full text-center py-4 text-sm text-[#8B98A5]">
+              {view === "engaged" ? "No signals detected yet." : "Maximum engagement achieved. No missing signals."}
             </div>
           ) : (
             displayMembers.map((m) => (
-              <div key={m._id} className="group relative cursor-pointer">
-                <Avatar className="h-8 w-8 border border-zinc-200 dark:border-zinc-700">
-                  <AvatarImage
-                    src={
-                      m.image || `https://picsum.photos/seed/${m._id}/200/200`
-                    }
-                    alt={m.name}
-                  />
-                  <AvatarFallback className="text-[10px]">
+              <div key={m._id} className="group relative">
+                <Avatar
+                  className={`h-8 w-8 cursor-pointer transition-all duration-300 group-hover:scale-105 ${
+                    view === "missing"
+                      ? "opacity-50 grayscale group-hover:opacity-100 group-hover:grayscale-0 border border-transparent group-hover:border-[#F85149]"
+                      : "border border-[#242C38] group-hover:border-[#3FB950] group-hover:shadow-[0_0_8px_rgba(63,185,80,0.3)]"
+                  }`}
+                >
+                  <AvatarImage src={m.image} alt={m.name || m.username} />
+                  <AvatarFallback className="bg-[#1C222C] text-[#E6EDF3] text-[10px]">
                     {(m.name || m.username || "M").charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1 -translate-x-1/2 rounded bg-zinc-900 px-2 py-1 text-xs whitespace-nowrap text-white opacity-0 transition-opacity group-hover:opacity-100">
-                  @{m.twitterUsername || m.username}
+                <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 rounded bg-[#1C222C] border border-[#242C38] px-2 py-1 text-xs text-[#E6EDF3] opacity-0 transition-opacity group-hover:opacity-100 pointer-events-none whitespace-nowrap z-10 flex flex-col items-center gap-0.5">
+                  <span className="font-semibold">@{m.twitterUsername || m.username}</span>
+                  {view === "engaged" && (
+                    <span className="text-[10px] text-[#8B98A5] font-['JetBrains_Mono',monospace]">
+                      {getEngagementTimestamp(m.twitterId!)}
+                    </span>
+                  )}
                 </div>
               </div>
             ))
@@ -348,25 +491,16 @@ function PostCard({
   );
 }
 
-function cn(...classes: (string | undefined | null | false)[]) {
-  return classes.filter(Boolean).join(" ");
-}
-
-function Leaderboard({
-  members,
-  engagements,
-}: {
-  members: any[];
-  engagements: any[];
-}) {
-  const [mode, setMode] = useState<"global" | "daily">("global");
-
+// --- E. LEADERBOARD - "Performance Index" ---
+function Leaderboard({ members, engagements }: { members: any[]; engagements: any[] }) {
+  const [tab, setTab] = useState<LeaderboardTab>("global");
+  
   const todayStr = new Date().toDateString();
 
   const getEngagementCount = (twitterId: string) => {
     return engagements.filter((e) => {
       if (e.twitterUserId !== twitterId) return false;
-      if (mode === "daily") {
+      if (tab === "today") {
         return new Date(e.engagedAt).toDateString() === todayStr;
       }
       return true;
@@ -374,71 +508,74 @@ function Leaderboard({
   };
 
   const rankedMembers = [...members]
-    .map((m) => ({ ...m, engagements: getEngagementCount(m.twitterId) }))
-    .sort((a, b) => b.engagements - a.engagements);
+    .map((m) => ({ ...m, count: getEngagementCount(m.twitterId) }))
+    .filter((m) => m.count > 0 || tab === "global") // Hide zeroes on today tab usually, but let's keep all for ranking
+    .sort((a, b) => b.count - a.count);
 
   return (
-    <div className="p-4">
-      <Tabs
-        value={mode}
-        onValueChange={(v: string) => setMode(v as any)}
-        className="mx-auto mb-6 w-fit"
-      >
-        <TabsList>
-          <TabsTrigger value="global" className="px-4">
-            Global
-          </TabsTrigger>
-          <TabsTrigger value="daily" className="px-4">
-            Daily
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
-
-      <div className="flex flex-col gap-3">
-        {rankedMembers.map((member, idx) => (
-          <div
-            key={member._id}
-            className="flex items-center justify-between rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950"
+    <div className="leaderboard-section border-t border-[#242C38] pt-12 pb-20">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold tracking-tight text-[#E6EDF3]">Performance Index</h2>
+        <div className="flex items-center rounded-full bg-[#151A22] border border-[#242C38] p-1">
+          <button
+            onClick={() => setTab("global")}
+            className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
+              tab === "global"
+                ? "bg-[#1C222C] text-[#E6EDF3] shadow-sm"
+                : "text-[#8B98A5] hover:text-[#E6EDF3]"
+            }`}
           >
-            <div className="flex items-center gap-4">
-              <span className="w-6 text-center text-lg font-bold text-zinc-400">
-                {idx + 1}
-              </span>
-              <Avatar className="h-12 w-12 border border-zinc-200 dark:border-zinc-800">
-                <AvatarImage
-                  src={
-                    member.image ||
-                    `https://picsum.photos/seed/${member._id}/200/200`
-                  }
-                  alt={member.name}
-                />
-                <AvatarFallback>
-                  {(member.name || member.username || "M")
-                    .charAt(0)
-                    .toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col">
-                <span className="font-semibold text-zinc-900 dark:text-white">
-                  {member.name || member.username}
+            Global
+          </button>
+          <button
+            onClick={() => setTab("today")}
+            className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
+              tab === "today"
+                ? "bg-[#1C222C] text-[#E6EDF3] shadow-sm"
+                : "text-[#8B98A5] hover:text-[#E6EDF3]"
+            }`}
+          >
+            Today
+          </button>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        {rankedMembers.length === 0 ? (
+          <div className="text-center text-[#8B98A5] py-8 text-sm">No data available.</div>
+        ) : (
+          rankedMembers.map((member, idx) => (
+            <div
+              key={member._id}
+              className="group flex items-center justify-between bg-[#151A22] border border-[#242C38] rounded-2xl p-4 transition-all duration-300 hover:-translate-y-[2px] hover:border-[#4C8DFF]/40"
+            >
+              <div className="flex items-center gap-4">
+                <span className="w-6 text-center font-['JetBrains_Mono',monospace] text-sm font-semibold text-[#8B98A5] group-hover:text-[#E6EDF3] transition-colors">
+                  {idx + 1}
                 </span>
-                <span className="text-xs text-zinc-500">
-                  @{member.twitterUsername || member.username}
+                <Avatar className="h-10 w-10 border border-[#242C38]">
+                  <AvatarImage src={member.image} alt={member.name} />
+                  <AvatarFallback className="bg-[#1C222C] text-[#E6EDF3]">
+                    {(member.name || member.username || "M").charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col">
+                  <span className="text-[#E6EDF3] font-medium tracking-tight text-sm">
+                    {member.name || member.username}
+                  </span>
+                  <span className="text-xs text-[#8B98A5]">
+                    @{member.twitterUsername || member.username}
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="font-['JetBrains_Mono',monospace] text-lg font-bold text-[#E6EDF3]">
+                  {member.count}
                 </span>
+                <div className="w-1.5 h-1.5 rounded-full bg-[#3FB950] opacity-0 group-hover:opacity-100 transition-opacity shadow-[0_0_8px_#3FB950]" />
               </div>
             </div>
-            <div className="flex flex-col items-end">
-              <span className="text-2xl font-bold">{member.engagements}</span>
-              <span className="text-[10px] font-semibold tracking-wider text-zinc-500 uppercase">
-                Engagements
-              </span>
-            </div>
-          </div>
-        ))}
-        {rankedMembers.length === 0 && (
-          <div className="py-10 text-center text-sm text-zinc-500">
-            No members found.
-          </div>
+          ))
         )}
       </div>
     </div>
