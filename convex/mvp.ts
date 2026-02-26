@@ -221,3 +221,113 @@ export const getPostByTweetId = query({
       .first();
   },
 });
+
+export const addManualEngagements = mutation({
+  args: {
+    twitterUsername: v.string(),
+    tweetIds: v.array(v.string()),
+  },
+  handler: async (ctx, args) => {
+    // 1. Find user (case-insensitive fallback)
+    const users = await ctx.db.query("users").collect();
+    const user = users.find(
+      (u) =>
+        u.twitterUsername?.toLowerCase() ===
+          args.twitterUsername.toLowerCase() ||
+        u.username?.toLowerCase() === args.twitterUsername.toLowerCase()
+    );
+
+    if (!user || !user.twitterId) {
+      throw new Error("User not found or missing twitterId");
+    }
+
+    let addedCount = 0;
+    for (const tweetId of args.tweetIds) {
+      const post = await ctx.db
+        .query("posts")
+        .withIndex("by_tweetId", (q) => q.eq("tweetId", tweetId.trim()))
+        .first();
+
+      if (!post) continue;
+
+      const existing = await ctx.db
+        .query("engagements")
+        .withIndex("by_postId_twitterUserId", (q) =>
+          q.eq("postId", post._id).eq("twitterUserId", user.twitterId!)
+        )
+        .first();
+
+      if (!existing) {
+        await ctx.db.insert("engagements", {
+          postId: post._id,
+          twitterUserId: user.twitterId,
+          engagedAt: Date.now(),
+        });
+        addedCount++;
+
+        // Update post's engagement count
+        await ctx.db.patch(post._id, {
+          engagementCount: (post.engagementCount || 0) + 1,
+        });
+
+        // Update user's total engagements
+        await ctx.db.patch(user._id, {
+          totalEngagements: (user.totalEngagements || 0) + 1,
+        });
+      }
+    }
+    return addedCount;
+  },
+});
+
+export const removeManualEngagements = mutation({
+  args: {
+    twitterUsername: v.string(),
+    tweetIds: v.array(v.string()),
+  },
+  handler: async (ctx, args) => {
+    // Find user (case-insensitive fallback)
+    const users = await ctx.db.query("users").collect();
+    const user = users.find(
+      (u) =>
+        u.twitterUsername?.toLowerCase() ===
+          args.twitterUsername.toLowerCase() ||
+        u.username?.toLowerCase() === args.twitterUsername.toLowerCase()
+    );
+
+    if (!user || !user.twitterId) {
+      throw new Error("User not found or missing twitterId");
+    }
+
+    let removedCount = 0;
+    for (const tweetId of args.tweetIds) {
+      const post = await ctx.db
+        .query("posts")
+        .withIndex("by_tweetId", (q) => q.eq("tweetId", tweetId.trim()))
+        .first();
+
+      if (!post) continue;
+
+      const existing = await ctx.db
+        .query("engagements")
+        .withIndex("by_postId_twitterUserId", (q) =>
+          q.eq("postId", post._id).eq("twitterUserId", user.twitterId!)
+        )
+        .first();
+
+      if (existing) {
+        await ctx.db.delete(existing._id);
+        removedCount++;
+
+        await ctx.db.patch(post._id, {
+          engagementCount: Math.max(0, (post.engagementCount || 0) - 1),
+        });
+
+        await ctx.db.patch(user._id, {
+          totalEngagements: Math.max(0, (user.totalEngagements || 0) - 1),
+        });
+      }
+    }
+    return removedCount;
+  },
+});

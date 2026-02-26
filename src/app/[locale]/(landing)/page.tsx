@@ -405,6 +405,29 @@ export default function SignalTerminal() {
       {/* Main Content Spacer */}
       <div className="pt-[64px]" />
 
+      {/* A.5. GLOBAL STATS STRIP */}
+      {/* <div className="border-border bg-card/50 border-b py-4 backdrop-blur-md">
+        <div className="mx-auto flex max-w-7xl justify-center gap-12 px-6">
+          <div className="flex flex-col items-center gap-1">
+            <span className="text-muted-foreground text-[10px] font-semibold tracking-widest uppercase sm:text-xs">
+              Posts Tracked
+            </span>
+            <span className="text-foreground font-['JetBrains_Mono',monospace] text-xl font-bold sm:text-2xl">
+              {posts.length}
+            </span>
+          </div>
+          <div className="bg-border w-px"></div>
+          <div className="flex flex-col items-center gap-1">
+            <span className="text-muted-foreground text-[10px] font-semibold tracking-widest uppercase sm:text-xs">
+              Total Engagements
+            </span>
+            <span className="font-['JetBrains_Mono',monospace] text-xl font-bold text-blue-500 sm:text-2xl">
+              {engagements.length}
+            </span>
+          </div>
+        </div>
+      </div> */}
+
       {/* B. TOP MEMBER STRIP - "Operator Grid" */}
       <div className="operator-grid border-border bg-background border-b pt-4 pb-2">
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-6 md:flex-row md:gap-8">

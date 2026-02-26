@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import { RefreshCw, Trash2 } from "lucide-react";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Doc } from "@/convex/_generated/dataModel";
 
@@ -9,9 +11,11 @@ export default function AdminConsole() {
   const [members, setMembers] = useState<Doc<"users">[]>([]);
   const [posts, setPosts] = useState<Doc<"posts">[]>([]);
   const [engagements, setEngagements] = useState<Doc<"engagements">[]>([]);
-  
+
   const [newMember, setNewMember] = useState("");
   const [newPost, setNewPost] = useState("");
+  const [manualUser, setManualUser] = useState("");
+  const [manualTweets, setManualTweets] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -148,23 +152,62 @@ export default function AdminConsole() {
     }
   };
 
+  const handleManualEngagement = async (action: "add" | "remove") => {
+    if (!manualUser || !manualTweets) return;
+    setLoading(true);
+    try {
+      const res = await fetch("/api/manual-engagements", {
+        method: action === "add" ? "POST" : "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          twitterUsername: manualUser,
+          tweetIds: manualTweets,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        alert(
+          `Successfully ${action === "add" ? "added" : "removed"} ${data.count} engagement(s).`
+        );
+        setManualUser("");
+        setManualTweets("");
+        fetchMembers();
+        fetchPosts();
+        fetchEngagements();
+      } else {
+        const error = await res.json();
+        alert(`Error: ${error.error || "Unknown"}`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert(`Failed to ${action} manual engagement`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const getPostEngagementCount = (postId: string) => {
     return engagements.filter((e: any) => e.postId === postId).length;
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-['Inter',sans-serif] p-6 sm:p-12">
+    <div className="bg-background text-foreground min-h-screen p-6 font-['Inter',sans-serif] sm:p-12">
       <div className="mx-auto max-w-4xl space-y-12">
-        <div className="border-b border-border pb-6">
+        <div className="border-border border-b pb-6">
           <h1 className="text-2xl font-bold tracking-tight">Admin Console</h1>
-          <p className="text-sm text-muted-foreground mt-1">Precise control over tracking and members.</p>
+          <p className="text-muted-foreground mt-1 text-sm">
+            Precise control over tracking and members.
+          </p>
         </div>
 
         {/* Section 1 — Add Member */}
-        <section className="space-y-6 bg-card rounded-3xl border border-border p-6 sm:p-8">
+        <section className="bg-card border-border space-y-6 rounded-3xl border p-6 sm:p-8">
           <div>
-            <h2 className="text-lg font-semibold text-foreground">Members</h2>
-            <p className="text-sm text-muted-foreground">Manage operators in the engagement pool.</p>
+            <h2 className="text-foreground text-lg font-semibold">Members</h2>
+            <p className="text-muted-foreground text-sm">
+              Manage operators in the engagement pool.
+            </p>
           </div>
 
           <form onSubmit={handleAddMember} className="flex gap-3">
@@ -173,13 +216,13 @@ export default function AdminConsole() {
               value={newMember}
               onChange={(e) => setNewMember(e.target.value)}
               placeholder="Username (no @)"
-              className="flex-1 bg-background border border-border rounded-xl px-4 py-2 text-sm text-foreground focus:outline-none focus:border-blue-500/50 transition-colors"
+              className="bg-background border-border text-foreground flex-1 rounded-xl border px-4 py-2 text-sm transition-colors focus:border-blue-500/50 focus:outline-none"
               disabled={loading}
             />
             <button
               type="submit"
               disabled={loading}
-              className="bg-muted border border-border hover:bg-border hover:border-blue-500/50 text-foreground rounded-xl px-6 py-2 text-sm font-medium transition-all"
+              className="bg-muted border-border hover:bg-border text-foreground rounded-xl border px-6 py-2 text-sm font-medium transition-all hover:border-blue-500/50"
             >
               Fetch & Save
             </button>
@@ -189,27 +232,36 @@ export default function AdminConsole() {
             {members.map((member) => (
               <div
                 key={member._id}
-                className="flex items-center justify-between border border-border bg-background/50 rounded-2xl p-4 transition-all hover:bg-muted/50"
+                className="border-border bg-background/50 hover:bg-muted/50 flex items-center justify-between rounded-2xl border p-4 transition-all"
               >
                 <div className="flex items-center gap-4">
-                  <Avatar className="h-10 w-10 border border-border">
-                    <AvatarImage src={member.image || "/placeholder.svg"} alt={member.name || "Member"} />
+                  <Avatar className="border-border h-10 w-10 border">
+                    <AvatarImage
+                      src={member.image || "/placeholder.svg"}
+                      alt={member.name || "Member"}
+                    />
                     <AvatarFallback className="bg-muted text-foreground">
-                      {(member.name || member.username || "M").charAt(0).toUpperCase()}
+                      {(member.name || member.username || "M")
+                        .charAt(0)
+                        .toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">
-                    <span className="text-sm font-semibold text-foreground">{member.name || member.username}</span>
-                    <span className="text-xs text-muted-foreground">@{member.twitterUsername || member.username}</span>
+                    <span className="text-foreground text-sm font-semibold">
+                      {member.name || member.username}
+                    </span>
+                    <span className="text-muted-foreground text-xs">
+                      @{member.twitterUsername || member.username}
+                    </span>
                   </div>
                 </div>
                 <div className="flex items-center gap-6">
-                  <span className="text-xs text-muted-foreground font-['JetBrains_Mono',monospace] bg-card px-2 py-1 rounded border border-border">
+                  <span className="text-muted-foreground bg-card border-border rounded border px-2 py-1 font-['JetBrains_Mono',monospace] text-xs">
                     {member.twitterId || "Pending"}
                   </span>
                   <button
                     onClick={() => handleDeleteMember(member._id)}
-                    className="text-muted-foreground hover:text-destructive transition-colors p-2"
+                    className="text-muted-foreground hover:text-destructive p-2 transition-colors"
                     title="Delete Member"
                   >
                     <Trash2 className="h-4 w-4" />
@@ -218,7 +270,7 @@ export default function AdminConsole() {
               </div>
             ))}
             {members.length === 0 && (
-              <div className="text-center text-muted-foreground py-4 text-sm border border-dashed border-border rounded-2xl">
+              <div className="text-muted-foreground border-border rounded-2xl border border-dashed py-4 text-center text-sm">
                 No members found.
               </div>
             )}
@@ -226,10 +278,12 @@ export default function AdminConsole() {
         </section>
 
         {/* Section 2 — Add Post */}
-        <section className="space-y-6 bg-card rounded-3xl border border-border p-6 sm:p-8">
+        <section className="bg-card border-border space-y-6 rounded-3xl border p-6 sm:p-8">
           <div>
-            <h2 className="text-lg font-semibold text-foreground">Posts</h2>
-            <p className="text-sm text-muted-foreground">Track engagement signals.</p>
+            <h2 className="text-foreground text-lg font-semibold">Posts</h2>
+            <p className="text-muted-foreground text-sm">
+              Track engagement signals.
+            </p>
           </div>
 
           <form onSubmit={handleAddPost} className="flex gap-3">
@@ -238,13 +292,13 @@ export default function AdminConsole() {
               value={newPost}
               onChange={(e) => setNewPost(e.target.value)}
               placeholder="Tweet ID"
-              className="flex-1 bg-background border border-border rounded-xl px-4 py-2 text-sm text-foreground focus:outline-none focus:border-blue-500/50 transition-colors font-['JetBrains_Mono',monospace]"
+              className="bg-background border-border text-foreground flex-1 rounded-xl border px-4 py-2 font-['JetBrains_Mono',monospace] text-sm transition-colors focus:border-blue-500/50 focus:outline-none"
               disabled={loading}
             />
             <button
               type="submit"
               disabled={loading}
-              className="bg-muted border border-border hover:bg-border hover:border-blue-500/50 text-foreground rounded-xl px-6 py-2 text-sm font-medium transition-all"
+              className="bg-muted border-border hover:bg-border text-foreground rounded-xl border px-6 py-2 text-sm font-medium transition-all hover:border-blue-500/50"
             >
               Fetch & Save
             </button>
@@ -256,30 +310,39 @@ export default function AdminConsole() {
               return (
                 <div
                   key={post._id}
-                  className="flex items-center justify-between border border-border bg-background/50 rounded-2xl p-4 transition-all hover:bg-muted/50"
+                  className="border-border bg-background/50 hover:bg-muted/50 flex items-center justify-between rounded-2xl border p-4 transition-all"
                 >
                   <div className="flex items-center gap-4">
-                    <Avatar className="h-10 w-10 border border-border">
-                      <AvatarImage src={post.authorAvatar} alt={post.authorName} />
+                    <Avatar className="border-border h-10 w-10 border">
+                      <AvatarImage
+                        src={post.authorAvatar}
+                        alt={post.authorName}
+                      />
                       <AvatarFallback className="bg-muted text-foreground">
                         {(post.authorName || "P").charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
-                      <span className="text-xs text-muted-foreground font-['JetBrains_Mono',monospace] mb-1">
+                      <span className="text-muted-foreground mb-1 font-['JetBrains_Mono',monospace] text-xs">
                         {post.tweetId}
                       </span>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold text-foreground">{post.authorName}</span>
-                        <span className="text-xs text-muted-foreground">@{post.authorUsername}</span>
+                        <span className="text-foreground text-sm font-semibold">
+                          {post.authorName}
+                        </span>
+                        <span className="text-muted-foreground text-xs">
+                          @{post.authorUsername}
+                        </span>
                       </div>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-6">
                     <div className="flex flex-col items-end gap-1">
-                      <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Engaged</span>
-                      <span className="text-sm text-blue-500 font-['JetBrains_Mono',monospace] bg-card px-2 py-0.5 rounded border border-border">
+                      <span className="text-muted-foreground text-[10px] font-semibold tracking-wider uppercase">
+                        Engaged
+                      </span>
+                      <span className="bg-card border-border rounded border px-2 py-0.5 font-['JetBrains_Mono',monospace] text-sm text-blue-500">
                         {engCount}
                       </span>
                     </div>
@@ -287,14 +350,14 @@ export default function AdminConsole() {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleRefreshPost(post.tweetId)}
-                        className="text-muted-foreground hover:text-blue-500 transition-colors p-2"
+                        className="text-muted-foreground p-2 transition-colors hover:text-blue-500"
                         title="Refresh Engagements"
                       >
                         <RefreshCw className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => handleDeletePost(post._id)}
-                        className="text-muted-foreground hover:text-destructive transition-colors p-2"
+                        className="text-muted-foreground hover:text-destructive p-2 transition-colors"
                         title="Delete Post"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -305,11 +368,67 @@ export default function AdminConsole() {
               );
             })}
             {posts.length === 0 && (
-              <div className="text-center text-muted-foreground py-4 text-sm border border-dashed border-border rounded-2xl">
+              <div className="text-muted-foreground border-border rounded-2xl border border-dashed py-4 text-center text-sm">
                 No signals tracking.
               </div>
             )}
           </div>
+        </section>
+
+        {/* Section 3 — Manual Engagements */}
+        <section className="bg-card border-border space-y-6 rounded-3xl border p-6 sm:p-8">
+          <div>
+            <h2 className="text-foreground text-lg font-semibold">
+              Manual Engagements
+            </h2>
+            <p className="text-muted-foreground text-sm">
+              Add or remove engagements manually for a user and post(s).
+            </p>
+          </div>
+
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleManualEngagement("add");
+            }}
+            className="flex flex-col gap-3"
+          >
+            <div className="flex gap-3">
+              <input
+                type="text"
+                value={manualUser}
+                onChange={(e) => setManualUser(e.target.value)}
+                placeholder="Username (no @)"
+                className="bg-background border-border text-foreground w-1/3 rounded-xl border px-4 py-2 text-sm transition-colors focus:border-blue-500/50 focus:outline-none"
+                disabled={loading}
+              />
+              <input
+                type="text"
+                value={manualTweets}
+                onChange={(e) => setManualTweets(e.target.value)}
+                placeholder="Tweet IDs (comma separated)"
+                className="bg-background border-border text-foreground flex-1 rounded-xl border px-4 py-2 font-['JetBrains_Mono',monospace] text-sm transition-colors focus:border-blue-500/50 focus:outline-none"
+                disabled={loading}
+              />
+            </div>
+            <div className="mt-2 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => handleManualEngagement("remove")}
+                disabled={loading || !manualUser || !manualTweets}
+                className="bg-destructive/10 border-destructive/20 text-destructive hover:bg-destructive hover:text-destructive-foreground rounded-xl border px-6 py-2 text-sm font-medium shadow-sm transition-all"
+              >
+                Remove Engagement
+              </button>
+              <button
+                type="submit"
+                disabled={loading || !manualUser || !manualTweets}
+                className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl px-6 py-2 text-sm font-medium transition-all"
+              >
+                Add Engagement
+              </button>
+            </div>
+          </form>
         </section>
       </div>
     </div>
