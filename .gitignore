@@ -45,3 +45,6 @@ next-env.d.ts
 **/old/
 **/old-landing/
 **/old-dashboard/
+
+**/dashboard-v2/
+**/dashboard-v2/*
