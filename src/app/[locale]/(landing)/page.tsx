@@ -2,7 +2,14 @@
 
 // --- Imports ---
 import Link from "next/link";
-import { CSSProperties, useEffect, useRef, useState } from "react";
+import {
+  CSSProperties,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { useQuery } from "convex/react";
 import {
@@ -242,42 +249,60 @@ export default function SignalTerminal() {
   }, [posts.length, viewMode]);
 
   // --- Derived Data ---
-  const sortedMembers = [...members].sort((a, b) =>
-    (a.username || "").localeCompare(b.username || "")
-  );
+  const sortedMembers = useMemo(() => {
+    return [...members].sort((a, b) =>
+      (a.username || "").localeCompare(b.username || "")
+    );
+  }, [members]);
 
-  const filteredPosts = posts.filter((post: any) => {
-    if (activeTab === "today") {
-      const isToday =
-        new Date(post.createdAt).toDateString() === new Date().toDateString();
-      if (!isToday) return false;
+  const filteredPosts = useMemo(() => {
+    return posts.filter((post: any) => {
+      if (activeTab === "today") {
+        const isToday =
+          new Date(post.createdAt).toDateString() === new Date().toDateString();
+        if (!isToday) return false;
+      }
+
+      if (activeTab === "date" && selectedDate) {
+        const isSelectedDate =
+          new Date(post.createdAt).toDateString() ===
+          selectedDate.toDateString();
+        if (!isSelectedDate) return false;
+      }
+
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        return (
+          post.authorUsername.toLowerCase().includes(query) ||
+          post.content.toLowerCase().includes(query)
+        );
+      }
+      return true;
+    });
+  }, [posts, activeTab, selectedDate, searchQuery]);
+
+  const sortedPosts = useMemo(() => {
+    return [...filteredPosts].sort((a, b) => {
+      const aEngagements = a.engagementCount || 0;
+      const bEngagements = b.engagementCount || 0;
+
+      if (sortBy === "latest") return b.createdAt - a.createdAt;
+      if (sortBy === "most") return bEngagements - aEngagements;
+      if (sortBy === "least") return aEngagements - bEngagements;
+      return 0;
+    });
+  }, [filteredPosts, sortBy]);
+
+  const engagementsByPostId = useMemo(() => {
+    const map = new Map<string, any[]>();
+    for (const e of engagements) {
+      if (!map.has(e.postId)) {
+        map.set(e.postId, []);
+      }
+      map.get(e.postId)!.push(e);
     }
-
-    if (activeTab === "date" && selectedDate) {
-      const isSelectedDate =
-        new Date(post.createdAt).toDateString() === selectedDate.toDateString();
-      if (!isSelectedDate) return false;
-    }
-
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      return (
-        post.authorUsername.toLowerCase().includes(query) ||
-        post.content.toLowerCase().includes(query)
-      );
-    }
-    return true;
-  });
-
-  const sortedPosts = [...filteredPosts].sort((a, b) => {
-    const aEngagements = a.engagementCount || 0;
-    const bEngagements = b.engagementCount || 0;
-
-    if (sortBy === "latest") return b.createdAt - a.createdAt;
-    if (sortBy === "most") return bEngagements - aEngagements;
-    if (sortBy === "least") return aEngagements - bEngagements;
-    return 0;
-  });
+    return map;
+  }, [engagements]);
 
   return (
     <div
@@ -557,11 +582,7 @@ export default function SignalTerminal() {
                         key={post._id}
                         post={post}
                         members={members as any}
-                        engagements={
-                          engagements.filter(
-                            (e: any) => e.postId === post._id
-                          ) as any
-                        }
+                        engagements={engagementsByPostId.get(post._id) || []}
                       />
                     ))
                   )}
@@ -650,21 +671,27 @@ function PostCard({
   const [view, setView] = useState<EngagementMode>("engaged");
   const [showComments, setShowComments] = useState(false);
 
-  const engagedTwitterIds = new Set(engagements.map((e) => e.twitterUserId));
-  const engagedMembers = members.filter(
-    (m) => m.twitterId && engagedTwitterIds.has(m.twitterId)
-  );
-  const missingMembers = members.filter(
-    (m) => m.twitterId && !engagedTwitterIds.has(m.twitterId)
-  );
+  const { engagedMembers, missingMembers } = useMemo(() => {
+    const engagedTwitterIds = new Set(engagements.map((e) => e.twitterUserId));
+    const engaged = members.filter(
+      (m) => m.twitterId && engagedTwitterIds.has(m.twitterId)
+    );
+    const missing = members.filter(
+      (m) => m.twitterId && !engagedTwitterIds.has(m.twitterId)
+    );
+    return { engagedMembers: engaged, missingMembers: missing };
+  }, [members, engagements]);
 
   const displayMembers = view === "engaged" ? engagedMembers : missingMembers;
 
-  const getEngagementTimestamp = (twitterId: string) => {
-    const eng = engagements.find((e) => e.twitterUserId === twitterId);
-    if (!eng) return null;
-    return new Date(eng.engagedAt).toLocaleString();
-  };
+  const getEngagementTimestamp = useCallback(
+    (twitterId: string) => {
+      const eng = engagements.find((e) => e.twitterUserId === twitterId);
+      if (!eng) return null;
+      return new Date(eng.engagedAt).toLocaleString();
+    },
+    [engagements]
+  );
 
   return (
     <div className="post-card bg-card border-border rounded-3xl border p-5 shadow-sm transition-all duration-300 hover:-translate-y-[2px] sm:p-6">
@@ -888,26 +915,31 @@ function Leaderboard({
 }) {
   const [tab, setTab] = useState<LeaderboardTab>("global");
 
-  const todayStr = new Date().toDateString();
+  const todayStr = useMemo(() => new Date().toDateString(), []);
 
-  const getEngagementCount = (twitterId: string, totalEngagements?: number) => {
-    if (tab === "global") {
-      return totalEngagements || 0;
-    }
-    return engagements.filter((e) => {
-      if (e.twitterUserId !== twitterId) return false;
-      return new Date(e.engagedAt).toDateString() === todayStr;
-    }).length;
-  };
+  const getEngagementCount = useCallback(
+    (twitterId: string, totalEngagements?: number) => {
+      if (tab === "global") {
+        return totalEngagements || 0;
+      }
+      return engagements.filter((e) => {
+        if (e.twitterUserId !== twitterId) return false;
+        return new Date(e.engagedAt).toDateString() === todayStr;
+      }).length;
+    },
+    [tab, engagements, todayStr]
+  );
 
-  const rankedMembers = [...members]
-    .map((m) => ({
-      ...m,
-      count: getEngagementCount(m.twitterId, m.totalEngagements),
-    }))
-    .filter((m) => m.count > 0 || tab === "global") // Hide zeroes on today tab usually, but let's keep all for ranking
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 5);
+  const rankedMembers = useMemo(() => {
+    return [...members]
+      .map((m) => ({
+        ...m,
+        count: getEngagementCount(m.twitterId, m.totalEngagements),
+      }))
+      .filter((m) => m.count > 0 || tab === "global") // Hide zeroes on today tab usually, but let's keep all for ranking
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+  }, [members, getEngagementCount, tab]);
 
   return (
     <div className="leaderboard-section border-border border-t pt-12 pb-20">
