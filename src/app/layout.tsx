@@ -27,7 +27,7 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
 });
 
-const BODY_CLASS_NAME = `bg-background text-foreground relative overflow-x-hidden overscroll-none pb-10 antialiased selection:bg-emerald-500/30 selection:text-emerald-800 dark:selection:text-emerald-200`;
+const BODY_CLASS_NAME = `bg-background text-foreground relative overflow-x-hidden overscroll-none antialiased selection:bg-emerald-500/30 selection:text-emerald-800 dark:selection:text-emerald-200`;
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://foundersonx.com"),
