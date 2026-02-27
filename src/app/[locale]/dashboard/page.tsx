@@ -1,6 +1,19 @@
-import { redirect } from "next/navigation";
+import { ChartAreaInteractive } from "@/components/dashboard-components/chart-area-interactive";
+import { DataTable } from "@/components/dashboard-components/data-table";
 
-export default function DashboardRedirect() {
-  // Redirect to the actual dashboard
-  redirect("/dashboard-v2");
+import dashboardData from "./data.json";
+import { SectionCards } from "./section-cards";
+
+export default function DashboardPage() {
+  return (
+    <div className="flex flex-col gap-6">
+      <SectionCards />
+
+      <div className="px-4 lg:px-6">
+        <ChartAreaInteractive />
+      </div>
+
+      <DataTable data={dashboardData} />
+    </div>
+  );
 }

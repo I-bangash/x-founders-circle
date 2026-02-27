@@ -37,12 +37,44 @@ const SIDEBAR_DATA = {
       url: "/dashboard",
       icon: IconDashboard,
     },
+    {
+      title: "Payment gated",
+      url: "/dashboard/payment-gated",
+      icon: IconSparkles,
+    },
   ],
   navSecondary: [
     {
       title: "Settings",
       url: "#",
       icon: IconSettings,
+    },
+    {
+      title: "Get Help",
+      url: "#",
+      icon: IconHelp,
+    },
+    {
+      title: "Search",
+      url: "#",
+      icon: IconSearch,
+    },
+  ],
+  documents: [
+    {
+      name: "Data Library",
+      url: "#",
+      icon: IconDatabase,
+    },
+    {
+      name: "Reports",
+      url: "#",
+      icon: IconReport,
+    },
+    {
+      name: "Word Assistant",
+      url: "#",
+      icon: IconFileWord,
     },
   ],
 };
@@ -66,12 +98,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   className="!size-6 rounded-md"
                 />
                 <span className="text-base font-semibold">Founders on X</span>
-                {/* <Badge
+                <Badge
                   variant="outline"
                   className="text-muted-foreground text-xs"
                 >
-                  beta
-                </Badge> */}
+                  Demo
+                </Badge>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -79,7 +111,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={SIDEBAR_DATA.navMain} />
-        {/* <NavDocuments items={SIDEBAR_DATA.documents} /> */}
+        <NavDocuments items={SIDEBAR_DATA.documents} />
         <NavSecondary items={SIDEBAR_DATA.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

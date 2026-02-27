@@ -96,7 +96,7 @@ export function NavMain({ items }: { items: NavItem[] }) {
         className="flex flex-col gap-2"
         data-pending={isPending ? "" : undefined}
       >
-        {/* <QuickCreateSection /> */}
+        <QuickCreateSection />
         <NavItemsList
           items={items}
           optimisticPath={optimisticPath}
