@@ -32,6 +32,7 @@ export const addMember = mutation({
       // Update existing
       await ctx.db.patch(existing._id, {
         twitterUsername: args.twitterUsername,
+        twitterName: args.name,
         username: args.twitterUsername,
         name: args.name,
         image: args.profileImageUrl,
@@ -45,6 +46,7 @@ export const addMember = mutation({
     // The schema requires email, clerkId so we will put dummy values for this admin-added member
     const newUserId = await ctx.db.insert("users", {
       name: args.name,
+      twitterName: args.name,
       twitterId: args.twitterId,
       twitterUsername: args.twitterUsername,
       username: args.twitterUsername,
@@ -329,5 +331,24 @@ export const removeManualEngagements = mutation({
       }
     }
     return removedCount;
+  },
+});
+
+export const migrateTwitterNames = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const users = await ctx.db.query("users").collect();
+    let count = 0;
+
+    for (const user of users) {
+      if (user.twitterId && user.name && user.twitterName === undefined) {
+        await ctx.db.patch(user._id, {
+          twitterName: user.name,
+        });
+        count++;
+      }
+    }
+
+    return { success: true, migratedCount: count };
   },
 });

@@ -62,9 +62,11 @@ export default defineSchema({
     // Appended MVP fields (from twitter)
     twitterId: v.optional(v.string()), // rest_id
     twitterUsername: v.optional(v.string()), // screen_name
+    twitterName: v.optional(v.string()), // The actual twitter display name
     followersCount: v.optional(v.number()),
     joinedAt: v.optional(v.number()),
     totalEngagements: v.optional(v.number()),
+    inviteCode: v.optional(v.string()), // Specific claim code for this user
   })
     .index("by_email", ["email"])
     .index("by_clerkId", ["clerkId"])

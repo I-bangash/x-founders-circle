@@ -30,6 +30,7 @@ const jetbrainsMono = JetBrains_Mono({
 const BODY_CLASS_NAME = `bg-background text-foreground relative overflow-x-hidden overscroll-none pb-10 antialiased selection:bg-emerald-500/30 selection:text-emerald-800 dark:selection:text-emerald-200`;
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://foundersonx.com"),
   title: "Founders on X | Real engagement. Real growth.",
   description:
     "A tight circle of tech founders helping each other grow on X. Real engagement, real connections.",

@@ -2,16 +2,25 @@ import { NextResponse } from "next/server";
 
 import { fetchMutation, fetchQuery } from "convex/nextjs";
 
+import { checkApiAuth } from "@/lib/api-auth";
 import { parseTwitterData } from "@/lib/twitter";
 
 import { api } from "../../../../convex/_generated/api";
 
-export async function GET() {
+export async function GET(req: Request) {
+  if (!(await checkApiAuth(req))) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const posts = await fetchQuery(api.mvp.getPosts);
   return NextResponse.json(posts);
 }
 
 export async function POST(req: Request) {
+  if (!(await checkApiAuth(req))) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { tweetId } = await req.json();
 
   if (!tweetId) {

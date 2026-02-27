@@ -22,6 +22,7 @@ import type * as stripe_billing from "../stripe/billing.js";
 import type * as stripe_plans from "../stripe/plans.js";
 import type * as stripe_stripeActions from "../stripe/stripeActions.js";
 import type * as userFunctions_clerk from "../userFunctions/clerk.js";
+import type * as userFunctions_invites from "../userFunctions/invites.js";
 import type * as userFunctions_memberships from "../userFunctions/memberships.js";
 import type * as userFunctions_organizationLimits from "../userFunctions/organizationLimits.js";
 import type * as userFunctions_organizations from "../userFunctions/organizations.js";
@@ -48,6 +49,7 @@ declare const fullApi: ApiFromModules<{
   "stripe/plans": typeof stripe_plans;
   "stripe/stripeActions": typeof stripe_stripeActions;
   "userFunctions/clerk": typeof userFunctions_clerk;
+  "userFunctions/invites": typeof userFunctions_invites;
   "userFunctions/memberships": typeof userFunctions_memberships;
   "userFunctions/organizationLimits": typeof userFunctions_organizationLimits;
   "userFunctions/organizations": typeof userFunctions_organizations;

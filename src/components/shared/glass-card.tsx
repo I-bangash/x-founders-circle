@@ -12,7 +12,8 @@ const GlassCard = ({ children, className }: Props) => {
       className={cn(
         className,
         "rounded-2xl bg-clip-padding backdrop-filter",
-        "dark:bg-themeGray dark:border-themeGray border-white/20 bg-white/40",
+        // "dark:bg-themeGray dark:border-themeGray border-white/20 bg-white/40",
+        "bg-card",
         "backdrop--blur__safari backdrop-blur-4xl",
         "dark:bg-opacity-40"
       )}

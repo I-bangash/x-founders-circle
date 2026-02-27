@@ -2,10 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { ClerkLoaded, ClerkLoading, SignUp, useUser } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
+import { useConvex } from "convex/react";
 import { AnimatePresence, motion } from "framer-motion";
 import Cookies from "js-cookie";
 import { ChevronLeft } from "lucide-react";
@@ -14,6 +15,7 @@ import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import { APP_ROOT_DOMAIN } from "@/utils/constants";
 
+import { api } from "../../../convex/_generated/api";
 import BackdropGradient from "../shared/backdrop-gradient";
 import GlassCard from "../shared/glass-card";
 import LogoComponent from "../shared/logo-component";
@@ -22,6 +24,40 @@ import { Button } from "../ui/button";
 export function SignUpForm() {
   const { theme } = useTheme();
   const { user } = useUser();
+  const convex = useConvex();
+
+  const [inviteCode, setInviteCode] = useState("");
+  const [isValidated, setIsValidated] = useState(false);
+  const [isValidating, setIsValidating] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleValidateCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inviteCode.trim()) return;
+
+    setIsValidating(true);
+    setError("");
+
+    try {
+      const res = await convex.query(
+        api.userFunctions.invites.validateInviteCode,
+        {
+          inviteCode: inviteCode.trim(),
+        }
+      );
+
+      if (res.valid) {
+        Cookies.set("invite_code", inviteCode.trim(), { expires: 1 });
+        setIsValidated(true);
+      } else {
+        setError(res.message || "Invalid invite code.");
+      }
+    } catch (err) {
+      setError("Failed to validate code. Please check your connection.");
+    } finally {
+      setIsValidating(false);
+    }
+  };
 
   useEffect(() => {
     const planFromCookie = Cookies.get("pending_checkout_plan");
@@ -127,50 +163,83 @@ export function SignUpForm() {
                       container="flex flex-col items-center"
                     >
                       <GlassCard className="xs:w-full mt-0 bg-white/80 p-7 backdrop-blur-lg dark:bg-black/80">
-                        {/* <ClerkLoading>
-                  <Spinner />
-                </ClerkLoading> */}
-
-                        {/* <ClerkLoaded>
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={"signup-form"}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 1, delay: 0.5 }}
-                    > */}
-                        <SignUp
-                          appearance={{
-                            baseTheme: theme === "dark" ? dark : undefined,
-                            elements: {
-                              formButtonPrimary:
-                                "bg-black hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-neutral-100",
-                              card: "bg-transparent shadow-none",
-                              headerTitle: "text-2xl font-bold",
-                              headerSubtitle:
-                                "text-neutral-600 dark:text-neutral-400",
-                              dividerLine: "bg-neutral-300 dark:bg-neutral-700",
-                              dividerText:
-                                "bg-gray-50 dark:bg-neutral-950 text-neutral-600 dark:text-neutral-400",
-                              formFieldLabel:
-                                "text-neutral-700 dark:text-neutral-400",
-                              formFieldInput:
-                                "rounded-md border-0 bg-white dark:bg-neutral-900 text-black dark:text-white shadow-input focus:ring-2 focus:ring-neutral-400",
-                              footerActionLink:
-                                "text-black dark:text-white hover:text-neutral-800 dark:hover:text-neutral-200",
-                              socialButtonsBlockButton:
-                                "border-neutral-300 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800",
-                              socialButtonsBlockButtonText:
-                                "text-neutral-600 dark:text-neutral-400",
-                            },
-                          }}
-                          // redirectUrl="/"
-                          fallbackRedirectUrl={`${APP_ROOT_DOMAIN}/dashboard`}
-                          signInUrl={`${APP_ROOT_DOMAIN}/sign-in`}
-                        />
-                        {/* </motion.div>
-                  </AnimatePresence>
-                  </ClerkLoaded> */}
+                        {isValidated ? (
+                          <SignUp
+                            unsafeMetadata={{ inviteCode: inviteCode.trim() }}
+                            appearance={{
+                              baseTheme: theme === "dark" ? dark : undefined,
+                              elements: {
+                                formButtonPrimary:
+                                  "bg-black hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-neutral-100",
+                                card: "bg-transparent shadow-none",
+                                headerTitle: "text-2xl font-bold",
+                                headerSubtitle:
+                                  "text-neutral-600 dark:text-neutral-400",
+                                dividerLine:
+                                  "bg-neutral-300 dark:bg-neutral-700",
+                                dividerText:
+                                  "bg-gray-50 dark:bg-neutral-950 text-neutral-600 dark:text-neutral-400",
+                                formFieldLabel:
+                                  "text-neutral-700 dark:text-neutral-400",
+                                formFieldInput:
+                                  "rounded-md border-0 bg-white dark:bg-neutral-900 text-black dark:text-white shadow-input focus:ring-2 focus:ring-neutral-400",
+                                footerActionLink:
+                                  "text-black dark:text-white hover:text-neutral-800 dark:hover:text-neutral-200",
+                                socialButtonsBlockButton:
+                                  "border-neutral-300 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800",
+                                socialButtonsBlockButtonText:
+                                  "text-neutral-600 dark:text-neutral-400",
+                              },
+                            }}
+                            fallbackRedirectUrl={`${APP_ROOT_DOMAIN}/dashboard`}
+                            signInUrl={`${APP_ROOT_DOMAIN}/sign-in`}
+                          />
+                        ) : (
+                          <form
+                            onSubmit={handleValidateCode}
+                            className="flex min-h-[300px] flex-col justify-center gap-4"
+                          >
+                            <div className="mb-4 text-center">
+                              <h2 className="text-2xl font-bold">
+                                Claim Your Profile
+                              </h2>
+                              <p className="mt-2 text-neutral-600 dark:text-neutral-400">
+                                Enter your invite code to continue
+                              </p>
+                            </div>
+                            <div className="flex flex-col gap-2">
+                              <input
+                                type="text"
+                                placeholder="Invite Code"
+                                value={inviteCode}
+                                onChange={(e) => setInviteCode(e.target.value)}
+                                className="w-full rounded-md border border-neutral-300 bg-white px-4 py-2 text-black shadow-sm focus:border-neutral-500 focus:ring-2 focus:ring-neutral-400 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
+                                required
+                              />
+                              {error && (
+                                <p className="text-sm text-red-500">{error}</p>
+                              )}
+                            </div>
+                            <Button
+                              type="submit"
+                              disabled={isValidating || !inviteCode}
+                              className="mt-2 w-full bg-black hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-neutral-100"
+                            >
+                              {isValidating ? "Validating..." : "Continue"}
+                            </Button>
+                            <div className="mt-4 text-center">
+                              <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                                Already have an account?{" "}
+                                <Link
+                                  href={`${APP_ROOT_DOMAIN}/sign-in`}
+                                  className="text-black hover:underline dark:text-white"
+                                >
+                                  Sign in
+                                </Link>
+                              </p>
+                            </div>
+                          </form>
+                        )}
                       </GlassCard>
                     </BackdropGradient>
                   </div>

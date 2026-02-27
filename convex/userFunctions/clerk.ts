@@ -1,5 +1,6 @@
 "use node";
 
+import { createClerkClient } from "@clerk/backend";
 import { v } from "convex/values";
 import { Resend } from "resend";
 
@@ -31,9 +32,12 @@ export const handleUserCreated = internalAction({
     username: v.optional(v.string()),
     imageUrl: v.optional(v.string()),
     emailVerified: v.optional(v.number()),
+    inviteCode: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     if (args.clerkId === ADMIN_USER_ID) return;
+
+    const fullName = buildFullName(args.firstName, args.lastName);
 
     const userResult = await ctx.runMutation(
       api.userFunctions.users.createUserInternal,
@@ -41,7 +45,7 @@ export const handleUserCreated = internalAction({
         clerkId: args.clerkId,
         firstname: args.firstName,
         lastname: args.lastName,
-        name: buildFullName(args.firstName, args.lastName),
+        name: fullName,
         email: args.email ?? "",
         emailVerified: args.emailVerified,
         image: args.imageUrl,
@@ -51,6 +55,17 @@ export const handleUserCreated = internalAction({
 
     if (userResult.error) {
       throw new Error(userResult.error.message);
+    }
+
+    if (args.inviteCode) {
+      // If an invite code was securely appended via unsafe_metadata, trigger claiming automatically.
+      await ctx.runMutation(
+        internal.userFunctions.invites.claimProfileInternal,
+        {
+          clerkId: args.clerkId,
+          inviteCode: args.inviteCode,
+        }
+      );
     }
 
     // if (userResult.data && args.email) {
@@ -200,6 +215,34 @@ export const handleOrganizationMembershipCreated = internalAction({
 
     if (usageResult.error) {
       throw new Error(usageResult.error.message);
+    }
+  },
+});
+
+export const createOrganizationAction = internalAction({
+  args: {
+    clerkId: v.string(),
+    name: v.string(),
+  },
+  handler: async (ctx, args) => {
+    if (process.env.CLERK_SECRET_KEY) {
+      try {
+        const clerk = createClerkClient({
+          secretKey: process.env.CLERK_SECRET_KEY,
+        });
+        const orgName = `${args.name || "Founder"}'s Org`;
+
+        await clerk.organizations.createOrganization({
+          name: orgName,
+          createdBy: args.clerkId,
+        });
+        console.log(`[createOrganizationAction] Auto-created org: ${orgName}`);
+      } catch (err) {
+        console.error(
+          "[createOrganizationAction] Failed to auto-create clerk organization:",
+          err
+        );
+      }
     }
   },
 });

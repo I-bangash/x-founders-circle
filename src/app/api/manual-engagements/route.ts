@@ -2,9 +2,15 @@ import { NextResponse } from "next/server";
 
 import { fetchMutation } from "convex/nextjs";
 
+import { checkApiAuth } from "@/lib/api-auth";
+
 import { api } from "../../../../convex/_generated/api";
 
 export async function POST(req: Request) {
+  if (!(await checkApiAuth(req))) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const { twitterUsername, tweetIds } = await req.json();
     if (!twitterUsername || !tweetIds || !tweetIds.length) {
@@ -31,6 +37,10 @@ export async function POST(req: Request) {
 }
 
 export async function DELETE(req: Request) {
+  if (!(await checkApiAuth(req))) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const { twitterUsername, tweetIds } = await req.json();
     if (!twitterUsername || !tweetIds || !tweetIds.length) {

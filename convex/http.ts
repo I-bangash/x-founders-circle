@@ -69,6 +69,7 @@ http.route({
               primaryEmail?.verification?.status === "verified"
                 ? Date.now()
                 : undefined,
+            inviteCode: d.unsafe_metadata?.inviteCode as string | undefined,
           });
           break;
         }

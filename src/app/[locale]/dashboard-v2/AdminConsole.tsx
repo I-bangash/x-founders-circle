@@ -30,9 +30,15 @@ export default function AdminConsole() {
     fetchEngagements();
   }, []);
 
+  const websiteApi = process.env.NEXT_PUBLIC_WEBSITE_SIGNING_KEY ?? "";
+
   const fetchMembers = async () => {
     try {
-      const res = await fetch("/api/members");
+      const res = await fetch("/api/members", {
+        headers: {
+          "x-api-key": websiteApi,
+        },
+      });
       if (res.ok) setMembers(await res.json());
     } catch (err) {
       console.error(err);
@@ -41,7 +47,11 @@ export default function AdminConsole() {
 
   const fetchPosts = async () => {
     try {
-      const res = await fetch("/api/posts");
+      const res = await fetch("/api/posts", {
+        headers: {
+          "x-api-key": websiteApi,
+        },
+      });
       if (res.ok) setPosts(await res.json());
     } catch (err) {
       console.error(err);
@@ -51,7 +61,11 @@ export default function AdminConsole() {
   // Optional: fetch engagements to show counts
   const fetchEngagements = async () => {
     try {
-      const res = await fetch("/api/engagements");
+      const res = await fetch("/api/engagements", {
+        headers: {
+          "x-api-key": websiteApi,
+        },
+      });
       if (res.ok) setEngagements(await res.json());
     } catch (err) {
       console.error(err);
@@ -65,7 +79,10 @@ export default function AdminConsole() {
     try {
       const res = await fetch("/api/members", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": websiteApi,
+        },
         body: JSON.stringify({ username: newMember.replace("@", "") }),
       });
       if (res.ok) {
@@ -86,7 +103,10 @@ export default function AdminConsole() {
   const handleDeleteMember = async (id: string) => {
     if (!confirm("Delete member and all engagements?")) return;
     try {
-      const res = await fetch(`/api/members/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/members/${id}`, {
+        method: "DELETE",
+        headers: { "x-api-key": websiteApi },
+      });
       if (res.ok) {
         fetchMembers();
         fetchEngagements();
@@ -103,7 +123,10 @@ export default function AdminConsole() {
     try {
       const res = await fetch("/api/posts", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": websiteApi,
+        },
         body: JSON.stringify({ tweetId: newPost }),
       });
       if (res.ok) {
@@ -125,7 +148,10 @@ export default function AdminConsole() {
   const handleDeletePost = async (id: string) => {
     if (!confirm("Delete post and all engagements?")) return;
     try {
-      const res = await fetch(`/api/posts/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/posts/${id}`, {
+        method: "DELETE",
+        headers: { "x-api-key": websiteApi },
+      });
       if (res.ok) {
         fetchPosts();
         fetchEngagements();
@@ -174,7 +200,10 @@ export default function AdminConsole() {
       try {
         const res = await fetch("/api/posts", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": websiteApi,
+          },
           body: JSON.stringify({ tweetId: post.tweetId }),
         });
         if (res.ok) {
@@ -205,7 +234,10 @@ export default function AdminConsole() {
     try {
       const res = await fetch("/api/posts", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": websiteApi,
+        },
         body: JSON.stringify({ tweetId }),
       });
       if (res.ok) {
@@ -229,7 +261,10 @@ export default function AdminConsole() {
     try {
       const res = await fetch("/api/manual-engagements", {
         method: action === "add" ? "POST" : "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": "websiteApi",
+        },
         body: JSON.stringify({
           twitterUsername: manualUser,
           tweetIds: manualTweets,
@@ -309,20 +344,20 @@ export default function AdminConsole() {
                   <Avatar className="border-border h-10 w-10 border">
                     <AvatarImage
                       src={member.image || "/placeholder.svg"}
-                      alt={member.name || "Member"}
+                      alt={member.twitterName || "Member"}
                     />
                     <AvatarFallback className="bg-muted text-foreground">
-                      {(member.name || member.username || "M")
+                      {(member.twitterName || member.twitterUsername || "M")
                         .charAt(0)
                         .toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">
                     <span className="text-foreground text-sm font-semibold">
-                      {member.name || member.username}
+                      {member.twitterName || member.twitterUsername}
                     </span>
                     <span className="text-muted-foreground text-xs">
-                      @{member.twitterUsername || member.username}
+                      @{member.twitterUsername || member.twitterUsername}
                     </span>
                   </div>
                 </div>

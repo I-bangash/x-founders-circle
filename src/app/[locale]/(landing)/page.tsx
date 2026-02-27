@@ -524,7 +524,7 @@ export default function SignalTerminal() {
                   return (
                     <a
                       key={member._id}
-                      href={`https://x.com/${member.twitterUsername || member.username}`}
+                      href={`https://x.com/${member.twitterUsername || member.twitterUsername}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="group relative flex flex-col items-center gap-2"
@@ -533,10 +533,14 @@ export default function SignalTerminal() {
                         <Avatar className="h-12 w-12 cursor-pointer border-2 border-transparent transition-all duration-300 group-hover:border-blue-500 group-hover:shadow-lg group-hover:shadow-blue-500/30">
                           <AvatarImage
                             src={member.image}
-                            alt={member.name || member.username}
+                            alt={member.twitterName || member.twitterUsername}
                           />
                           <AvatarFallback className="bg-muted text-foreground">
-                            {(member.name || member.username || "M")
+                            {(
+                              member.twitterName ||
+                              member.twitterUsername ||
+                              "M"
+                            )
                               .charAt(0)
                               .toUpperCase()}
                           </AvatarFallback>
@@ -548,7 +552,7 @@ export default function SignalTerminal() {
                         )}
                       </div>
                       <div className="bg-muted border-border text-foreground pointer-events-none absolute top-full left-1/2 z-50 mt-2 -translate-x-1/2 rounded border px-2 py-1 text-xs whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100">
-                        @{member.twitterUsername || member.username}
+                        @{member.twitterUsername || member.twitterUsername}
                       </div>
                     </a>
                   );
@@ -697,7 +701,7 @@ export default function SignalTerminal() {
                     return (
                       <a
                         key={member._id}
-                        href={`https://x.com/${member.twitterUsername || member.username}`}
+                        href={`https://x.com/${member.twitterUsername || member.twitterUsername}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="group bg-card border-border flex flex-col items-center gap-4 rounded-3xl border p-6 shadow-sm transition-all duration-300 hover:-translate-y-[2px] hover:border-blue-500/40"
@@ -705,20 +709,24 @@ export default function SignalTerminal() {
                         <Avatar className="border-border h-16 w-16 border transition-all duration-300 group-hover:border-blue-500 group-hover:shadow-lg group-hover:shadow-blue-500/30">
                           <AvatarImage
                             src={member.image}
-                            alt={member.name || member.username}
+                            alt={member.twitterName || member.twitterUsername}
                           />
                           <AvatarFallback className="bg-muted text-foreground">
-                            {(member.name || member.username || "M")
+                            {(
+                              member.twitterName ||
+                              member.twitterUsername ||
+                              "M"
+                            )
                               .charAt(0)
                               .toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col items-center text-center">
                           <span className="text-foreground text-sm font-semibold tracking-tight">
-                            {member.name || member.username}
+                            {member.twitterName || member.twitterUsername}
                           </span>
                           <span className="text-muted-foreground mt-0.5 text-xs">
-                            @{member.twitterUsername || member.username}
+                            @{member.twitterUsername || member.twitterUsername}
                           </span>
                         </div>
                         <div className="bg-background border-border text-muted-foreground mt-1 rounded-full border px-3 py-1.5 font-['JetBrains_Mono',monospace] text-xs transition-colors group-hover:border-blue-500/30 group-hover:bg-blue-500/10 group-hover:text-blue-500">
@@ -1129,19 +1137,19 @@ function Leaderboard({
                   {idx + 1}
                 </span>
                 <Avatar className="border-border h-10 w-10 border">
-                  <AvatarImage src={member.image} alt={member.name} />
+                  <AvatarImage src={member.image} alt={member.twitterName} />
                   <AvatarFallback className="bg-muted text-foreground">
-                    {(member.name || member.username || "M")
+                    {(member.twitterName || member.twitterUsername || "M")
                       .charAt(0)
                       .toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
                   <span className="text-foreground text-sm font-medium tracking-tight">
-                    {member.name || member.username}
+                    {member.twitterName || member.twitterUsername}
                   </span>
                   <span className="text-muted-foreground text-xs">
-                    @{member.twitterUsername || member.username}
+                    @{member.twitterUsername || member.twitterUsername}
                   </span>
                 </div>
               </div>

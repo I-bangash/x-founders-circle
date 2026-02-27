@@ -2,14 +2,24 @@ import { NextResponse } from "next/server";
 
 import { fetchMutation, fetchQuery } from "convex/nextjs";
 
+import { checkApiAuth } from "@/lib/api-auth";
+
 import { api } from "../../../../convex/_generated/api";
 
-export async function GET() {
+export async function GET(req: Request) {
+  if (!(await checkApiAuth(req))) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const members = await fetchQuery(api.mvp.getMembers);
   return NextResponse.json(members);
 }
 
 export async function POST(req: Request) {
+  if (!(await checkApiAuth(req))) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { username } = await req.json();
 
   if (!username) {
