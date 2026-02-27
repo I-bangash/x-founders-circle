@@ -790,7 +790,7 @@ export default function SignalTerminal() {
                             <div className="h-px flex-1 bg-amber-500/20" />
                             <div className="flex flex-col items-center gap-0.5 text-center">
                               <span className="text-xs font-semibold tracking-widest text-amber-500 uppercase">
-                                Will Be Missed
+                                {/* Will Be Missed */}
                               </span>
                               {/* <p className="text-muted-foreground text-[10px]">
                                 0 engagements — at risk of removal
