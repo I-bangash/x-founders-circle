@@ -1,13 +1,13 @@
 import { z } from "zod";
 
-export const schema = z.object({
-  id: z.number(),
-  header: z.string(),
-  type: z.string(),
-  status: z.string(),
-  target: z.string(),
-  limit: z.string(),
-  reviewer: z.string(),
+export const postSchema = z.object({
+  id: z.string(), // Convex _id
+  tweetId: z.string(),
+  content: z.string(),
+  createdAt: z.number(),
+  status: z.enum(["published", "queued"]).optional(),
+  engagementCount: z.number().optional(),
+  authorUsername: z.string(),
 });
 
-export type SchemaType = z.infer<typeof schema>;
+export type PostSchemaType = z.infer<typeof postSchema>;

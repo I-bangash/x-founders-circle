@@ -2,6 +2,25 @@ import { v } from "convex/values";
 
 import { mutation, query } from "./_generated/server";
 
+const POINTS = { comment: 1, like: 0.25, retweet: 5, bookmark: 3 } as const;
+type EngagementType = keyof typeof POINTS;
+
+function utcDateStr(ts: number) {
+  return new Date(ts).toISOString().slice(0, 10); // "YYYY-MM-DD"
+}
+
+function utcWeekStr(ts: number) {
+  const d = new Date(ts);
+  const dayOfWeek = d.getUTCDay();
+  const monday = new Date(d);
+  monday.setUTCDate(d.getUTCDate() - ((dayOfWeek + 6) % 7));
+  return monday.toISOString().slice(0, 10); // "YYYY-MM-DD" of that week's Monday
+}
+
+function utcMonthStr(ts: number) {
+  return new Date(ts).toISOString().slice(0, 7); // "YYYY-MM"
+}
+
 export const getMembers = query({
   args: {},
   handler: async (ctx) => {
@@ -103,10 +122,10 @@ export const getPosts = query({
     const posts = await ctx.db
       .query("posts")
       .withIndex("by_createdAt")
-      .order("desc") // default behavior but good to specify conceptually
+      .order("desc")
       .collect();
-    // In convex, 'desc' sorting on index is done via .order("desc").
-    return posts;
+    // Exclude queued posts — only show published or legacy admin-added posts
+    return posts.filter((p) => p.status !== "queued");
   },
 });
 
@@ -171,6 +190,15 @@ export const addEngagements = mutation({
         postId: v.id("posts"),
         twitterUserId: v.string(),
         engagedAt: v.number(),
+        engagementType: v.optional(
+          v.union(
+            v.literal("comment"),
+            v.literal("like"),
+            v.literal("retweet"),
+            v.literal("bookmark")
+          )
+        ),
+        pointsEarned: v.optional(v.number()),
       })
     ),
   },
@@ -184,30 +212,55 @@ export const addEngagements = mutation({
         )
         .first();
 
-      if (!existing) {
-        await ctx.db.insert("engagements", eng);
-        addedCount++;
+      if (existing) continue;
 
-        // Update user's total engagements
-        const user = await ctx.db
-          .query("users")
-          .withIndex("by_twitterId", (q) =>
-            q.eq("twitterId", eng.twitterUserId)
-          )
-          .first();
-        if (user) {
-          await ctx.db.patch(user._id, {
-            totalEngagements: (user.totalEngagements || 0) + 1,
-          });
-        }
+      const type: EngagementType = eng.engagementType ?? "comment";
+      const points = eng.pointsEarned ?? POINTS[type];
 
-        // Update post's engagement count
-        const post = await ctx.db.get(eng.postId);
-        if (post) {
-          await ctx.db.patch(eng.postId, {
-            engagementCount: (post.engagementCount || 0) + 1,
-          });
-        }
+      await ctx.db.insert("engagements", {
+        ...eng,
+        engagementType: type,
+        pointsEarned: points,
+      });
+      addedCount++;
+
+      const user = await ctx.db
+        .query("users")
+        .withIndex("by_twitterId", (q) => q.eq("twitterId", eng.twitterUserId))
+        .first();
+
+      if (user) {
+        const now = eng.engagedAt;
+        const todayStr = utcDateStr(now);
+        const weekStr = utcWeekStr(now);
+        const monthStr = utcMonthStr(now);
+
+        await ctx.db.patch(user._id, {
+          totalEngagements: (user.totalEngagements || 0) + 1,
+          totalPoints: (user.totalPoints || 0) + points,
+          engagementsToday:
+            user.lastEngagementDate === todayStr
+              ? (user.engagementsToday || 0) + 1
+              : 1,
+          lastEngagementDate: todayStr,
+          engagementsThisWeek:
+            user.lastEngagementWeek === weekStr
+              ? (user.engagementsThisWeek || 0) + 1
+              : 1,
+          lastEngagementWeek: weekStr,
+          engagementsThisMonth:
+            user.lastEngagementMonth === monthStr
+              ? (user.engagementsThisMonth || 0) + 1
+              : 1,
+          lastEngagementMonth: monthStr,
+        });
+      }
+
+      const post = await ctx.db.get(eng.postId);
+      if (post) {
+        await ctx.db.patch(eng.postId, {
+          engagementCount: (post.engagementCount || 0) + 1,
+        });
       }
     }
     return addedCount;
@@ -260,21 +313,43 @@ export const addManualEngagements = mutation({
         .first();
 
       if (!existing) {
+        const now = Date.now();
+        const points = POINTS.comment;
+        const todayStr = utcDateStr(now);
+        const weekStr = utcWeekStr(now);
+        const monthStr = utcMonthStr(now);
+
         await ctx.db.insert("engagements", {
           postId: post._id,
           twitterUserId: user.twitterId,
-          engagedAt: Date.now(),
+          engagedAt: now,
+          engagementType: "comment",
+          pointsEarned: points,
         });
         addedCount++;
 
-        // Update post's engagement count
         await ctx.db.patch(post._id, {
           engagementCount: (post.engagementCount || 0) + 1,
         });
 
-        // Update user's total engagements
         await ctx.db.patch(user._id, {
           totalEngagements: (user.totalEngagements || 0) + 1,
+          totalPoints: (user.totalPoints || 0) + points,
+          engagementsToday:
+            user.lastEngagementDate === todayStr
+              ? (user.engagementsToday || 0) + 1
+              : 1,
+          lastEngagementDate: todayStr,
+          engagementsThisWeek:
+            user.lastEngagementWeek === weekStr
+              ? (user.engagementsThisWeek || 0) + 1
+              : 1,
+          lastEngagementWeek: weekStr,
+          engagementsThisMonth:
+            user.lastEngagementMonth === monthStr
+              ? (user.engagementsThisMonth || 0) + 1
+              : 1,
+          lastEngagementMonth: monthStr,
         });
       }
     }
@@ -318,6 +393,7 @@ export const removeManualEngagements = mutation({
         .first();
 
       if (existing) {
+        const points = existing.pointsEarned ?? POINTS.comment;
         await ctx.db.delete(existing._id);
         removedCount++;
 
@@ -327,6 +403,7 @@ export const removeManualEngagements = mutation({
 
         await ctx.db.patch(user._id, {
           totalEngagements: Math.max(0, (user.totalEngagements || 0) - 1),
+          totalPoints: Math.max(0, (user.totalPoints || 0) - points),
         });
       }
     }

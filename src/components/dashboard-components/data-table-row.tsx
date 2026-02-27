@@ -6,7 +6,7 @@ import { Row, flexRender } from "@tanstack/react-table";
 
 import { TableCell, TableRow } from "@/components/ui/table";
 
-import type { SchemaType } from "./data-table-schema";
+import type { PostSchemaType as SchemaType } from "./data-table-schema";
 
 interface DraggableRowProps {
   row: Row<SchemaType>;

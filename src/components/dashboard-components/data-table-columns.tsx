@@ -1,13 +1,13 @@
 "use client";
 
-import { useSortable } from "@dnd-kit/sortable";
 import {
   IconCircleCheckFilled,
+  IconClock,
   IconDotsVertical,
-  IconGripVertical,
   IconLoader,
 } from "@tabler/icons-react";
 import { ColumnDef } from "@tanstack/react-table";
+import { useMutation } from "convex/react";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -20,44 +20,59 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 
-import type { SchemaType } from "./data-table-schema";
-import { TableCellViewer } from "./data-table-viewer";
+import type { PostSchemaType } from "./data-table-schema";
 
-function DragHandle({ id }: { id: number }) {
-  const { attributes, listeners } = useSortable({
-    id,
-  });
+function ActionsCell({ row }: { row: any }) {
+  const deletePost = useMutation(api.dashboard.deleteMyPost);
+
+  const handleDelete = async () => {
+    try {
+      const result = await deletePost({
+        postId: row.original.id as Id<"posts">,
+      });
+      if (result.error) {
+        toast.error(result.error.message);
+      } else {
+        toast.success("Post removed");
+      }
+    } catch {
+      toast.error("Failed to delete post");
+    }
+  };
+
+  const tweetUrl = `https://x.com/${row.original.authorUsername}/status/${row.original.tweetId}`;
 
   return (
-    <Button
-      {...attributes}
-      {...listeners}
-      variant="ghost"
-      size="icon"
-      className="text-muted-foreground size-7 hover:bg-transparent"
-    >
-      <IconGripVertical className="text-muted-foreground size-3" />
-      <span className="sr-only">Drag to reorder</span>
-    </Button>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+          size="icon"
+        >
+          <IconDotsVertical />
+          <span className="sr-only">Open menu</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-32">
+        <DropdownMenuItem asChild>
+          <a href={tweetUrl} target="_blank" rel="noopener noreferrer">
+            View on X
+          </a>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem variant="destructive" onClick={handleDelete}>
+          Delete
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
-export const columns: ColumnDef<SchemaType>[] = [
-  {
-    id: "drag",
-    header: () => null,
-    cell: ({ row }) => <DragHandle id={row.original.id} />,
-  },
+export const columns: ColumnDef<PostSchemaType>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -85,142 +100,67 @@ export const columns: ColumnDef<SchemaType>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "header",
-    header: "Header",
-    cell: ({ row }) => <TableCellViewer item={row.original} />,
+    accessorKey: "content",
+    header: "Post",
+    cell: ({ row }) => {
+      const tweetUrl = `https://x.com/${row.original.authorUsername}/status/${row.original.tweetId}`;
+      const preview = row.original.content.slice(0, 80);
+      return (
+        <a
+          href={tweetUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-foreground hover:text-primary block max-w-xs truncate transition-colors"
+          title={row.original.content}
+        >
+          {preview}
+          {row.original.content.length > 80 ? "…" : ""}
+        </a>
+      );
+    },
     enableHiding: false,
   },
   {
-    accessorKey: "type",
-    header: "Section Type",
+    accessorKey: "createdAt",
+    header: "Date",
     cell: ({ row }) => (
-      <div className="w-32">
-        <Badge variant="outline" className="text-muted-foreground px-1.5">
-          {row.original.type}
-        </Badge>
-      </div>
+      <span className="text-muted-foreground text-sm whitespace-nowrap">
+        {new Date(row.original.createdAt).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })}
+      </span>
     ),
   },
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.status === "Done" ? (
-          <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
-        ) : (
-          <IconLoader />
-        )}
-        {row.original.status}
-      </Badge>
-    ),
-  },
-  {
-    accessorKey: "target",
-    header: () => <div className="w-full text-right">Target</div>,
-    cell: ({ row }) => (
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          toast.promise(new Promise((resolve) => setTimeout(resolve, 1000)), {
-            loading: `Saving ${row.original.header}`,
-            success: "Done",
-            error: "Error",
-          });
-        }}
-      >
-        <Label htmlFor={`${row.original.id}-target`} className="sr-only">
-          Target
-        </Label>
-        <Input
-          className="hover:bg-input/30 focus-visible:bg-background dark:hover:bg-input/30 dark:focus-visible:bg-input/30 h-8 w-16 border-transparent bg-transparent text-right shadow-none focus-visible:border dark:bg-transparent"
-          defaultValue={row.original.target}
-          id={`${row.original.id}-target`}
-        />
-      </form>
-    ),
-  },
-  {
-    accessorKey: "limit",
-    header: () => <div className="w-full text-right">Limit</div>,
-    cell: ({ row }) => (
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          toast.promise(new Promise((resolve) => setTimeout(resolve, 1000)), {
-            loading: `Saving ${row.original.header}`,
-            success: "Done",
-            error: "Error",
-          });
-        }}
-      >
-        <Label htmlFor={`${row.original.id}-limit`} className="sr-only">
-          Limit
-        </Label>
-        <Input
-          className="hover:bg-input/30 focus-visible:bg-background dark:hover:bg-input/30 dark:focus-visible:bg-input/30 h-8 w-16 border-transparent bg-transparent text-right shadow-none focus-visible:border dark:bg-transparent"
-          defaultValue={row.original.limit}
-          id={`${row.original.id}-limit`}
-        />
-      </form>
-    ),
-  },
-  {
-    accessorKey: "reviewer",
-    header: "Reviewer",
     cell: ({ row }) => {
-      const isAssigned = row.original.reviewer !== "Assign reviewer";
-
-      if (isAssigned) {
-        return row.original.reviewer;
-      }
-
+      const status = row.original.status;
       return (
-        <>
-          <Label htmlFor={`${row.original.id}-reviewer`} className="sr-only">
-            Reviewer
-          </Label>
-          <Select>
-            <SelectTrigger
-              className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-              size="sm"
-              id={`${row.original.id}-reviewer`}
-            >
-              <SelectValue placeholder="Assign reviewer" />
-            </SelectTrigger>
-            <SelectContent align="end">
-              <SelectItem value="Eddie Lake">Eddie Lake</SelectItem>
-              <SelectItem value="Jamik Tashpulatov">
-                Jamik Tashpulatov
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </>
+        <Badge variant="outline" className="text-muted-foreground px-1.5">
+          {status === "queued" ? (
+            <IconClock className="text-yellow-500 dark:text-yellow-400" />
+          ) : (
+            <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
+          )}
+          {status === "queued" ? "Queued" : "Published"}
+        </Badge>
       );
     },
   },
   {
-    id: "actions",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem>Make a copy</DropdownMenuItem>
-          <DropdownMenuItem>Favorite</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+    accessorKey: "engagementCount",
+    header: () => <div className="w-full text-right">Engagements</div>,
+    cell: ({ row }) => (
+      <div className="text-right text-sm">
+        {Math.floor(row.original.engagementCount ?? 0)}
+      </div>
     ),
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => <ActionsCell row={row} />,
   },
 ];

@@ -4,7 +4,6 @@ import * as React from "react";
 
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 
-import { chartData } from "@/components/dashboard-components/chart-data";
 import {
   Card,
   CardAction,
@@ -29,7 +28,7 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-export const description = "An interactive area chart";
+export const description = "Posts shared and engagements received per day";
 
 const TIME_RANGES = [
   { value: "90d", label: "Last 3 months", days: 90 },
@@ -38,37 +37,31 @@ const TIME_RANGES = [
 ] as const;
 
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  desktop: {
-    label: "Desktop",
+  postsShared: {
+    label: "Posts Shared",
     color: "var(--primary)",
   },
-  mobile: {
-    label: "Mobile",
+  engagementReceived: {
+    label: "Engagement Received",
     color: "var(--primary)",
   },
 } satisfies ChartConfig;
 
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
+const formatDate = (dateString: string) =>
+  new Date(dateString).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
   });
-};
 
-const filterData = (data: typeof chartData, timeRange: string) => {
-  const referenceDate = new Date("2024-06-30");
-  const daysToSubtract =
-    TIME_RANGES.find((r) => r.value === timeRange)?.days || 90;
+interface ChartDataPoint {
+  date: string;
+  postsShared: number;
+  engagementReceived: number;
+}
 
-  const startDate = new Date(referenceDate);
-  startDate.setDate(startDate.getDate() - daysToSubtract);
-
-  return data.filter((item) => new Date(item.date) >= startDate);
-};
+interface ChartAreaInteractiveProps {
+  data: ChartDataPoint[];
+}
 
 function TimeRangeSelector({
   value,
@@ -119,99 +112,120 @@ function TimeRangeSelector({
 function ChartGradients() {
   return (
     <defs>
-      <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="5%" stopColor="var(--color-desktop)" stopOpacity={1.0} />
-        <stop offset="95%" stopColor="var(--color-desktop)" stopOpacity={0.1} />
+      <linearGradient id="fillPostsShared" x1="0" y1="0" x2="0" y2="1">
+        <stop
+          offset="5%"
+          stopColor="var(--color-postsShared)"
+          stopOpacity={1.0}
+        />
+        <stop
+          offset="95%"
+          stopColor="var(--color-postsShared)"
+          stopOpacity={0.1}
+        />
       </linearGradient>
-      <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="5%" stopColor="var(--color-mobile)" stopOpacity={0.8} />
-        <stop offset="95%" stopColor="var(--color-mobile)" stopOpacity={0.1} />
+      <linearGradient id="fillEngagementReceived" x1="0" y1="0" x2="0" y2="1">
+        <stop
+          offset="5%"
+          stopColor="var(--color-engagementReceived)"
+          stopOpacity={0.8}
+        />
+        <stop
+          offset="95%"
+          stopColor="var(--color-engagementReceived)"
+          stopOpacity={0.1}
+        />
       </linearGradient>
     </defs>
   );
 }
 
-function InteractiveAreaChart({
-  data,
-  isMobile,
-}: {
-  data: typeof chartData;
-  isMobile: boolean;
-}) {
-  return (
-    <ChartContainer
-      config={chartConfig}
-      className="aspect-auto h-[250px] w-full"
-    >
-      <AreaChart data={data}>
-        <ChartGradients />
-        <CartesianGrid vertical={false} />
-        <XAxis
-          dataKey="date"
-          tickLine={false}
-          axisLine={false}
-          tickMargin={8}
-          minTickGap={32}
-          tickFormatter={formatDate}
-        />
-        <ChartTooltip
-          cursor={false}
-          defaultIndex={isMobile ? -1 : 10}
-          content={
-            <ChartTooltipContent labelFormatter={formatDate} indicator="dot" />
-          }
-        />
-        <Area
-          dataKey="mobile"
-          type="natural"
-          fill="url(#fillMobile)"
-          stroke="var(--color-mobile)"
-          stackId="a"
-        />
-        <Area
-          dataKey="desktop"
-          type="natural"
-          fill="url(#fillDesktop)"
-          stroke="var(--color-desktop)"
-          stackId="a"
-        />
-      </AreaChart>
-    </ChartContainer>
-  );
+function filterByRange(
+  data: ChartDataPoint[],
+  timeRange: string
+): ChartDataPoint[] {
+  const days = TIME_RANGES.find((r) => r.value === timeRange)?.days ?? 90;
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - days);
+  const cutoffStr = cutoff.toISOString().slice(0, 10);
+  return data.filter((d) => d.date >= cutoffStr);
 }
 
-export function ChartAreaInteractive() {
+export function ChartAreaInteractive({ data }: ChartAreaInteractiveProps) {
   const isMobile = useIsMobile();
   const [timeRange, setTimeRange] = React.useState("90d");
 
-  // Automatically switch to smaller range on mobile
   React.useEffect(() => {
-    if (isMobile) {
-      setTimeRange("7d");
-    }
+    if (isMobile) setTimeRange("7d");
   }, [isMobile]);
 
-  const filteredData = React.useMemo(
-    () => filterData(chartData, timeRange),
-    [timeRange]
+  const filtered = React.useMemo(
+    () => filterByRange(data, timeRange),
+    [data, timeRange]
   );
 
   return (
     <Card className="@container/card">
       <CardHeader>
-        <CardTitle>Total Visitors</CardTitle>
+        <CardTitle>Activity Overview</CardTitle>
         <CardDescription>
           <span className="hidden @[540px]/card:block">
-            Total for the last 3 months
+            Posts shared and engagements received
           </span>
-          <span className="@[540px]/card:hidden">Last 3 months</span>
+          <span className="@[540px]/card:hidden">Activity</span>
         </CardDescription>
         <CardAction>
           <TimeRangeSelector value={timeRange} onChange={setTimeRange} />
         </CardAction>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-        <InteractiveAreaChart data={filteredData} isMobile={isMobile} />
+        {filtered.length === 0 ? (
+          <div className="text-muted-foreground flex h-[250px] items-center justify-center text-sm">
+            No data yet — share your first post to see activity
+          </div>
+        ) : (
+          <ChartContainer
+            config={chartConfig}
+            className="aspect-auto h-[250px] w-full"
+          >
+            <AreaChart data={filtered}>
+              <ChartGradients />
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                minTickGap={32}
+                tickFormatter={formatDate}
+              />
+              <ChartTooltip
+                cursor={false}
+                defaultIndex={isMobile ? -1 : 10}
+                content={
+                  <ChartTooltipContent
+                    labelFormatter={formatDate}
+                    indicator="dot"
+                  />
+                }
+              />
+              <Area
+                dataKey="engagementReceived"
+                type="natural"
+                fill="url(#fillEngagementReceived)"
+                stroke="var(--color-engagementReceived)"
+                stackId="a"
+              />
+              <Area
+                dataKey="postsShared"
+                type="natural"
+                fill="url(#fillPostsShared)"
+                stroke="var(--color-postsShared)"
+                stackId="a"
+              />
+            </AreaChart>
+          </ChartContainer>
+        )}
       </CardContent>
     </Card>
   );

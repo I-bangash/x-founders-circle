@@ -9,6 +9,8 @@
  */
 
 import type * as convexTypes from "../convexTypes.js";
+import type * as crons from "../crons.js";
+import type * as dashboard from "../dashboard.js";
 import type * as emails_reminder from "../emails/reminder.js";
 import type * as emails_templates_WelcomeEmail from "../emails/templates/WelcomeEmail.js";
 import type * as emails_templates_marketplace_ReceiptEmail from "../emails/templates/marketplace/ReceiptEmail.js";
@@ -36,6 +38,8 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   convexTypes: typeof convexTypes;
+  crons: typeof crons;
+  dashboard: typeof dashboard;
   "emails/reminder": typeof emails_reminder;
   "emails/templates/WelcomeEmail": typeof emails_templates_WelcomeEmail;
   "emails/templates/marketplace/ReceiptEmail": typeof emails_templates_marketplace_ReceiptEmail;

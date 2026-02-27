@@ -66,6 +66,13 @@ export default defineSchema({
     followersCount: v.optional(v.number()),
     joinedAt: v.optional(v.number()),
     totalEngagements: v.optional(v.number()),
+    totalPoints: v.optional(v.number()),
+    engagementsToday: v.optional(v.number()),
+    engagementsThisWeek: v.optional(v.number()),
+    engagementsThisMonth: v.optional(v.number()),
+    lastEngagementDate: v.optional(v.string()), // "YYYY-MM-DD"
+    lastEngagementWeek: v.optional(v.string()), // "YYYY-WW"
+    lastEngagementMonth: v.optional(v.string()), // "YYYY-MM"
     inviteCode: v.optional(v.string()), // Specific claim code for this user
   })
     .index("by_email", ["email"])
@@ -83,16 +90,38 @@ export default defineSchema({
     content: v.string(),
     createdAt: v.number(),
     fetchedAt: v.number(),
-    threadData: v.optional(v.any()), // Store the parsed thread structure
+    threadData: v.optional(v.any()),
     engagementCount: v.optional(v.number()),
+    // User dashboard fields
+    status: v.optional(
+      v.union(
+        v.literal("published"),
+        v.literal("queued"),
+        v.literal("scheduled")
+      )
+    ),
+    sharedByClerkId: v.optional(v.string()),
+    dailyDate: v.optional(v.string()), // "YYYY-MM-DD" UTC
   })
     .index("by_tweetId", ["tweetId"])
-    .index("by_createdAt", ["createdAt"]),
+    .index("by_createdAt", ["createdAt"])
+    .index("by_authorTwitterId_createdAt", ["authorTwitterId", "createdAt"])
+    .index("by_authorTwitterId_dailyDate", ["authorTwitterId", "dailyDate"])
+    .index("by_status", ["status"]),
 
   engagements: defineTable({
     postId: v.id("posts"),
     twitterUserId: v.string(), // matches users.twitterId
     engagedAt: v.number(),
+    engagementType: v.optional(
+      v.union(
+        v.literal("comment"),
+        v.literal("like"),
+        v.literal("retweet"),
+        v.literal("bookmark")
+      )
+    ),
+    pointsEarned: v.optional(v.number()),
   })
     .index("by_postId", ["postId"])
     .index("by_twitterUserId", ["twitterUserId"])

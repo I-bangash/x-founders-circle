@@ -547,7 +547,7 @@ export default function SignalTerminal() {
                         </Avatar>
                         {globalEngagements > 0 && (
                           <div className="bg-card border-border text-foreground absolute -right-1 -bottom-1 flex h-5 min-w-[20px] items-center justify-center rounded-full border px-1 font-['JetBrains_Mono',monospace] text-[10px]">
-                            {globalEngagements}
+                            {Math.floor(globalEngagements)}
                           </div>
                         )}
                       </div>
@@ -695,50 +695,130 @@ export default function SignalTerminal() {
               </div>
 
               {membersView === "grid" ? (
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-                  {sortedMembers.map((member) => {
+                (() => {
+                  const activeMembers = sortedMembers.filter(
+                    (m) => (m.totalEngagements || 0) > 0
+                  );
+                  const inactiveMembers = sortedMembers.filter(
+                    (m) => (m.totalEngagements || 0) === 0
+                  );
+
+                  const MemberCard = ({
+                    member,
+                    inactive,
+                  }: {
+                    member: any;
+                    inactive?: boolean;
+                  }) => {
                     const globalEngagements = member.totalEngagements || 0;
                     return (
                       <a
                         key={member._id}
-                        href={`https://x.com/${member.twitterUsername || member.twitterUsername}`}
+                        href={`https://x.com/${member.twitterUsername}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group bg-card border-border flex flex-col items-center gap-4 rounded-3xl border p-6 shadow-sm transition-all duration-300 hover:-translate-y-[2px] hover:border-blue-500/40"
+                        className={`group flex flex-col items-center gap-4 rounded-3xl border p-6 shadow-sm transition-all duration-300 hover:-translate-y-[2px] ${
+                          inactive
+                            ? "bg-card border-amber-500/20 opacity-70 hover:border-amber-500/50 hover:opacity-100"
+                            : "bg-card border-border hover:border-blue-500/40"
+                        }`}
                       >
-                        <Avatar className="border-border h-16 w-16 border transition-all duration-300 group-hover:border-blue-500 group-hover:shadow-lg group-hover:shadow-blue-500/30">
-                          <AvatarImage
-                            src={member.image}
-                            alt={member.twitterName || member.twitterUsername}
-                          />
-                          <AvatarFallback className="bg-muted text-foreground">
-                            {(
-                              member.twitterName ||
-                              member.twitterUsername ||
-                              "M"
-                            )
-                              .charAt(0)
-                              .toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
+                        <div className="relative">
+                          <Avatar
+                            className={`h-16 w-16 border transition-all duration-300 ${
+                              inactive
+                                ? "border-border grayscale group-hover:border-amber-500 group-hover:shadow-lg group-hover:shadow-amber-500/20 group-hover:grayscale-0"
+                                : "border-border group-hover:border-blue-500 group-hover:shadow-lg group-hover:shadow-blue-500/30"
+                            }`}
+                          >
+                            <AvatarImage
+                              src={member.image}
+                              alt={member.twitterName || member.twitterUsername}
+                            />
+                            <AvatarFallback className="bg-muted text-foreground">
+                              {(
+                                member.twitterName ||
+                                member.twitterUsername ||
+                                "M"
+                              )
+                                .charAt(0)
+                                .toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                        </div>
                         <div className="flex flex-col items-center text-center">
                           <span className="text-foreground text-sm font-semibold tracking-tight">
                             {member.twitterName || member.twitterUsername}
                           </span>
                           <span className="text-muted-foreground mt-0.5 text-xs">
-                            @{member.twitterUsername || member.twitterUsername}
+                            @{member.twitterUsername}
                           </span>
                         </div>
-                        <div className="bg-background border-border text-muted-foreground mt-1 rounded-full border px-3 py-1.5 font-['JetBrains_Mono',monospace] text-xs transition-colors group-hover:border-blue-500/30 group-hover:bg-blue-500/10 group-hover:text-blue-500">
-                          <span className="text-foreground font-bold group-hover:text-blue-500">
-                            {globalEngagements}
+                        <div
+                          className={`mt-1 rounded-full border px-3 py-1.5 font-['JetBrains_Mono',monospace] text-xs transition-colors ${
+                            inactive
+                              ? "bg-background border-amber-500/20 text-amber-500/70 group-hover:border-amber-500/40 group-hover:bg-amber-500/10 group-hover:text-amber-500"
+                              : "bg-background border-border text-muted-foreground group-hover:border-blue-500/30 group-hover:bg-blue-500/10 group-hover:text-blue-500"
+                          }`}
+                        >
+                          <span
+                            className={`font-bold ${inactive ? "text-amber-500/70 group-hover:text-amber-500" : "text-foreground group-hover:text-blue-500"}`}
+                          >
+                            {Math.floor(globalEngagements)}
                           </span>{" "}
                           Engagements
                         </div>
                       </a>
                     );
-                  })}
-                </div>
+                  };
+
+                  return (
+                    <div className="flex flex-col gap-10">
+                      {/* Active Members */}
+                      {activeMembers.length > 0 && (
+                        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                          {activeMembers.map((member) => (
+                            <MemberCard key={member._id} member={member} />
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Will Be Missed */}
+                      {inactiveMembers.length > 0 && (
+                        <div className="flex flex-col gap-4">
+                          <div className="flex items-center gap-3">
+                            <div className="h-px flex-1 bg-amber-500/20" />
+                            <div className="flex flex-col items-center gap-0.5 text-center">
+                              <span className="text-xs font-semibold tracking-widest text-amber-500 uppercase">
+                                Will Be Missed
+                              </span>
+                              {/* <p className="text-muted-foreground text-[10px]">
+                                0 engagements — at risk of removal
+                              </p> */}
+                            </div>
+                            <div className="h-px flex-1 bg-amber-500/20" />
+                          </div>
+                          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                            {inactiveMembers.map((member) => (
+                              <MemberCard
+                                key={member._id}
+                                member={member}
+                                inactive
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {activeMembers.length === 0 &&
+                        inactiveMembers.length === 0 && (
+                          <div className="text-muted-foreground py-12 text-center text-sm">
+                            No members found.
+                          </div>
+                        )}
+                    </div>
+                  );
+                })()
               ) : (
                 <Leaderboard
                   members={members}
@@ -1155,7 +1235,7 @@ function Leaderboard({
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-foreground font-['JetBrains_Mono',monospace] text-lg font-bold">
-                  {member.count}
+                  {Math.floor(member.count)}
                 </span>
                 <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 opacity-0 shadow-md shadow-emerald-500/50 transition-opacity group-hover:opacity-100" />
               </div>

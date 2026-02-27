@@ -168,6 +168,8 @@ export async function POST(req: Request) {
             postId: postId as any,
             twitterUserId: member.twitterId,
             engagedAt: new Date(tweet.createdAt).getTime(),
+            engagementType: "comment" as const,
+            pointsEarned: 1,
           });
         }
       }
