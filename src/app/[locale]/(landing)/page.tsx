@@ -197,6 +197,9 @@ export default function SignalTerminal() {
   const [mounted, setMounted] = useState(false);
   const [viewMode, setViewMode] = useState<"feed" | "members">("feed");
   const [postView, setPostView] = useState<"list" | "grid">("list");
+  const [membersView, setMembersView] = useState<"grid" | "leaderboard">(
+    "grid"
+  );
 
   // Scroll listener for Navbar background
   useEffect(() => {
@@ -653,55 +656,91 @@ export default function SignalTerminal() {
               transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
               className="flex flex-col gap-6"
             >
-              <div className="mb-2 flex items-center justify-between px-2">
+              <div className="mb-4 flex flex-col justify-between gap-4 px-2 sm:flex-row sm:items-center">
                 <h2 className="text-foreground text-xl font-bold tracking-tight">
-                  All Members
+                  {membersView === "grid" ? "All Members" : "Leaderboard"}
                 </h2>
-                <span className="text-muted-foreground bg-muted border-border rounded-full border px-3 py-1 font-['JetBrains_Mono',monospace] text-xs">
-                  {members.length} Total
-                </span>
+
+                <div className="flex items-center gap-2">
+                  <div className="bg-card border-border flex items-center rounded-full border p-1">
+                    <button
+                      onClick={() => setMembersView("grid")}
+                      className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
+                        membersView === "grid"
+                          ? "bg-muted text-foreground shadow-sm"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      Grid View
+                    </button>
+                    <button
+                      onClick={() => setMembersView("leaderboard")}
+                      className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
+                        membersView === "leaderboard"
+                          ? "bg-muted text-foreground shadow-sm"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      Leaderboard
+                    </button>
+                  </div>
+                  <span className="text-muted-foreground bg-muted border-border hidden rounded-full border px-3 py-1 font-['JetBrains_Mono',monospace] text-xs sm:inline-block">
+                    {members.length} Total
+                  </span>
+                </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-                {sortedMembers.map((member) => {
-                  const globalEngagements = member.totalEngagements || 0;
-                  return (
-                    <a
-                      key={member._id}
-                      href={`https://x.com/${member.twitterUsername || member.username}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group bg-card border-border flex flex-col items-center gap-4 rounded-3xl border p-6 shadow-sm transition-all duration-300 hover:-translate-y-[2px] hover:border-blue-500/40"
-                    >
-                      <Avatar className="border-border h-16 w-16 border transition-all duration-300 group-hover:border-blue-500 group-hover:shadow-lg group-hover:shadow-blue-500/30">
-                        <AvatarImage
-                          src={member.image}
-                          alt={member.name || member.username}
-                        />
-                        <AvatarFallback className="bg-muted text-foreground">
-                          {(member.name || member.username || "M")
-                            .charAt(0)
-                            .toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex flex-col items-center text-center">
-                        <span className="text-foreground text-sm font-semibold tracking-tight">
-                          {member.name || member.username}
-                        </span>
-                        <span className="text-muted-foreground mt-0.5 text-xs">
-                          @{member.twitterUsername || member.username}
-                        </span>
-                      </div>
-                      <div className="bg-background border-border text-muted-foreground mt-1 rounded-full border px-3 py-1.5 font-['JetBrains_Mono',monospace] text-xs transition-colors group-hover:border-blue-500/30 group-hover:bg-blue-500/10 group-hover:text-blue-500">
-                        <span className="text-foreground font-bold group-hover:text-blue-500">
-                          {globalEngagements}
-                        </span>{" "}
-                        Engagements
-                      </div>
-                    </a>
-                  );
-                })}
-              </div>
+              {membersView === "grid" ? (
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                  {sortedMembers.map((member) => {
+                    const globalEngagements = member.totalEngagements || 0;
+                    return (
+                      <a
+                        key={member._id}
+                        href={`https://x.com/${member.twitterUsername || member.username}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group bg-card border-border flex flex-col items-center gap-4 rounded-3xl border p-6 shadow-sm transition-all duration-300 hover:-translate-y-[2px] hover:border-blue-500/40"
+                      >
+                        <Avatar className="border-border h-16 w-16 border transition-all duration-300 group-hover:border-blue-500 group-hover:shadow-lg group-hover:shadow-blue-500/30">
+                          <AvatarImage
+                            src={member.image}
+                            alt={member.name || member.username}
+                          />
+                          <AvatarFallback className="bg-muted text-foreground">
+                            {(member.name || member.username || "M")
+                              .charAt(0)
+                              .toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col items-center text-center">
+                          <span className="text-foreground text-sm font-semibold tracking-tight">
+                            {member.name || member.username}
+                          </span>
+                          <span className="text-muted-foreground mt-0.5 text-xs">
+                            @{member.twitterUsername || member.username}
+                          </span>
+                        </div>
+                        <div className="bg-background border-border text-muted-foreground mt-1 rounded-full border px-3 py-1.5 font-['JetBrains_Mono',monospace] text-xs transition-colors group-hover:border-blue-500/30 group-hover:bg-blue-500/10 group-hover:text-blue-500">
+                          <span className="text-foreground font-bold group-hover:text-blue-500">
+                            {globalEngagements}
+                          </span>{" "}
+                          Engagements
+                        </div>
+                      </a>
+                    );
+                  })}
+                </div>
+              ) : (
+                <Leaderboard
+                  members={members}
+                  engagements={engagements}
+                  limit={members.length}
+                  className="pt-2 pb-20"
+                  title="Rankings"
+                  description="Members ranked by engagement points"
+                />
+              )}
             </motion.div>
           )}
         </AnimatePresence>
@@ -1000,9 +1039,17 @@ function PostCard({
 function Leaderboard({
   members,
   engagements,
+  limit = 5,
+  className = "leaderboard-section border-border border-t pt-12 pb-20",
+  title = "Hall of Fame",
+  description = "Members with most engagements",
 }: {
   members: any[];
   engagements: any[];
+  limit?: number;
+  className?: string;
+  title?: string;
+  description?: string;
 }) {
   const [tab, setTab] = useState<LeaderboardTab>("global");
 
@@ -1030,19 +1077,17 @@ function Leaderboard({
       }))
       .filter((m) => m.count > 0 || tab === "global") // Hide zeroes on today tab usually, but let's keep all for ranking
       .sort((a, b) => b.count - a.count)
-      .slice(0, 5);
-  }, [members, getEngagementCount, tab]);
+      .slice(0, limit);
+  }, [members, getEngagementCount, tab, limit]);
 
   return (
-    <div className="leaderboard-section border-border border-t pt-12 pb-20">
+    <div className={className}>
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h2 className="text-foreground text-xl font-bold tracking-tight">
-            Hall of Fame
+            {title}
           </h2>
-          <p className="text-muted-foreground mt-1 text-xs">
-            Members with most engagements
-          </p>
+          <p className="text-muted-foreground mt-1 text-xs">{description}</p>
         </div>
         <div className="bg-card border-border flex items-center rounded-full border p-1">
           <button
