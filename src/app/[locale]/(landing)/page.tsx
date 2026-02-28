@@ -11,7 +11,8 @@ import {
   useState,
 } from "react";
 
-import { useQuery } from "convex/react";
+import { useUser } from "@clerk/nextjs";
+import { useMutation, useQuery, usePaginatedQuery } from "convex/react";
 import {
   AnimatePresence,
   animate,
@@ -20,11 +21,15 @@ import {
 } from "framer-motion";
 import gsap from "gsap";
 import {
+  Bookmark,
   ExternalLink,
+  Heart,
   LayoutGrid,
   List,
+  MessageCircle,
   MessageSquare,
   Moon,
+  Repeat2,
   Search,
   Sun,
 } from "lucide-react";
@@ -184,11 +189,27 @@ export default function SignalTerminal() {
   const { theme, setTheme } = useTheme();
 
   // --- Data Fetching ---
+  const { user: clerkUser } = useUser();
   const members = useQuery(api.mvp.getMembers) || [];
-  const posts = useQuery(api.mvp.getPosts) || [];
+  const {
+    results: posts,
+    status,
+    loadMore,
+  } = usePaginatedQuery(
+    api.mvp.getPostsPaginated,
+    {},
+    { initialNumItems: 20 }
+  );
   const engagements = useQuery(api.mvp.getEngagements) || [];
+  const postIds = posts.map((p: any) => p._id);
+  const myEngagementsMap =
+    useQuery(
+      api.mvp.getMyEngagementsForPosts,
+      clerkUser && postIds.length > 0 ? { postIds } : "skip"
+    ) ?? {};
 
   // --- State ---
+  const loadMoreRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState<Tab>("all");
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [sortBy, setSortBy] = useState<SortOption>("latest");
@@ -200,6 +221,29 @@ export default function SignalTerminal() {
   const [membersView, setMembersView] = useState<"grid" | "leaderboard">(
     "grid"
   );
+
+  // Infinite Scroll listener
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && status === "CanLoadMore") {
+          loadMore(20);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const currentRef = loadMoreRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [status, loadMore]);
 
   // Scroll listener for Navbar background
   useEffect(() => {
@@ -642,11 +686,27 @@ export default function SignalTerminal() {
                         members={members as any}
                         engagements={engagementsByPostId.get(post._id) || []}
                         layout={postView}
+                        currentUser={
+                          clerkUser ? { clerkId: clerkUser.id } : undefined
+                        }
+                        myEngagements={myEngagementsMap[post._id] ?? []}
                       />
                     ))
                   )}
                 </motion.div>
               </AnimatePresence>
+
+              {/* Infinite Scroll trigger */}
+              {status === "CanLoadMore" && (
+                <div ref={loadMoreRef} className="flex h-10 w-full items-center justify-center text-muted-foreground">
+                  <span className="text-sm">Loading more...</span>
+                </div>
+              )}
+              {status === "LoadingMore" && (
+                <div className="flex h-10 w-full items-center justify-center">
+                  <div className="border-muted-foreground h-5 w-5 animate-spin rounded-full border-b-2"></div>
+                </div>
+              )}
 
               {/* E. LEADERBOARD - "Performance Index" */}
               <Leaderboard members={members} engagements={engagements} />
@@ -838,19 +898,80 @@ export default function SignalTerminal() {
 }
 
 // --- D. POST CARD - "Engagement Unit" ---
+
+type EngagementActionType = "comment" | "like" | "retweet" | "bookmark";
+
+const ENGAGEMENT_ACTIONS: {
+  type: EngagementActionType;
+  Icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  points: number;
+}[] = [
+  { type: "comment", Icon: MessageCircle, label: "Comment", points: 1 },
+  { type: "retweet", Icon: Repeat2, label: "Retweet", points: 5 },
+  { type: "like", Icon: Heart, label: "Like", points: 0.25 },
+  { type: "bookmark", Icon: Bookmark, label: "Bookmark", points: 3 },
+];
+
 function PostCard({
   post,
   members,
   engagements,
   layout = "list",
+  currentUser,
+  myEngagements = [],
 }: {
   post: any;
   members: any[];
   engagements: any[];
   layout?: "list" | "grid";
+  currentUser?: { clerkId: string };
+  myEngagements?: string[];
 }) {
   const [view, setView] = useState<EngagementMode>("engaged");
   const [showComments, setShowComments] = useState(false);
+  const [pendingTypes, setPendingTypes] = useState<Set<EngagementActionType>>(
+    new Set()
+  );
+  const [optimisticEngagements, setOptimisticEngagements] =
+    useState<string[]>(myEngagements);
+  const toggleEngagement = useMutation(api.mvp.toggleSelfEngagement);
+
+  // Sync when server state updates
+  const prevMyEngagements = myEngagements.join(",");
+  useEffect(() => {
+    setOptimisticEngagements(myEngagements);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prevMyEngagements]);
+
+  const isOwnPost = false; // We don't have twitterId on currentUser client-side; guard is on server
+
+  const handleToggle = async (type: EngagementActionType) => {
+    if (!currentUser || pendingTypes.has(type)) return;
+    setPendingTypes((s) => new Set(s).add(type));
+    // Optimistic update
+    setOptimisticEngagements((prev) =>
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
+    );
+    try {
+      const result = await toggleEngagement({
+        postId: post._id,
+        engagementType: type,
+      });
+      if (result?.error) {
+        // Revert on error
+        setOptimisticEngagements(myEngagements);
+      }
+    } catch {
+      setOptimisticEngagements(myEngagements);
+    } finally {
+      setPendingTypes((s) => {
+        const n = new Set(s);
+        n.delete(type);
+        return n;
+      });
+    }
+  };
 
   const { engagedMembers, missingMembers } = useMemo(() => {
     const engagedTwitterIds = new Set(engagements.map((e) => e.twitterUserId));
@@ -1119,6 +1240,69 @@ function PostCard({
           )}
         </div>
       </div>
+
+      {/* Self-Engagement Action Bar — logged-in users only */}
+      {currentUser && (
+        <div className="border-border divide-border -mx-5 mt-3 -mb-5 grid grid-cols-4 divide-x sm:-mx-6 sm:-mb-6">
+          {ENGAGEMENT_ACTIONS.map(({ type, Icon, label, points }, index) => {
+            const isActive = optimisticEngagements.includes(type);
+            const isPending = pendingTypes.has(type);
+            const typeCount = engagements.filter(
+              (e: any) => e.engagementType === type
+            ).length;
+
+            const activeColor =
+              type === "like"
+                ? "text-rose-500"
+                : type === "retweet"
+                  ? "text-emerald-500"
+                  : "text-blue-500";
+
+            const hoverColor =
+              type === "like"
+                ? "hover:[&>svg]:text-rose-500"
+                : type === "retweet"
+                  ? "hover:[&>svg]:text-emerald-500"
+                  : "hover:[&>svg]:text-blue-500";
+
+            // Round bottom corners for the first and last buttons
+            const roundedClass =
+              index === 0
+                ? "rounded-bl-3xl"
+                : index === ENGAGEMENT_ACTIONS.length - 1
+                  ? "rounded-br-3xl"
+                  : "";
+
+            return (
+              <button
+                key={type}
+                onClick={() => handleToggle(type)}
+                disabled={isPending}
+                title={`${label} (+${points} pts)`}
+                className={`group flex items-center justify-center gap-2 py-3.5 text-xs font-medium transition-all duration-150 active:scale-95 disabled:opacity-60 ${hoverColor} ${
+                  isActive ? activeColor : "text-muted-foreground"
+                } ${roundedClass}`}
+              >
+                <motion.span
+                  initial={false}
+                  animate={isActive ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="flex items-center justify-center"
+                >
+                  <Icon
+                    className={`${type === "retweet" ? "h-5 w-5" : "h-[18px] w-[18px]"} transition-colors ${isActive && type === "like" ? "fill-rose-500" : ""} ${isActive && type === "bookmark" ? "fill-blue-500" : ""} ${isActive && type === "comment" ? "fill-blue-500" : ""}`}
+                  />
+                </motion.span>
+                {typeCount > 0 && (
+                  <span className="font-['JetBrains_Mono',monospace] text-[11px] leading-none">
+                    {typeCount}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
@@ -1148,10 +1332,12 @@ function Leaderboard({
       if (tab === "global") {
         return totalEngagements || 0;
       }
-      return engagements.filter((e) => {
-        if (e.twitterUserId !== twitterId) return false;
-        return new Date(e.engagedAt).toDateString() === todayStr;
-      }).length;
+      return engagements
+        .filter((e) => {
+          if (e.twitterUserId !== twitterId) return false;
+          return new Date(e.engagedAt).toDateString() === todayStr;
+        })
+        .reduce((sum, e) => sum + (e.pointsEarned || 1), 0);
     },
     [tab, engagements, todayStr]
   );

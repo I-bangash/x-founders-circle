@@ -129,6 +129,23 @@ export const getPosts = query({
   },
 });
 
+import { paginationOptsValidator } from "convex/server";
+
+export const getPostsPaginated = query({
+  args: { paginationOpts: paginationOptsValidator },
+  handler: async (ctx, args) => {
+    const results = await ctx.db
+      .query("posts")
+      .withIndex("by_createdAt")
+      .order("desc")
+      // Filter out queued posts
+      .filter((q) => q.neq(q.field("status"), "queued"))
+      .paginate(args.paginationOpts);
+
+    return results;
+  },
+});
+
 export const addPost = mutation({
   args: {
     tweetId: v.string(),
@@ -236,22 +253,21 @@ export const addEngagements = mutation({
         const monthStr = utcMonthStr(now);
 
         await ctx.db.patch(user._id, {
-          totalEngagements: (user.totalEngagements || 0) + 1,
-          totalPoints: (user.totalPoints || 0) + points,
+          totalEngagements: (user.totalEngagements || 0) + points,
           engagementsToday:
             user.lastEngagementDate === todayStr
-              ? (user.engagementsToday || 0) + 1
-              : 1,
+              ? (user.engagementsToday || 0) + points
+              : points,
           lastEngagementDate: todayStr,
           engagementsThisWeek:
             user.lastEngagementWeek === weekStr
-              ? (user.engagementsThisWeek || 0) + 1
-              : 1,
+              ? (user.engagementsThisWeek || 0) + points
+              : points,
           lastEngagementWeek: weekStr,
           engagementsThisMonth:
             user.lastEngagementMonth === monthStr
-              ? (user.engagementsThisMonth || 0) + 1
-              : 1,
+              ? (user.engagementsThisMonth || 0) + points
+              : points,
           lastEngagementMonth: monthStr,
         });
       }
@@ -259,7 +275,7 @@ export const addEngagements = mutation({
       const post = await ctx.db.get(eng.postId);
       if (post) {
         await ctx.db.patch(eng.postId, {
-          engagementCount: (post.engagementCount || 0) + 1,
+          engagementCount: (post.engagementCount || 0) + points,
         });
       }
     }
@@ -329,26 +345,25 @@ export const addManualEngagements = mutation({
         addedCount++;
 
         await ctx.db.patch(post._id, {
-          engagementCount: (post.engagementCount || 0) + 1,
+          engagementCount: (post.engagementCount || 0) + points,
         });
 
         await ctx.db.patch(user._id, {
-          totalEngagements: (user.totalEngagements || 0) + 1,
-          totalPoints: (user.totalPoints || 0) + points,
+          totalEngagements: (user.totalEngagements || 0) + points,
           engagementsToday:
             user.lastEngagementDate === todayStr
-              ? (user.engagementsToday || 0) + 1
-              : 1,
+              ? (user.engagementsToday || 0) + points
+              : points,
           lastEngagementDate: todayStr,
           engagementsThisWeek:
             user.lastEngagementWeek === weekStr
-              ? (user.engagementsThisWeek || 0) + 1
-              : 1,
+              ? (user.engagementsThisWeek || 0) + points
+              : points,
           lastEngagementWeek: weekStr,
           engagementsThisMonth:
             user.lastEngagementMonth === monthStr
-              ? (user.engagementsThisMonth || 0) + 1
-              : 1,
+              ? (user.engagementsThisMonth || 0) + points
+              : points,
           lastEngagementMonth: monthStr,
         });
       }
@@ -398,12 +413,11 @@ export const removeManualEngagements = mutation({
         removedCount++;
 
         await ctx.db.patch(post._id, {
-          engagementCount: Math.max(0, (post.engagementCount || 0) - 1),
+          engagementCount: Math.max(0, (post.engagementCount || 0) - points),
         });
 
         await ctx.db.patch(user._id, {
-          totalEngagements: Math.max(0, (user.totalEngagements || 0) - 1),
-          totalPoints: Math.max(0, (user.totalPoints || 0) - points),
+          totalEngagements: Math.max(0, (user.totalEngagements || 0) - points),
         });
       }
     }
@@ -427,5 +441,207 @@ export const migrateTwitterNames = mutation({
     }
 
     return { success: true, migratedCount: count };
+  },
+});
+
+// ─── Self-reported engagement mutations ────────────────────────────────────
+
+type EngagementResponse<T> = {
+  data?: T;
+  error?: { code: string; message: string };
+};
+
+export const toggleSelfEngagement = mutation({
+  args: {
+    postId: v.id("posts"),
+    engagementType: v.union(
+      v.literal("comment"),
+      v.literal("like"),
+      v.literal("retweet"),
+      v.literal("bookmark")
+    ),
+  },
+  handler: async (
+    ctx,
+    { postId, engagementType }
+  ): Promise<EngagementResponse<{ added: boolean; pointsDelta: number }>> => {
+    // 1. Auth
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return {
+        error: {
+          code: "NOT_AUTHENTICATED",
+          message: "You must be logged in to mark engagements.",
+        },
+      };
+    }
+    const clerkId = identity.subject;
+
+    // 2. Resolve calling user
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", clerkId))
+      .first();
+
+    if (!user) {
+      return {
+        error: { code: "NOT_FOUND", message: "User record not found." },
+      };
+    }
+    if (!user.twitterId) {
+      return {
+        error: {
+          code: "TWITTER_NOT_LINKED",
+          message: "Link your Twitter account before marking engagements.",
+        },
+      };
+    }
+
+    // 3. Check post exists
+    const post = await ctx.db.get(postId);
+    if (!post) {
+      return { error: { code: "NOT_FOUND", message: "Post not found." } };
+    }
+
+    // 4. Prevent self-engagement (can't mark your own post)
+    if (post.authorTwitterId === user.twitterId) {
+      return {
+        error: {
+          code: "INVALID_OPERATION",
+          message: "You cannot mark engagements on your own post.",
+        },
+      };
+    }
+
+    // 5. Check for existing engagement of this specific type
+    const existing = await ctx.db
+      .query("engagements")
+      .withIndex("by_postId_twitterUserId_type", (q) =>
+        q
+          .eq("postId", postId)
+          .eq("twitterUserId", user.twitterId!)
+          .eq("engagementType", engagementType)
+      )
+      .first();
+
+    const points = POINTS[engagementType];
+    const now = Date.now();
+
+    if (existing) {
+      // ── Remove engagement ──
+      const earnedPoints = existing.pointsEarned ?? points;
+      await ctx.db.delete(existing._id);
+
+      await ctx.db.patch(post._id, {
+        engagementCount: Math.max(0, (post.engagementCount || 0) - earnedPoints),
+      });
+
+      await ctx.db.patch(user._id, {
+        totalEngagements: Math.max(0, (user.totalEngagements || 0) - earnedPoints),
+      });
+
+      return { data: { added: false, pointsDelta: -earnedPoints } };
+    } else {
+      // ── Add engagement ──
+      const todayStr = utcDateStr(now);
+      const weekStr = utcWeekStr(now);
+      const monthStr = utcMonthStr(now);
+
+      await ctx.db.insert("engagements", {
+        postId,
+        twitterUserId: user.twitterId!,
+        engagedAt: now,
+        engagementType,
+        pointsEarned: points,
+      });
+
+      await ctx.db.patch(post._id, {
+        engagementCount: (post.engagementCount || 0) + points,
+      });
+
+      await ctx.db.patch(user._id, {
+        totalEngagements: (user.totalEngagements || 0) + points,
+        engagementsToday:
+          user.lastEngagementDate === todayStr
+            ? (user.engagementsToday || 0) + points
+            : points,
+        lastEngagementDate: todayStr,
+        engagementsThisWeek:
+          user.lastEngagementWeek === weekStr
+            ? (user.engagementsThisWeek || 0) + points
+            : points,
+        lastEngagementWeek: weekStr,
+        engagementsThisMonth:
+          user.lastEngagementMonth === monthStr
+            ? (user.engagementsThisMonth || 0) + points
+            : points,
+        lastEngagementMonth: monthStr,
+      });
+
+      return { data: { added: true, pointsDelta: points } };
+    }
+  },
+});
+
+/** Returns the engagement types the calling user has self-marked on a single post. */
+export const getMyEngagementsForPost = query({
+  args: { postId: v.id("posts") },
+  handler: async (ctx, { postId }): Promise<string[]> => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return [];
+    const clerkId = identity.subject;
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", clerkId))
+      .first();
+    if (!user?.twitterId) return [];
+
+    const engagements = await ctx.db
+      .query("engagements")
+      .withIndex("by_postId_twitterUserId", (q) =>
+        q.eq("postId", postId).eq("twitterUserId", user.twitterId!)
+      )
+      .collect();
+
+    return engagements.flatMap((e) =>
+      e.engagementType !== undefined ? [e.engagementType] : []
+    );
+  },
+});
+
+/** Batch: returns a map of { [postId]: engagementType[] } for the calling user. */
+export const getMyEngagementsForPosts = query({
+  args: { postIds: v.array(v.id("posts")) },
+  handler: async (ctx, { postIds }): Promise<Record<string, string[]>> => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity || postIds.length === 0) return {};
+    const clerkId = identity.subject;
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", clerkId))
+      .first();
+    if (!user?.twitterId) return {};
+
+    // Fetch all self-marked engagements for this user in one go
+    const myEngagements = await ctx.db
+      .query("engagements")
+      .withIndex("by_twitterUserId", (q) =>
+        q.eq("twitterUserId", user.twitterId!)
+      )
+      .collect();
+
+    const postIdSet = new Set(postIds as string[]);
+    const result: Record<string, string[]> = {};
+
+    for (const eng of myEngagements) {
+      const pid = eng.postId as string;
+      if (!postIdSet.has(pid) || !eng.engagementType) continue;
+      if (!result[pid]) result[pid] = [];
+      result[pid].push(eng.engagementType);
+    }
+
+    return result;
   },
 });

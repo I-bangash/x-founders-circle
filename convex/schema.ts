@@ -66,7 +66,6 @@ export default defineSchema({
     followersCount: v.optional(v.number()),
     joinedAt: v.optional(v.number()),
     totalEngagements: v.optional(v.number()),
-    totalPoints: v.optional(v.number()),
     engagementsToday: v.optional(v.number()),
     engagementsThisWeek: v.optional(v.number()),
     engagementsThisMonth: v.optional(v.number()),
@@ -125,7 +124,12 @@ export default defineSchema({
   })
     .index("by_postId", ["postId"])
     .index("by_twitterUserId", ["twitterUserId"])
-    .index("by_postId_twitterUserId", ["postId", "twitterUserId"]),
+    .index("by_postId_twitterUserId", ["postId", "twitterUserId"])
+    .index("by_postId_twitterUserId_type", [
+      "postId",
+      "twitterUserId",
+      "engagementType",
+    ]),
 
   // Organizations table
   organizations: defineTable({

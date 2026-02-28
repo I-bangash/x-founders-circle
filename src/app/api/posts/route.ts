@@ -96,6 +96,7 @@ export async function POST(req: Request) {
       return thread.tweets.some((tweet) => {
         return members.some(
           (m) =>
+            m.twitterId === tweet.author.id ||
             m.twitterUsername?.toLowerCase() ===
               tweet.author.username.toLowerCase() ||
             m.username?.toLowerCase() === tweet.author.username.toLowerCase()
@@ -162,6 +163,7 @@ export async function POST(req: Request) {
         // Find if this user is a member
         const member = members.find(
           (u) =>
+            u.twitterId === tweet.author.id ||
             u.twitterUsername?.toLowerCase() ===
               tweet.author.username.toLowerCase() ||
             u.username?.toLowerCase() === tweet.author.username.toLowerCase()
