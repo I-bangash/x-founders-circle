@@ -31,9 +31,9 @@ import { useIsMobile } from "@/hooks/use-mobile";
 export const description = "Posts shared and engagements received per day";
 
 const TIME_RANGES = [
-  { value: "90d", label: "Last 3 months", days: 90 },
-  { value: "30d", label: "Last 30 days", days: 30 },
   { value: "7d", label: "Last 7 days", days: 7 },
+  { value: "30d", label: "Last 30 days", days: 30 },
+  { value: "90d", label: "Last 3 months", days: 90 },
 ] as const;
 
 const chartConfig = {

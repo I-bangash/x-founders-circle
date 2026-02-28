@@ -129,7 +129,7 @@ export function AddPostForm({
         <span className="font-[JetBrains_Mono,monospace] text-[#4C8DFF]">
           @{twitterUsername}
         </span>
-        {" · "}One post per day — extras go to queue
+        {" · "}One post per day - extras go to queue
       </p>
     </form>
   );

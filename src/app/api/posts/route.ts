@@ -113,12 +113,14 @@ export async function POST(req: Request) {
     if (!post) {
       postId = await fetchMutation(api.mvp.addPost, {
         tweetId: parsedFeed.mainTweet.id,
-        authorTwitterId: parsedFeed.mainTweet.author.username, // Using username as ID fallback if no real ID
+        authorTwitterId:
+          parsedFeed.mainTweet.author.id ||
+          parsedFeed.mainTweet.author.username,
         authorUsername: parsedFeed.mainTweet.author.username,
         authorName: parsedFeed.mainTweet.author.name,
         authorAvatar: parsedFeed.mainTweet.author.avatar,
         content: parsedFeed.mainTweet.content.text,
-        createdAt: new Date(parsedFeed.mainTweet.createdAt).getTime(), // Parsed from tweet
+        createdAt: new Date(parsedFeed.mainTweet.createdAt).getTime(),
         fetchedAt: Date.now(),
         threadData: memberThreads,
       });
@@ -131,7 +133,9 @@ export async function POST(req: Request) {
       // Update thread data on refresh
       await fetchMutation(api.mvp.addPost, {
         tweetId: parsedFeed.mainTweet.id,
-        authorTwitterId: parsedFeed.mainTweet.author.username,
+        authorTwitterId:
+          parsedFeed.mainTweet.author.id ||
+          parsedFeed.mainTweet.author.username,
         authorUsername: parsedFeed.mainTweet.author.username,
         authorName: parsedFeed.mainTweet.author.name,
         authorAvatar: parsedFeed.mainTweet.author.avatar,

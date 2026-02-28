@@ -25,6 +25,7 @@ export interface ParsedTweet {
   id: string;
   createdAt: string;
   author: {
+    id: string; // numeric Twitter user ID
     name: string;
     username: string;
     avatar: string;
@@ -106,6 +107,7 @@ export function parseTwitterData(rawData: any): ParsedFeed {
         id: legacy.id_str,
         createdAt: legacy.created_at || new Date().toISOString(),
         author: {
+          id: core.rest_id || core.legacy?.id_str || "", // numeric Twitter user ID
           name: core.legacy?.name || "Unknown",
           username: core.legacy?.screen_name || "unknown",
           avatar:
