@@ -24,6 +24,7 @@ import {
   Bookmark,
   ExternalLink,
   Heart,
+  LayoutDashboard,
   LayoutGrid,
   List,
   MessageCircle,
@@ -222,6 +223,21 @@ export default function SignalTerminal() {
   const [membersView, setMembersView] = useState<"grid" | "leaderboard">(
     "grid"
   );
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        setIsSearchExpanded(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // Infinite Scroll listener
   useEffect(() => {
@@ -456,28 +472,53 @@ export default function SignalTerminal() {
             </div>
           </div>
 
-          {/* Right: Search & Sort */}
+          {/* Right: Controls & CTA */}
           <div className="flex flex-none items-center justify-end gap-1 sm:flex-1 sm:gap-3">
-            <div className="group relative hidden sm:block">
-              <Search className="text-muted-foreground absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 transition-colors group-focus-within:text-blue-500" />
-              <input
-                type="text"
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-card border-border text-foreground placeholder-muted-foreground w-48 rounded-full border py-1.5 pr-4 pl-9 text-sm transition-all focus:border-blue-500/50 focus:outline-none"
-              />
-            </div>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as SortOption)}
-              className="bg-card border-border text-foreground hidden cursor-pointer appearance-none rounded-full border px-3 py-1.5 text-sm transition-all focus:border-blue-500/50 focus:outline-none sm:block"
+            {/* 1. Search & Sort */}
+            <div
+              ref={searchRef}
+              className={`flex items-center transition-all duration-300 ease-in-out ${
+                isSearchExpanded
+                  ? "bg-card border-border rounded-full border py-1 pr-2 pl-1 shadow-sm"
+                  : ""
+              }`}
             >
-              <option value="latest">Latest</option>
-              <option value="most">Most Engaged</option>
-              <option value="least">Least Engaged</option>
-            </select>
+              {!isSearchExpanded ? (
+                <button
+                  onClick={() => setIsSearchExpanded(true)}
+                  className="bg-card border-border text-muted-foreground hover:text-foreground flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full border transition-colors focus:border-blue-500/50 focus:outline-none"
+                  aria-label="Expand Search"
+                >
+                  <Search className="h-3 w-3 sm:h-4 sm:w-4" />
+                </button>
+              ) : (
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <div className="relative flex items-center">
+                    <Search className="text-muted-foreground absolute left-2 h-3 w-3 sm:h-4 sm:w-4" />
+                    <input
+                      type="text"
+                      placeholder="Search..."
+                      autoFocus
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="text-foreground placeholder-muted-foreground w-24 bg-transparent py-0.5 pr-2 pl-7 text-xs focus:outline-none sm:w-40 sm:text-sm"
+                    />
+                  </div>
+                  <div className="bg-border h-3 sm:h-4 w-[1px]" />
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as SortOption)}
+                    className="text-foreground cursor-pointer appearance-none bg-transparent py-0.5 pr-1 pl-1 text-xs focus:outline-none sm:text-sm"
+                  >
+                    <option value="latest">Latest</option>
+                    <option value="most">Most Engaged</option>
+                    <option value="least">Least Engaged</option>
+                  </select>
+                </div>
+              )}
+            </div>
 
+            {/* 2. View Toggles */}
             <div className="bg-card border-border flex items-center rounded-full border p-0.5 sm:p-1">
               <button
                 onClick={() => setPostView("list")}
@@ -503,6 +544,7 @@ export default function SignalTerminal() {
               </button>
             </div>
 
+            {/* 3. Theme Toggle */}
             {mounted && (
               <button
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
@@ -512,6 +554,20 @@ export default function SignalTerminal() {
                 <Sun className="h-3 w-3 sm:h-4 sm:w-4 dark:hidden" />
                 <Moon className="hidden h-3 w-3 sm:h-4 sm:w-4 dark:block" />
               </button>
+            )}
+
+            {/* 4. Dashboard Button (CTA) */}
+            {!isSearchExpanded && (
+              <Link
+                href="/dashboard"
+                className="bg-foreground text-background hover:bg-foreground/90 flex items-center justify-center rounded-full p-1.5 sm:px-4 sm:py-1.5 transition-colors"
+                aria-label="Dashboard"
+              >
+                <LayoutDashboard className="h-4 w-4 sm:hidden" />
+                <span className="hidden text-xs font-semibold sm:inline-block">
+                  Dashboard
+                </span>
+              </Link>
             )}
           </div>
         </div>
