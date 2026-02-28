@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { RefreshCw, Trash2 } from "lucide-react";
+import { Download, RefreshCw, Trash2, Upload } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Doc } from "@/convex/_generated/dataModel";
@@ -72,31 +72,108 @@ export default function AdminConsole() {
     }
   };
 
+  const handleExportMembers = () => {
+    const usernames = members.map((m) => m.twitterUsername).join("\n");
+    const blob = new Blob([usernames], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `members_backup_${new Date().toISOString().split("T")[0]}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImportMembers = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target?.result as string;
+      if (text) {
+        setNewMember(text);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
+
+  const handleExportPosts = () => {
+    const ids = posts.map((p) => p.tweetId).join("\n");
+    const blob = new Blob([ids], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `posts_backup_${new Date().toISOString().split("T")[0]}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImportPosts = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target?.result as string;
+      if (text) {
+        setNewPost(text);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
+
   const handleAddMember = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newMember) return;
+
+    const rawNames = newMember.split(/[\n,]+/).map((n) => n.trim()).filter(Boolean);
+    if (rawNames.length === 0) return;
+
     setLoading(true);
-    try {
-      const res = await fetch("/api/members", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": websiteApi,
-        },
-        body: JSON.stringify({ username: newMember.replace("@", "") }),
-      });
-      if (res.ok) {
-        setNewMember("");
-        fetchMembers();
-      } else {
-        const error = await res.json();
-        alert(`Error: ${error.error || "Unknown"}`);
+    let successCount = 0;
+    let failCount = 0;
+
+    for (const rawName of rawNames) {
+      let parsedUsername = rawName;
+      if (parsedUsername.includes("x.com/") || parsedUsername.includes("twitter.com/")) {
+        // Extract username from URL (e.g., https://x.com/username or https://twitter.com/username)
+        const parts = parsedUsername.split("/");
+        parsedUsername = parts[parts.length - 1].split("?")[0];
       }
-    } catch (err) {
-      console.error(err);
+      parsedUsername = parsedUsername.replace("@", "");
+
+      try {
+        const res = await fetch("/api/members", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": websiteApi,
+          },
+          body: JSON.stringify({ username: parsedUsername }),
+        });
+        if (res.ok) {
+          successCount++;
+        } else {
+          failCount++;
+        }
+      } catch (err) {
+        console.error(err);
+        failCount++;
+      }
+    }
+
+    setNewMember("");
+    fetchMembers();
+    setLoading(false);
+
+    if (rawNames.length > 1) {
+      alert(`Bulk add complete.\nSuccess: ${successCount}\nFailed: ${failCount}`);
+    } else if (failCount > 0) {
       alert("Failed to add member");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -347,26 +424,52 @@ export default function AdminConsole() {
 
         {/* Section 1 — Add Member */}
         <section className="bg-card border-border space-y-6 rounded-3xl border p-6 sm:p-8">
-          <div>
-            <h2 className="text-foreground text-lg font-semibold">Members</h2>
-            <p className="text-muted-foreground text-sm">
-              Manage operators in the engagement pool.
-            </p>
+          <div className="flex items-start justify-between">
+            <div>
+              <h2 className="text-foreground text-lg font-semibold">Members</h2>
+              <p className="text-muted-foreground text-sm">
+                Manage operators in the engagement pool.
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <label
+                className="bg-muted border-border hover:bg-border text-foreground flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-1.5 text-sm font-medium transition-all"
+                title="Import from TXT/CSV"
+              >
+                <Upload className="h-4 w-4" />
+                <span>Import</span>
+                <input
+                  type="file"
+                  accept=".txt,.csv"
+                  className="hidden"
+                  onChange={handleImportMembers}
+                />
+              </label>
+              <button
+                type="button"
+                onClick={handleExportMembers}
+                className="bg-muted border-border hover:bg-border text-foreground flex items-center gap-2 rounded-xl border px-3 py-1.5 text-sm font-medium transition-all"
+                title="Export to TXT"
+              >
+                <Download className="h-4 w-4" />
+                <span>Export</span>
+              </button>
+            </div>
           </div>
 
           <form onSubmit={handleAddMember} className="flex gap-3">
-            <input
-              type="text"
+            <textarea
               value={newMember}
               onChange={(e) => setNewMember(e.target.value)}
-              placeholder="Username (no @)"
-              className="bg-background border-border text-foreground flex-1 rounded-xl border px-4 py-2 text-sm transition-colors focus:border-blue-500/50 focus:outline-none"
+              placeholder="Usernames or URLs (comma or newline separated)"
+              rows={2}
+              className="bg-background border-border text-foreground flex-1 resize-none rounded-xl border px-4 py-2 font-['JetBrains_Mono',monospace] text-sm transition-colors focus:border-blue-500/50 focus:outline-none"
               disabled={loading}
             />
             <button
               type="submit"
               disabled={loading}
-              className="bg-muted border-border hover:bg-border text-foreground rounded-xl border px-6 py-2 text-sm font-medium transition-all hover:border-blue-500/50"
+              className="bg-muted border-border hover:bg-border text-foreground h-fit rounded-xl border px-6 py-2 text-sm font-medium transition-all hover:border-blue-500/50"
             >
               Fetch & Save
             </button>
@@ -423,11 +526,37 @@ export default function AdminConsole() {
 
         {/* Section 2 — Add Post */}
         <section className="bg-card border-border space-y-6 rounded-3xl border p-6 sm:p-8">
-          <div>
-            <h2 className="text-foreground text-lg font-semibold">Posts</h2>
-            <p className="text-muted-foreground text-sm">
-              Track engagement signals.
-            </p>
+          <div className="flex items-start justify-between">
+            <div>
+              <h2 className="text-foreground text-lg font-semibold">Posts</h2>
+              <p className="text-muted-foreground text-sm">
+                Track engagement signals.
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <label
+                className="bg-muted border-border hover:bg-border text-foreground flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-1.5 text-sm font-medium transition-all"
+                title="Import from TXT/CSV"
+              >
+                <Upload className="h-4 w-4" />
+                <span>Import</span>
+                <input
+                  type="file"
+                  accept=".txt,.csv"
+                  className="hidden"
+                  onChange={handleImportPosts}
+                />
+              </label>
+              <button
+                type="button"
+                onClick={handleExportPosts}
+                className="bg-muted border-border hover:bg-border text-foreground flex items-center gap-2 rounded-xl border px-3 py-1.5 text-sm font-medium transition-all"
+                title="Export to TXT"
+              >
+                <Download className="h-4 w-4" />
+                <span>Export</span>
+              </button>
+            </div>
           </div>
 
           <form onSubmit={handleAddPost} className="flex gap-3">
