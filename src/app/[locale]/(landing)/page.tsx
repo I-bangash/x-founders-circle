@@ -196,9 +196,12 @@ export default function SignalTerminal() {
     status,
     loadMore,
   } = usePaginatedQuery(api.mvp.getPostsPaginated, {}, { initialNumItems: 20 });
-  const engagements = useQuery(api.mvp.getEngagements) || [];
-
-  const postIds = posts.map((p: any) => p._id);
+  const postIds = useMemo(() => posts.map((p: any) => p._id), [posts]);
+  const engagements =
+    useQuery(
+      api.mvp.getEngagementsForPosts,
+      postIds.length > 0 ? { postIds } : "skip"
+    ) || [];
 
   const myEngagementsMap =
     useQuery(
@@ -309,19 +312,20 @@ export default function SignalTerminal() {
   }, [members]);
 
   const filteredPosts = useMemo(() => {
+    const todayKey = new Date().toDateString();
+    const selectedDateKey = selectedDate?.toDateString();
+
     return posts.filter((post: any) => {
       if (post.isTopWeek || post.isTopDay) return true;
 
       if (activeTab === "today") {
-        const isToday =
-          new Date(post.createdAt).toDateString() === new Date().toDateString();
+        const isToday = new Date(post.createdAt).toDateString() === todayKey;
         if (!isToday) return false;
       }
 
-      if (activeTab === "date" && selectedDate) {
+      if (activeTab === "date" && selectedDateKey) {
         const isSelectedDate =
-          new Date(post.createdAt).toDateString() ===
-          selectedDate.toDateString();
+          new Date(post.createdAt).toDateString() === selectedDateKey;
         if (!isSelectedDate) return false;
       }
 
@@ -718,7 +722,7 @@ export default function SignalTerminal() {
               )}
 
               {/* E. LEADERBOARD - "Performance Index" */}
-              <Leaderboard members={members} engagements={engagements} />
+              <Leaderboard members={members} />
             </motion.div>
           ) : (
             <motion.div
@@ -891,7 +895,6 @@ export default function SignalTerminal() {
               ) : (
                 <Leaderboard
                   members={members}
-                  engagements={engagements}
                   limit={members.length}
                   className="pt-2 pb-20"
                   title="Rankings"
@@ -1375,14 +1378,12 @@ function PostCard({
 // --- E. LEADERBOARD - "Performance Index" ---
 function Leaderboard({
   members,
-  engagements,
   limit = 5,
   className = "leaderboard-section border-border border-t pt-12 pb-20",
   title = "Hall of Fame",
   description = "Members with most engagements",
 }: {
   members: any[];
-  engagements: any[];
   limit?: number;
   className?: string;
   title?: string;
@@ -1390,21 +1391,14 @@ function Leaderboard({
 }) {
   const [tab, setTab] = useState<LeaderboardTab>("global");
 
-  const todayStr = useMemo(() => new Date().toDateString(), []);
-
   const getEngagementCount = useCallback(
-    (twitterId: string, totalEngagements?: number) => {
+    (totalEngagements?: number, engagementsToday?: number) => {
       if (tab === "global") {
         return totalEngagements || 0;
       }
-      return engagements
-        .filter((e) => {
-          if (e.twitterUserId !== twitterId) return false;
-          return new Date(e.engagedAt).toDateString() === todayStr;
-        })
-        .reduce((sum, e) => sum + (e.pointsEarned || 1), 0);
+      return engagementsToday || 0;
     },
-    [tab, engagements, todayStr]
+    [tab]
   );
 
   const rankedMembers = useMemo(() => {
@@ -1412,7 +1406,7 @@ function Leaderboard({
       .filter((m) => m.username !== "ibangash_")
       .map((m) => ({
         ...m,
-        count: getEngagementCount(m.twitterId, m.totalEngagements),
+        count: getEngagementCount(m.totalEngagements, m.engagementsToday),
       }))
       .filter((m) => m.count > 0 || tab === "global") // Hide zeroes on today tab usually, but let's keep all for ranking
       .sort((a, b) => b.count - a.count)

@@ -58,14 +58,11 @@ async function getPinnedTopPosts(ctx: any) {
   const getLatestPostByUsername = async (twitterUsername: string) => {
     return await ctx.db
       .query("posts")
-      .withIndex("by_createdAt")
-      .order("desc")
-      .filter((q: any) =>
-        q.and(
-          q.eq(q.field("authorUsername"), twitterUsername),
-          q.neq(q.field("status"), "queued")
-        )
+      .withIndex("by_authorUsername_createdAt", (q: any) =>
+        q.eq("authorUsername", twitterUsername)
       )
+      .order("desc")
+      .filter((q: any) => q.neq(q.field("status"), "queued"))
       .first();
   };
 
@@ -334,6 +331,33 @@ export const getEngagements = query({
   args: {},
   handler: async (ctx) => {
     return await ctx.db.query("engagements").collect();
+  },
+});
+
+export const getEngagementsForPosts = query({
+  args: { postIds: v.array(v.id("posts")) },
+  handler: async (ctx, { postIds }) => {
+    if (postIds.length === 0) return [];
+    const chunks: Array<typeof postIds> = [];
+    for (let i = 0; i < postIds.length; i += 20) {
+      chunks.push(postIds.slice(i, i + 20));
+    }
+
+    const results = await Promise.all(
+      chunks.map(async (chunk) => {
+        const chunkResults = await Promise.all(
+          chunk.map(async (postId) => {
+            return await ctx.db
+              .query("engagements")
+              .withIndex("by_postId", (q) => q.eq("postId", postId))
+              .collect();
+          })
+        );
+        return chunkResults.flat();
+      })
+    );
+
+    return results.flat();
   },
 });
 
@@ -767,22 +791,33 @@ export const getMyEngagementsForPosts = query({
       .first();
     if (!user?.twitterId) return {};
 
-    // Fetch all self-marked engagements for this user in one go
-    const myEngagements = await ctx.db
-      .query("engagements")
-      .withIndex("by_twitterUserId", (q) =>
-        q.eq("twitterUserId", user.twitterId!)
-      )
-      .collect();
-
-    const postIdSet = new Set(postIds as string[]);
     const result: Record<string, string[]> = {};
 
-    for (const eng of myEngagements) {
-      const pid = eng.postId as string;
-      if (!postIdSet.has(pid) || !eng.engagementType) continue;
-      if (!result[pid]) result[pid] = [];
-      result[pid].push(eng.engagementType);
+    const chunks: Array<typeof postIds> = [];
+    for (let i = 0; i < postIds.length; i += 20) {
+      chunks.push(postIds.slice(i, i + 20));
+    }
+
+    for (const chunk of chunks) {
+      const engagementsForChunk = await Promise.all(
+        chunk.map(async (postId) => {
+          return await ctx.db
+            .query("engagements")
+            .withIndex("by_postId_twitterUserId", (q) =>
+              q.eq("postId", postId).eq("twitterUserId", user.twitterId!)
+            )
+            .collect();
+        })
+      );
+
+      for (const engagements of engagementsForChunk) {
+        for (const eng of engagements) {
+          if (!eng.engagementType) continue;
+          const pid = eng.postId as string;
+          if (!result[pid]) result[pid] = [];
+          result[pid].push(eng.engagementType);
+        }
+      }
     }
 
     return result;

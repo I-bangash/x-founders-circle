@@ -106,6 +106,7 @@ export default defineSchema({
     .index("by_tweetId", ["tweetId"])
     .index("by_createdAt", ["createdAt"])
     .index("by_authorTwitterId_createdAt", ["authorTwitterId", "createdAt"])
+    .index("by_authorUsername_createdAt", ["authorUsername", "createdAt"])
     .index("by_authorTwitterId_dailyDate", ["authorTwitterId", "dailyDate"])
     .index("by_status", ["status"]),
 
