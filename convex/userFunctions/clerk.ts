@@ -247,6 +247,41 @@ export const createOrganizationAction = internalAction({
   },
 });
 
+export const updateClerkProfileImageAction = internalAction({
+  args: {
+    clerkId: v.string(),
+    imageUrl: v.string(),
+  },
+  handler: async (_ctx, { clerkId, imageUrl }) => {
+    if (!process.env.CLERK_SECRET_KEY) return;
+    try {
+      const clerk = createClerkClient({
+        secretKey: process.env.CLERK_SECRET_KEY,
+      });
+
+      // Fetch the remote image and convert it to a File
+      const response = await fetch(imageUrl);
+      if (!response.ok)
+        throw new Error(`Failed to fetch image: ${response.status}`);
+
+      const buffer = await response.arrayBuffer();
+      const contentType = response.headers.get("content-type") ?? "image/jpeg";
+      const ext = contentType.split("/")[1]?.split("+")[0] ?? "jpg";
+      const file = new File([buffer], `profile.${ext}`, { type: contentType });
+
+      await clerk.users.updateUserProfileImage(clerkId, { file });
+      console.log(
+        `[updateClerkProfileImageAction] Updated profile image for ${clerkId}`
+      );
+    } catch (err) {
+      console.error(
+        "[updateClerkProfileImageAction] Failed to update Clerk profile image:",
+        err
+      );
+    }
+  },
+});
+
 export const sendWelcomeEmailAction = internalAction({
   args: { email: v.string(), name: v.optional(v.string()) },
   handler: async (_ctx, { email, name }) => {

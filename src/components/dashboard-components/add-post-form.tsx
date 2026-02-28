@@ -81,7 +81,7 @@ export function AddPostForm({
 
   if (!hasTwitterLinked) {
     return (
-      <div className="flex items-center gap-3 rounded-2xl border border-dashed border-white/10 p-5 text-sm text-[#8B98A5]">
+      <div className="text-muted-foreground flex items-center gap-3 rounded-full border border-dashed p-4 px-5 text-sm">
         <Link2 className="size-4 shrink-0" />
         <span>Link your Twitter account to share posts to the feed.</span>
       </div>
@@ -94,7 +94,7 @@ export function AddPostForm({
         <div className="flex flex-1 flex-col gap-1.5">
           <Label
             htmlFor="post-url"
-            className="text-xs tracking-wider text-[#8B98A5] uppercase"
+            className="text-muted-foreground text-xs tracking-wider uppercase"
           >
             Share a Post
           </Label>
@@ -105,12 +105,12 @@ export function AddPostForm({
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               disabled={isLoading}
-              className="flex-1 border-[#242C38] bg-[#151A22] font-[JetBrains_Mono,monospace] text-sm text-[#E6EDF3] placeholder:text-[#8B98A5]/50 focus-visible:border-[#4C8DFF]/50"
+              className="placeholder:text-muted-foreground/50 flex-1 rounded-full font-[JetBrains_Mono,monospace] text-sm"
             />
             <Button
               type="submit"
               disabled={isLoading || !url.trim()}
-              className="shrink-0 border-0 bg-[#4C8DFF] text-white transition-transform hover:scale-[1.02] hover:bg-[#4C8DFF]/90"
+              className="shrink-0 rounded-full transition-transform hover:scale-[1.02]"
             >
               {isLoading ? (
                 <Loader2 className="size-4 animate-spin" />
@@ -124,9 +124,9 @@ export function AddPostForm({
           </div>
         </div>
       </div>
-      <p className="text-xs text-[#8B98A5]/60">
+      <p className="text-muted-foreground/70 text-xs">
         Posting as{" "}
-        <span className="font-[JetBrains_Mono,monospace] text-[#4C8DFF]">
+        <span className="text-primary font-[JetBrains_Mono,monospace]">
           @{twitterUsername}
         </span>
         {" · "}One post per day - extras go to queue

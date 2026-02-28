@@ -144,6 +144,15 @@ export const claimProfileInternal = internalMutation({
       }
     );
 
+    // 5. Sync the Twitter profile image to Clerk
+    if (dummyUser.image) {
+      await ctx.scheduler.runAfter(
+        0,
+        internal.userFunctions.clerk.updateClerkProfileImageAction,
+        { clerkId, imageUrl: dummyUser.image }
+      );
+    }
+
     return { success: true };
   },
 });
