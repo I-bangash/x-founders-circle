@@ -12,7 +12,7 @@ import {
 } from "react";
 
 import { useUser } from "@clerk/nextjs";
-import { useMutation, useQuery, usePaginatedQuery } from "convex/react";
+import { useMutation, usePaginatedQuery, useQuery } from "convex/react";
 import {
   AnimatePresence,
   animate,
@@ -195,13 +195,11 @@ export default function SignalTerminal() {
     results: posts,
     status,
     loadMore,
-  } = usePaginatedQuery(
-    api.mvp.getPostsPaginated,
-    {},
-    { initialNumItems: 20 }
-  );
+  } = usePaginatedQuery(api.mvp.getPostsPaginated, {}, { initialNumItems: 20 });
   const engagements = useQuery(api.mvp.getEngagements) || [];
+
   const postIds = posts.map((p: any) => p._id);
+
   const myEngagementsMap =
     useQuery(
       api.mvp.getMyEngagementsForPosts,
@@ -312,6 +310,8 @@ export default function SignalTerminal() {
 
   const filteredPosts = useMemo(() => {
     return posts.filter((post: any) => {
+      if (post.isTopWeek || post.isTopDay) return true;
+
       if (activeTab === "today") {
         const isToday =
           new Date(post.createdAt).toDateString() === new Date().toDateString();
@@ -338,6 +338,12 @@ export default function SignalTerminal() {
 
   const sortedPosts = useMemo(() => {
     return [...filteredPosts].sort((a, b) => {
+      const aPinnedRank =
+        typeof a.pinnedRank === "number" ? a.pinnedRank : Number.POSITIVE_INFINITY;
+      const bPinnedRank =
+        typeof b.pinnedRank === "number" ? b.pinnedRank : Number.POSITIVE_INFINITY;
+      if (aPinnedRank !== bPinnedRank) return aPinnedRank - bPinnedRank;
+
       const aEngagements = a.engagementCount || 0;
       const bEngagements = b.engagementCount || 0;
 
@@ -698,7 +704,10 @@ export default function SignalTerminal() {
 
               {/* Infinite Scroll trigger */}
               {status === "CanLoadMore" && (
-                <div ref={loadMoreRef} className="flex h-10 w-full items-center justify-center text-muted-foreground">
+                <div
+                  ref={loadMoreRef}
+                  className="text-muted-foreground flex h-10 w-full items-center justify-center"
+                >
                   <span className="text-sm">Loading more...</span>
                 </div>
               )}
@@ -995,12 +1004,56 @@ function PostCard({
     [engagements]
   );
 
+  const isTop =
+    post.isSelectedTop ||
+    post.isTopWeek ||
+    post.isTopDay ||
+    typeof post.pinnedRank === "number";
+  const borderOpacity =
+    typeof post.pinnedBorderOpacity === "number" ? post.pinnedBorderOpacity : 1;
+  const overlayOpacity = 0.3 * borderOpacity;
+
   return (
     <div
-      className={`post-card bg-card border-border flex flex-col rounded-3xl border p-5 shadow-sm transition-all duration-300 hover:-translate-y-[2px] sm:p-6 ${
+      className={`post-card relative flex flex-col rounded-[32px] p-5 transition-all duration-500 hover:-translate-y-[2px] sm:p-6 ${
         layout === "grid" ? "h-full" : ""
+      } ${
+        isTop
+          ? "font-geist focus:outline-none"
+          : "bg-card border-border border shadow-sm"
       }`}
     >
+      {/* Animated Border Backgrounds for Top Performers */}
+      {isTop && (
+        <>
+          <div className="absolute inset-0 -z-20 overflow-hidden rounded-[32px] p-[1px]">
+            <div
+              className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,transparent_0_300deg,#10b981_360deg)]"
+              style={{
+                animation: "beam-spin 5s linear infinite",
+                opacity: borderOpacity,
+              }}
+            />
+            <div className="absolute inset-[1px] rounded-[31px] bg-[#151515]" />
+          </div>
+
+          <div className="absolute top-[2px] right-[2px] bottom-[2px] left-[2px] -z-10 overflow-hidden rounded-[30px] bg-[#151515]">
+            <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent" />
+            <div
+              className="absolute top-0 right-0 bottom-0 left-0 mix-blend-overlay"
+              style={{
+                opacity: overlayOpacity,
+                backgroundImage:
+                  "radial-gradient(rgba(255, 255, 255, 0.6) 1px, transparent 1px)",
+                backgroundSize: "12px 12px",
+                animation: "dots-move 8s linear infinite",
+              }}
+            />
+            {/* <div className="pointer-events-none absolute bottom-0 left-1/2 h-1/2 w-2/3 -translate-x-1/2 rounded-full bg-emerald-500/10 blur-2xl" /> */}
+          </div>
+        </>
+      )}
+
       {/* 1. Header Row */}
       <div className="mb-4 flex items-start justify-between">
         <div className="flex items-center gap-3">
@@ -1199,10 +1252,22 @@ function PostCard({
           }`}
         >
           {displayMembers.length === 0 ? (
-            <div className="text-muted-foreground w-full py-1.5 text-center text-sm">
-              {view === "engaged"
-                ? "No posts found yet."
-                : "Maximum engagement achieved. No missing posts."}
+            <div className="text-muted-foreground flex w-full flex-col items-center gap-3 py-2 text-center text-sm">
+              {view === "engaged" ? (
+                <>
+                  <a
+                    href={`https://x.com/${post.authorUsername}/status/${post.tweetId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-muted hover:bg-muted/80 border-border text-foreground flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-medium transition-all"
+                  >
+                    Open on X
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  </a>
+                </>
+              ) : (
+                "Maximum engagement achieved. No missing posts."
+              )}
             </div>
           ) : (
             displayMembers.map((m) => (

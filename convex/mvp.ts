@@ -1,3 +1,4 @@
+import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 
 import { mutation, query } from "./_generated/server";
@@ -19,6 +20,123 @@ function utcWeekStr(ts: number) {
 
 function utcMonthStr(ts: number) {
   return new Date(ts).toISOString().slice(0, 7); // "YYYY-MM"
+}
+
+const PINNED_TOP_POSTS_CACHE_TTL_MS = 15_000;
+let pinnedTopPostsCache:
+  | {
+      value: any[];
+      computedAt: number;
+    }
+  | undefined;
+
+async function getPinnedTopPosts(ctx: any) {
+  const now = Date.now();
+  if (
+    pinnedTopPostsCache &&
+    now - pinnedTopPostsCache.computedAt < PINNED_TOP_POSTS_CACHE_TTL_MS
+  ) {
+    return pinnedTopPostsCache.value;
+  }
+
+  const users = await ctx.db
+    .query("users")
+    .filter((q: any) => q.neq(q.field("twitterId"), undefined))
+    .collect();
+
+  const getLatestPostByTwitterId = async (twitterId: string) => {
+    return await ctx.db
+      .query("posts")
+      .withIndex("by_authorTwitterId_createdAt", (q: any) =>
+        q.eq("authorTwitterId", twitterId)
+      )
+      .order("desc")
+      .filter((q: any) => q.neq(q.field("status"), "queued"))
+      .first();
+  };
+
+  const getLatestPostByUsername = async (twitterUsername: string) => {
+    return await ctx.db
+      .query("posts")
+      .withIndex("by_createdAt")
+      .order("desc")
+      .filter((q: any) =>
+        q.and(
+          q.eq(q.field("authorUsername"), twitterUsername),
+          q.neq(q.field("status"), "queued")
+        )
+      )
+      .first();
+  };
+
+  const getLatestPostForMember = async (member: any) => {
+    if (member.twitterId) {
+      const byId = await getLatestPostByTwitterId(member.twitterId);
+      if (byId) return byId;
+    }
+    if (member.twitterUsername) {
+      return await getLatestPostByUsername(member.twitterUsername);
+    }
+    return null;
+  };
+
+  const selectedMembers = users.filter((m: any) => m.selectedTopOfTheList);
+  const selectedMember = selectedMembers[0];
+
+  const eligibleUsersForRanking = users.filter((member: any) => {
+    const username = String(member.twitterUsername || member.username || "").toLowerCase();
+    // Hide admin from automatic ranking unless explicitly selectedTopOfTheList
+    if (username === "ibangash_") return false;
+    return true;
+  });
+
+  const sortedByWeek = [...eligibleUsersForRanking].sort(
+    (a: any, b: any) => (b.engagementsThisWeek || 0) - (a.engagementsThisWeek || 0)
+  );
+  const sortedByDay = [...eligibleUsersForRanking].sort(
+    (a: any, b: any) => (b.engagementsToday || 0) - (a.engagementsToday || 0)
+  );
+
+  const posts: any[] = [];
+  const addedAuthorIds = new Set<string>();
+
+  if (selectedMember?.twitterId) {
+    const selectedPost = await getLatestPostForMember(selectedMember);
+    if (selectedPost) {
+      posts.push({ ...selectedPost, isSelectedTop: true });
+      addedAuthorIds.add(String(selectedMember.twitterId));
+    }
+  }
+
+  for (const member of sortedByWeek) {
+    if (!member.twitterId) continue;
+    if (addedAuthorIds.has(member.twitterId)) continue;
+    const post = await getLatestPostForMember(member);
+    if (!post) continue;
+    posts.push({ ...post, isTopWeek: true });
+    addedAuthorIds.add(String(member.twitterId));
+    break;
+  }
+
+  for (const member of sortedByDay) {
+    if (!member.twitterId) continue;
+    if (addedAuthorIds.has(member.twitterId)) continue;
+    const post = await getLatestPostForMember(member);
+    if (!post) continue;
+    posts.push({ ...post, isTopDay: true });
+    addedAuthorIds.add(String(member.twitterId));
+    break;
+  }
+
+  const opacityByIndex = [1, 0.5, 0.4];
+  const pinnedPosts = posts.map((post, index) => ({
+    ...post,
+    pinnedRank: index,
+    pinnedBorderOpacity: opacityByIndex[index] ?? 0.3,
+  }));
+
+  pinnedTopPostsCache = { value: pinnedPosts, computedAt: now };
+  return pinnedPosts;
 }
 
 export const getMembers = query({
@@ -129,8 +247,6 @@ export const getPosts = query({
   },
 });
 
-import { paginationOptsValidator } from "convex/server";
-
 export const getPostsPaginated = query({
   args: { paginationOpts: paginationOptsValidator },
   handler: async (ctx, args) => {
@@ -142,7 +258,28 @@ export const getPostsPaginated = query({
       .filter((q) => q.neq(q.field("status"), "queued"))
       .paginate(args.paginationOpts);
 
-    return results;
+    const isInitialPage = args.paginationOpts.cursor === null;
+    if (!isInitialPage) return results;
+
+    const pinnedTopPosts = await getPinnedTopPosts(ctx);
+    if (pinnedTopPosts.length === 0) return results;
+
+    const pinnedIds = new Set(pinnedTopPosts.map((post: any) => String(post._id)));
+    const dedupedPage = results.page.filter(
+      (post: any) => !pinnedIds.has(String(post._id))
+    );
+
+    return {
+      ...results,
+      page: [...pinnedTopPosts, ...dedupedPage],
+    };
+  },
+});
+
+export const getTopPerformersPosts = query({
+  args: {},
+  handler: async (ctx) => {
+    return await getPinnedTopPosts(ctx);
   },
 });
 
@@ -533,11 +670,17 @@ export const toggleSelfEngagement = mutation({
       await ctx.db.delete(existing._id);
 
       await ctx.db.patch(post._id, {
-        engagementCount: Math.max(0, (post.engagementCount || 0) - earnedPoints),
+        engagementCount: Math.max(
+          0,
+          (post.engagementCount || 0) - earnedPoints
+        ),
       });
 
       await ctx.db.patch(user._id, {
-        totalEngagements: Math.max(0, (user.totalEngagements || 0) - earnedPoints),
+        totalEngagements: Math.max(
+          0,
+          (user.totalEngagements || 0) - earnedPoints
+        ),
       });
 
       return { data: { added: false, pointsDelta: -earnedPoints } };

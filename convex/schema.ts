@@ -73,6 +73,7 @@ export default defineSchema({
     lastEngagementWeek: v.optional(v.string()), // "YYYY-WW"
     lastEngagementMonth: v.optional(v.string()), // "YYYY-MM"
     inviteCode: v.optional(v.string()), // Specific claim code for this user
+    selectedTopOfTheList: v.optional(v.boolean()), // Optional flag to force user to top of list
   })
     .index("by_email", ["email"])
     .index("by_clerkId", ["clerkId"])

@@ -119,29 +119,51 @@ export default function AdminConsole() {
   const handleAddPost = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newPost) return;
+
+    const rawIds = newPost.split(/[\n,]+/).map((id) => id.trim()).filter(Boolean);
+    if (rawIds.length === 0) return;
+
     setLoading(true);
-    try {
-      const res = await fetch("/api/posts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": websiteApi,
-        },
-        body: JSON.stringify({ tweetId: newPost }),
-      });
-      if (res.ok) {
-        setNewPost("");
-        fetchPosts();
-        fetchEngagements();
-      } else {
-        const error = await res.json();
-        alert(`Error: ${error.error || "Unknown"}`);
+    let successCount = 0;
+    let failCount = 0;
+
+    for (const rawId of rawIds) {
+      let parsedTweetId = rawId;
+      if (parsedTweetId.includes("status/")) {
+        parsedTweetId = parsedTweetId.split("status/")[1].split("?")[0];
+      } else if (parsedTweetId.startsWith("http")) {
+        parsedTweetId = parsedTweetId.split("/").pop()?.split("?")[0] || parsedTweetId;
       }
-    } catch (err) {
-      console.error(err);
+
+      try {
+        const res = await fetch("/api/posts", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": websiteApi,
+          },
+          body: JSON.stringify({ tweetId: parsedTweetId }),
+        });
+        if (res.ok) {
+          successCount++;
+        } else {
+          failCount++;
+        }
+      } catch (err) {
+        console.error(err);
+        failCount++;
+      }
+    }
+
+    setNewPost("");
+    fetchPosts();
+    fetchEngagements();
+    setLoading(false);
+
+    if (rawIds.length > 1) {
+      alert(`Bulk add complete.\nSuccess: ${successCount}\nFailed: ${failCount}`);
+    } else if (failCount > 0) {
       alert("Failed to add post");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -257,17 +279,33 @@ export default function AdminConsole() {
 
   const handleManualEngagement = async (action: "add" | "remove") => {
     if (!manualUser || !manualTweets) return;
+
+    const parsedTweetIds = manualTweets
+      .split(",")
+      .map((t) => {
+        let tid = t.trim();
+        if (tid.includes("status/")) {
+          return tid.split("status/")[1].split("?")[0];
+        }
+        if (tid.startsWith("http")) {
+          return tid.split("/").pop()?.split("?")[0] || tid;
+        }
+        return tid;
+      })
+      .filter(Boolean)
+      .join(",");
+
     setLoading(true);
     try {
       const res = await fetch("/api/manual-engagements", {
         method: action === "add" ? "POST" : "DELETE",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": "websiteApi",
+          "x-api-key": websiteApi,
         },
         body: JSON.stringify({
           twitterUsername: manualUser,
-          tweetIds: manualTweets,
+          tweetIds: parsedTweetIds,
         }),
       });
 
@@ -334,7 +372,7 @@ export default function AdminConsole() {
             </button>
           </form>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex max-h-[400px] flex-col gap-3 overflow-y-auto pr-2">
             {members.map((member) => (
               <div
                 key={member._id}
@@ -393,24 +431,24 @@ export default function AdminConsole() {
           </div>
 
           <form onSubmit={handleAddPost} className="flex gap-3">
-            <input
-              type="text"
+            <textarea
               value={newPost}
               onChange={(e) => setNewPost(e.target.value)}
-              placeholder="Tweet ID"
-              className="bg-background border-border text-foreground flex-1 rounded-xl border px-4 py-2 font-['JetBrains_Mono',monospace] text-sm transition-colors focus:border-blue-500/50 focus:outline-none"
+              placeholder="Tweet IDs or URLs (comma or newline separated)"
+              rows={2}
+              className="bg-background border-border text-foreground flex-1 resize-none rounded-xl border px-4 py-2 font-['JetBrains_Mono',monospace] text-sm transition-colors focus:border-blue-500/50 focus:outline-none"
               disabled={loading}
             />
             <button
               type="submit"
               disabled={loading}
-              className="bg-muted border-border hover:bg-border text-foreground rounded-xl border px-6 py-2 text-sm font-medium transition-all hover:border-blue-500/50"
+              className="bg-muted border-border hover:bg-border text-foreground h-fit rounded-xl border px-6 py-2 text-sm font-medium transition-all hover:border-blue-500/50"
             >
               Fetch & Save
             </button>
           </form>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex max-h-[500px] flex-col gap-3 overflow-y-auto pr-2">
             {posts.map((post) => {
               const engCount = getPostEngagementCount(post._id);
               return (
