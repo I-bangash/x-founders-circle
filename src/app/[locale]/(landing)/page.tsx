@@ -359,9 +359,13 @@ export default function SignalTerminal() {
   const sortedPosts = useMemo(() => {
     return [...filteredPosts].sort((a, b) => {
       const aPinnedRank =
-        typeof a.pinnedRank === "number" ? a.pinnedRank : Number.POSITIVE_INFINITY;
+        typeof a.pinnedRank === "number"
+          ? a.pinnedRank
+          : Number.POSITIVE_INFINITY;
       const bPinnedRank =
-        typeof b.pinnedRank === "number" ? b.pinnedRank : Number.POSITIVE_INFINITY;
+        typeof b.pinnedRank === "number"
+          ? b.pinnedRank
+          : Number.POSITIVE_INFINITY;
       if (aPinnedRank !== bPinnedRank) return aPinnedRank - bPinnedRank;
 
       const aEngagements = a.engagementCount || 0;
@@ -486,7 +490,7 @@ export default function SignalTerminal() {
               {!isSearchExpanded ? (
                 <button
                   onClick={() => setIsSearchExpanded(true)}
-                  className="bg-card border-border text-muted-foreground hover:text-foreground flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full border transition-colors focus:border-blue-500/50 focus:outline-none"
+                  className="bg-card border-border text-muted-foreground hover:text-foreground flex h-7 w-7 items-center justify-center rounded-full border transition-colors focus:border-blue-500/50 focus:outline-none sm:h-8 sm:w-8"
                   aria-label="Expand Search"
                 >
                   <Search className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -504,7 +508,7 @@ export default function SignalTerminal() {
                       className="text-foreground placeholder-muted-foreground w-24 bg-transparent py-0.5 pr-2 pl-7 text-xs focus:outline-none sm:w-40 sm:text-sm"
                     />
                   </div>
-                  <div className="bg-border h-3 sm:h-4 w-[1px]" />
+                  <div className="bg-border h-3 w-[1px] sm:h-4" />
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as SortOption)}
@@ -560,7 +564,7 @@ export default function SignalTerminal() {
             {!isSearchExpanded && (
               <Link
                 href="/dashboard"
-                className="bg-foreground text-background hover:bg-foreground/90 flex items-center justify-center rounded-full p-1.5 sm:px-4 sm:py-1.5 transition-colors"
+                className="bg-foreground text-background hover:bg-foreground/90 flex items-center justify-center rounded-full p-1.5 transition-colors sm:px-4 sm:py-1.5"
                 aria-label="Dashboard"
               >
                 <LayoutDashboard className="h-4 w-4 sm:hidden" />
@@ -1072,13 +1076,23 @@ function PostCard({
     typeof post.pinnedBorderOpacity === "number" ? post.pinnedBorderOpacity : 1;
   const overlayOpacity = 0.3 * borderOpacity;
 
+  const topBadgeRank =
+    typeof post.pinnedRank === "number" ? post.pinnedRank + 1 : null;
+  const topBadgeLabel = post.isSelectedTop
+    ? "Spotlight"
+    : post.isTopWeek
+      ? "This Week's MVP"
+      : post.isTopDay
+        ? "Star of the Day"
+        : null;
+  const topBadgeText = topBadgeLabel;
   return (
     <div
       className={`post-card relative flex flex-col rounded-[32px] p-5 transition-all duration-500 hover:-translate-y-[2px] sm:p-6 ${
         layout === "grid" ? "h-full" : ""
       } ${
         isTop
-          ? "font-geist focus:outline-none"
+          ? "font-geist shadow-sm focus:outline-none dark:shadow-none"
           : "bg-card border-border border shadow-sm"
       }`}
     >
@@ -1093,13 +1107,23 @@ function PostCard({
                 opacity: borderOpacity,
               }}
             />
-            <div className="absolute inset-[1px] rounded-[31px] bg-[#151515]" />
+            <div className="bg-card absolute inset-[1px] rounded-[31px]" />
           </div>
 
-          <div className="absolute top-[2px] right-[2px] bottom-[2px] left-[2px] -z-10 overflow-hidden rounded-[30px] bg-[#151515]">
-            <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent" />
+          <div className="bg-card absolute top-[2px] right-[2px] bottom-[2px] left-[2px] -z-10 overflow-hidden rounded-[30px]">
+            <div className="absolute inset-0 bg-gradient-to-b from-black/5 to-transparent dark:from-white/5" />
             <div
-              className="absolute top-0 right-0 bottom-0 left-0 mix-blend-overlay"
+              className="absolute top-0 right-0 bottom-0 left-0 opacity-100 mix-blend-overlay dark:!opacity-0"
+              style={{
+                opacity: overlayOpacity,
+                backgroundImage:
+                  "radial-gradient(rgba(0, 0, 0, 0.12) 1px, transparent 1px)",
+                backgroundSize: "12px 12px",
+                animation: "dots-move 8s linear infinite",
+              }}
+            />
+            <div
+              className="absolute top-0 right-0 bottom-0 left-0 !opacity-0 mix-blend-overlay dark:opacity-100"
               style={{
                 opacity: overlayOpacity,
                 backgroundImage:
@@ -1111,6 +1135,21 @@ function PostCard({
             {/* <div className="pointer-events-none absolute bottom-0 left-1/2 h-1/2 w-2/3 -translate-x-1/2 rounded-full bg-emerald-500/10 blur-2xl" /> */}
           </div>
         </>
+      )}
+
+      {topBadgeText && (
+        <div className="mb-3 flex justify-start">
+          <span
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium tracking-wide",
+              "bg-emerald-500/10 text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-400",
+              "ring-1 ring-emerald-500/20 dark:ring-emerald-400/20"
+            )}
+          >
+            <span className="size-1 rounded-full bg-emerald-500 dark:bg-emerald-400" />
+            {topBadgeText}
+          </span>
+        </div>
       )}
 
       {/* 1. Header Row */}

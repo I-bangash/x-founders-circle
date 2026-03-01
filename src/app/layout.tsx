@@ -33,19 +33,19 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://foundersonx.com"),
   title: "Founders on X | Real engagement. Real growth.",
   description:
-    "A tight circle of tech founders helping each other grow on X. Real engagement, real connections.",
+    "A tight circle of tech founders helping each other grow on X. Drop your post, get genuine engagement, and do the same for others. It's that simple.",
   openGraph: {
     title: "Founders on X | Real engagement. Real growth.",
     description:
-      "A tight circle of tech founders helping each other grow on X. Real engagement, real connections.",
+      "A tight circle of tech founders helping each other grow on X. Drop your post, get genuine engagement, and do the same for others. It's that simple.",
     url: "https://foundersonx.com",
     siteName: "Founders on X",
     images: [
       {
-        url: "/founders-on-x-og-image.png",
+        url: "/founders-on-x-og-image-2.png",
         width: 1200,
         height: 630,
-        alt: "Founders on X Open Graph Image",
+        alt: "Founders on X - A private group for tech founders helping each other grow on X",
       },
     ],
     locale: "en_US",
@@ -55,8 +55,8 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Founders on X | Real engagement. Real growth.",
     description:
-      "A tight circle of tech founders helping each other grow on X. Real engagement, real connections.",
-    images: ["/founders-on-x-og-image.png"],
+      "A tight circle of tech founders helping each other grow on X. Drop your post, get genuine engagement, and do the same for others. It's that simple.",
+    images: ["/founders-on-x-og-image-2.png"],
   },
 };
 
