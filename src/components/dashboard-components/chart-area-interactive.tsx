@@ -35,7 +35,7 @@ const chartConfig = {
   },
   engagementReceived: {
     label: "Engagement Received",
-    color: "var(--primary)",
+    color: "#14b8a6",
   },
 } satisfies ChartConfig;
 

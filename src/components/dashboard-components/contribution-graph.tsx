@@ -26,56 +26,122 @@ export function ContributionGraph({
   colorScheme = "emerald",
   squareSize = 14,
 }: ContributionGraphProps) {
-  // Map data to a fast lookup
-  const dataMap = new Map(data.map((d) => [d.date, d.count]));
+  const { transposedData, weeks, monthLabels, currentStreak } =
+    React.useMemo(() => {
+      // Map data to a fast lookup
+      const dataMap = new Map(data.map((d) => [d.date, d.count]));
 
-  // Generate last 365 days
-  const today = new Date();
-  const startDate = subDays(today, 365);
+      // Generate last 365 days
+      // Strip time to avoid hydration mismatches / unnecessary recalculations across millisecond changes
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const startDate = subDays(today, 365);
 
-  // To match github graph, we start from the Sunday of the week 365 days ago
-  const graphStartDate = startOfWeek(startDate, { weekStartsOn: 0 });
+      // To match github graph, we start from the Sunday of the week 365 days ago
+      const graphStartDate = startOfWeek(startDate, { weekStartsOn: 0 });
 
-  const weeks: { date: Date; count: number }[][] = [];
-  let currentWeek: { date: Date; count: number }[] = [];
+      const weeks: { date: Date; count: number }[][] = [];
+      let currentWeek: { date: Date; count: number }[] = [];
 
-  let iterDate = graphStartDate;
-  while (iterDate <= today || currentWeek.length > 0) {
-    if (currentWeek.length === 7) {
-      weeks.push(currentWeek);
-      currentWeek = [];
-    }
+      let iterDate = graphStartDate;
+      while (iterDate <= today || currentWeek.length > 0) {
+        if (currentWeek.length === 7) {
+          weeks.push(currentWeek);
+          currentWeek = [];
+        }
 
-    if (iterDate > today && currentWeek.length === 0) {
-      break;
-    }
+        if (iterDate > today && currentWeek.length === 0) {
+          break;
+        }
 
-    if (iterDate <= today) {
-      const dateStr = format(iterDate, "yyyy-MM-dd");
-      currentWeek.push({
-        date: iterDate,
-        count: dataMap.get(dateStr) || 0,
-      });
-    } else {
-      // pad the last week with null-like items if needed
-      currentWeek.push({
-        date: iterDate,
-        count: -1, // representing future days in the last week
-      });
-    }
+        if (iterDate <= today) {
+          const dateStr = format(iterDate, "yyyy-MM-dd");
+          currentWeek.push({
+            date: iterDate,
+            count: dataMap.get(dateStr) || 0,
+          });
+        } else {
+          // pad the last week with null-like items if needed
+          currentWeek.push({
+            date: iterDate,
+            count: -1, // representing future days in the last week
+          });
+        }
 
-    iterDate = addDays(iterDate, 1);
-  }
-  if (currentWeek.length > 0) {
-    weeks.push(currentWeek);
-  }
+        iterDate = addDays(iterDate, 1);
+      }
+      if (currentWeek.length > 0) {
+        weeks.push(currentWeek);
+      }
 
-  // Transpose the data so rows are days of the week and columns are weeks
-  // This helps make it fully responsive and fill the container better
-  const days = Array(7).fill(null);
-  const transposedData = days.map((_, dayIndex) =>
-    weeks.map((week) => week[dayIndex])
-  );
+      // Transpose the data so rows are days of the week and columns are weeks
+      // This helps make it fully responsive and fill the container better
+      const days = Array(7).fill(null);
+      const transposedData = days.map((_, dayIndex) =>
+        weeks.map((week) => week[dayIndex])
+      );
+
+      const getMonthLabels = () => {
+        const labels: { label: string; colIndex: number }[] = [];
+        let lastMonth = -1;
+
+        weeks.forEach((week, i) => {
+          // Find the first valid day in the week
+          const firstDayOfWeek = week.find((d) => d && d.count !== -1)?.date;
+          if (!firstDayOfWeek) return;
+
+          const month = firstDayOfWeek.getMonth();
+          if (month !== lastMonth && firstDayOfWeek.getDate() <= 14) {
+            labels.push({ label: format(firstDayOfWeek, "MMM"), colIndex: i });
+            lastMonth = month;
+          }
+        });
+
+        return labels;
+      };
+
+      const monthLabels = getMonthLabels();
+
+      // --- Calculate Current Streak ---
+      const calculateStreak = () => {
+        let streak = 0;
+        const todayStr = format(today, "yyyy-MM-dd");
+        const yesterday = subDays(today, 1);
+        const yesterdayStr = format(yesterday, "yyyy-MM-dd");
+
+        // Start checking from today, or yesterday if today has no contributions yet
+        let checkDate =
+          dataMap.get(todayStr) && dataMap.get(todayStr)! > 0
+            ? today
+            : yesterday;
+
+        // Quick early exit if neither today nor yesterday has a contribution
+        if (
+          (!dataMap.get(todayStr) || dataMap.get(todayStr) === 0) &&
+          (!dataMap.get(yesterdayStr) || dataMap.get(yesterdayStr) === 0)
+        ) {
+          return 0;
+        }
+
+        while (true) {
+          const dateStr = format(checkDate, "yyyy-MM-dd");
+          const count = dataMap.get(dateStr) || 0;
+
+          if (count > 0) {
+            streak++;
+            checkDate = subDays(checkDate, 1);
+          } else {
+            break;
+          }
+        }
+
+        return streak;
+      };
+
+      const currentStreak = calculateStreak();
+
+      return { transposedData, weeks, monthLabels, currentStreak };
+    }, [data]);
 
   const colors = THEMES[colorScheme];
 
@@ -88,70 +154,13 @@ export function ContributionGraph({
     return colors[4];
   };
 
-  const getMonthLabels = () => {
-    const labels: { label: string; colIndex: number }[] = [];
-    let lastMonth = -1;
-
-    weeks.forEach((week, i) => {
-      // Find the first valid day in the week
-      const firstDayOfWeek = week.find((d) => d && d.count !== -1)?.date;
-      if (!firstDayOfWeek) return;
-
-      const month = firstDayOfWeek.getMonth();
-      if (month !== lastMonth && firstDayOfWeek.getDate() <= 14) {
-        labels.push({ label: format(firstDayOfWeek, "MMM"), colIndex: i });
-        lastMonth = month;
-      }
-    });
-
-    return labels;
-  };
-
-  const monthLabels = getMonthLabels();
-
-  // --- Calculate Current Streak ---
-  const calculateStreak = () => {
-    let streak = 0;
-    const todayStr = format(today, "yyyy-MM-dd");
-    const yesterday = subDays(today, 1);
-    const yesterdayStr = format(yesterday, "yyyy-MM-dd");
-
-    // Start checking from today, or yesterday if today has no contributions yet
-    let checkDate =
-      dataMap.get(todayStr) && dataMap.get(todayStr)! > 0 ? today : yesterday;
-
-    // Quick early exit if neither today nor yesterday has a contribution
-    if (
-      (!dataMap.get(todayStr) || dataMap.get(todayStr) === 0) &&
-      (!dataMap.get(yesterdayStr) || dataMap.get(yesterdayStr) === 0)
-    ) {
-      return 0;
-    }
-
-    while (true) {
-      const dateStr = format(checkDate, "yyyy-MM-dd");
-      const count = dataMap.get(dateStr) || 0;
-
-      if (count > 0) {
-        streak++;
-        checkDate = subDays(checkDate, 1);
-      } else {
-        break;
-      }
-    }
-
-    return streak;
-  };
-
-  const currentStreak = calculateStreak();
-
   // Determine flame configuration based on streak intensity
   // The scale works roughly from 0 (tiny flame) to 1000 (massive fire) based on particleFlames mapping
   // A multiplier of 2.5 means a 44-day streak gives an intensity of ~110 (moderate flame).
   const streakFlameIntensity = Math.min(Math.max(currentStreak * 2.5, 0), 1000);
-  const flameConfig = interpolateFlameConfig(
-    streakFlameIntensity,
-    particleFlames
+  const flameConfig = React.useMemo(
+    () => interpolateFlameConfig(streakFlameIntensity, particleFlames),
+    [streakFlameIntensity]
   );
 
   return (
@@ -161,8 +170,13 @@ export function ContributionGraph({
           Contribution Graph
         </h3>
         <div className="flex items-center justify-between">
-          <p className="text-muted-foreground text-sm">
-            Daily tracking of your engagements with other members
+          <p className="text-muted-foreground text-sm sm:text-sm">
+            <span className="sm:hidden">
+              Daily tracking of your engagements
+            </span>
+            <span className="hidden sm:inline">
+              Daily tracking of your engagements with other members
+            </span>
           </p>
 
           {currentStreak >= 3 && (
@@ -175,11 +189,11 @@ export function ContributionGraph({
                   isFireEffect={true}
                 />
                 {/* Gradient overlay to fade the fire effect into the card background at the top */}
-                <div className="from-card absolute inset-[7px] rounded-full bg-gradient-to-b to-transparent to-20%" />
+                <div className="from-card absolute inset-[15px] rounded-full bg-gradient-to-b to-transparent to-20% sm:inset-[7px]" />
               </div>
-              <div className="from-background to-muted/50 relative z-10 flex items-center gap-1.5 rounded-full border border-orange-500/10 bg-gradient-to-b px-3 py-1 shadow-sm backdrop-blur-xl">
-                <FireIcon className="h-3.5 w-3.5 text-orange-500" />
-                <span className="text-foreground/90 text-xs font-semibold tracking-tight">
+              <div className="from-background to-muted/50 relative z-10 flex shrink-0 items-center gap-1 rounded-full border border-orange-500/10 bg-gradient-to-b px-2 py-0.5 shadow-sm backdrop-blur-xl sm:gap-1.5 sm:px-3 sm:py-1">
+                <FireIcon className="h-3 w-3 text-orange-500 sm:h-3.5 sm:w-3.5" />
+                <span className="text-foreground/90 text-[10px] font-semibold tracking-tight whitespace-nowrap sm:text-xs">
                   {currentStreak} Day Streak
                 </span>
               </div>
