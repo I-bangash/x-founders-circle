@@ -111,6 +111,7 @@ export const claimProfileInternal = internalMutation({
       followersCount: dummyUser.followersCount,
       joinedAt: dummyUser.joinedAt,
       totalEngagements: dummyUser.totalEngagements,
+      pointsUsed: dummyUser.pointsUsed,
       // Prioritize dummy user's details for display over Clerk defaults
       image: dummyUser.image || currentUser.image,
       name: dummyUser.twitterName || dummyUser.name || currentUser.name,
