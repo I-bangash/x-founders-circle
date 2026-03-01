@@ -1,7 +1,5 @@
 "use client";
 
-import { useMemo, useState } from "react";
-
 import { useQuery } from "convex/react";
 
 import { AddPostForm } from "@/components/dashboard-components/add-post-form";
@@ -20,41 +18,7 @@ export default function DashboardPage() {
 
   const currentUser = userResult?.data ?? null;
   const chartData = chartResult?.data ?? [];
-
-  // --- TEMPORARY DUMMY DATA FOR CONTRIBUTION GRAPH ---
-  const dummyContributionData = useMemo(() => {
-    const dummy: { date: string; count: number }[] = [];
-    const today = new Date();
-    for (let i = 0; i < 365; i++) {
-      const d = new Date(today);
-      d.setDate(today.getDate() - i);
-
-      // Use deterministic pseudo-random values based on 'i' to prevent hydration mismatch!
-      const rand = ((i * 29) % 100) / 100;
-      let count = 0;
-
-      // Force a realistic streak for testing!
-      // Set to 4 for a 5-day streak (0 to 4 is 5 days)
-      if (i <= 20) {
-        count = (i % 4) + 2;
-      } else {
-        // Weighting random numbers so it looks realistic
-        if (rand > 0.6) count = (i % 3) + 1; // 1-3
-        if (rand > 0.8) count = (i % 4) + 4; // 4-7
-        if (rand > 0.92) count = (i % 5) + 8; // 8-12
-      }
-
-      if (count > 0) {
-        dummy.push({
-          date: d.toISOString().split("T")[0],
-          count,
-        });
-      }
-    }
-    return dummy;
-  }, []);
-
-  const contributionData = dummyContributionData; // FIXME: Revert to: contributionResult?.data ?? [];
+  const contributionData = contributionResult?.data ?? [];
 
   const posts: PostSchemaType[] = (postsResult?.data ?? []).map((p: any) => ({
     id: p._id,
