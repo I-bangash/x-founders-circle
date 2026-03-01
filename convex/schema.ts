@@ -66,6 +66,7 @@ export default defineSchema({
     followersCount: v.optional(v.number()),
     joinedAt: v.optional(v.number()),
     totalEngagements: v.optional(v.number()),
+    pointsUsed: v.optional(v.number()),
     engagementsToday: v.optional(v.number()),
     engagementsThisWeek: v.optional(v.number()),
     engagementsThisMonth: v.optional(v.number()),

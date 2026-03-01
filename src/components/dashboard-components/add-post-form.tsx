@@ -14,6 +14,8 @@ import { api } from "@/convex/_generated/api";
 interface AddPostFormProps {
   hasTwitterLinked: boolean;
   twitterUsername?: string;
+  totalEngagements?: number;
+  pointsUsed?: number;
 }
 
 function extractTweetId(url: string): string | null {
@@ -26,10 +28,15 @@ const WEBSITE_API = process.env.NEXT_PUBLIC_WEBSITE_SIGNING_KEY ?? "";
 export function AddPostForm({
   hasTwitterLinked,
   twitterUsername,
+  totalEngagements = 0,
+  pointsUsed = 0,
 }: AddPostFormProps) {
   const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const setPostStatus = useMutation(api.dashboard.setPostStatus);
+
+  const availablePoints = totalEngagements - pointsUsed;
+  const isButtonDisabled = isLoading || !url.trim() || availablePoints < 10;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,24 +99,29 @@ export function AddPostForm({
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
       <div className="flex gap-3">
         <div className="flex flex-1 flex-col gap-1.5">
-          <Label
-            htmlFor="post-url"
-            className="text-muted-foreground text-xs tracking-wider uppercase"
-          >
-            Share a Post
-          </Label>
+          <div className="flex items-center justify-between">
+            <Label
+              htmlFor="post-url"
+              className="text-muted-foreground text-xs tracking-wider uppercase"
+            >
+              Share a Post
+            </Label>
+            <span className="text-muted-foreground text-xs">
+              Available Points: <span className="text-foreground font-semibold">{Math.floor(availablePoints)}</span>
+            </span>
+          </div>
           <div className="flex gap-2">
             <Input
               id="post-url"
               placeholder="https://x.com/username/status/..."
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              disabled={isLoading}
+              disabled={isLoading || availablePoints < 10}
               className="placeholder:text-muted-foreground/50 flex-1 rounded-full font-[JetBrains_Mono,monospace] text-sm"
             />
             <Button
               type="submit"
-              disabled={isLoading || !url.trim()}
+              disabled={isButtonDisabled}
               className="shrink-0 rounded-full transition-transform hover:scale-[1.02]"
             >
               {isLoading ? (
@@ -124,13 +136,20 @@ export function AddPostForm({
           </div>
         </div>
       </div>
-      <p className="text-muted-foreground/70 text-xs">
-        Posting as{" "}
-        <span className="text-primary font-[JetBrains_Mono,monospace]">
-          @{twitterUsername}
-        </span>
-        {" · "}One post per day - extras go to queue
-      </p>
+      <div className="flex flex-col gap-1.5">
+        <p className="text-muted-foreground/70 text-xs">
+          Posting as{" "}
+          <span className="text-primary font-[JetBrains_Mono,monospace]">
+            @{twitterUsername}
+          </span>
+          {" · "}Cost: 10 points
+        </p>
+        {availablePoints < 10 && (
+          <p className="text-destructive text-xs">
+            Not enough points. You need {Math.ceil(10 - availablePoints)} more points to share a post.
+          </p>
+        )}
+      </div>
     </form>
   );
 }

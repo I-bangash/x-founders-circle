@@ -81,14 +81,17 @@ async function getPinnedTopPosts(ctx: any) {
   const selectedMember = selectedMembers[0];
 
   const eligibleUsersForRanking = users.filter((member: any) => {
-    const username = String(member.twitterUsername || member.username || "").toLowerCase();
+    const username = String(
+      member.twitterUsername || member.username || ""
+    ).toLowerCase();
     // Hide admin from automatic ranking unless explicitly selectedTopOfTheList
     if (username === "ibangash_") return false;
     return true;
   });
 
   const sortedByWeek = [...eligibleUsersForRanking].sort(
-    (a: any, b: any) => (b.engagementsThisWeek || 0) - (a.engagementsThisWeek || 0)
+    (a: any, b: any) =>
+      (b.engagementsThisWeek || 0) - (a.engagementsThisWeek || 0)
   );
   const sortedByDay = [...eligibleUsersForRanking].sort(
     (a: any, b: any) => (b.engagementsToday || 0) - (a.engagementsToday || 0)
@@ -261,7 +264,9 @@ export const getPostsPaginated = query({
     const pinnedTopPosts = await getPinnedTopPosts(ctx);
     if (pinnedTopPosts.length === 0) return results;
 
-    const pinnedIds = new Set(pinnedTopPosts.map((post: any) => String(post._id)));
+    const pinnedIds = new Set(
+      pinnedTopPosts.map((post: any) => String(post._id))
+    );
     const dedupedPage = results.page.filter(
       (post: any) => !pinnedIds.has(String(post._id))
     );
@@ -608,7 +613,7 @@ export const removeManualEngagements = mutation({
 
       if (existing) {
         const points = existing.pointsEarned ?? POINTS.comment;
-        
+
         const dateStr = utcDateStr(existing.engagedAt);
         const dailyEngRecord = await ctx.db
           .query("dailyEngagements")
@@ -744,7 +749,7 @@ export const toggleSelfEngagement = mutation({
     if (existing) {
       // ── Remove engagement ──
       const earnedPoints = existing.pointsEarned ?? points;
-      
+
       const dateStr = utcDateStr(existing.engagedAt);
       const dailyEngRecord = await ctx.db
         .query("dailyEngagements")
@@ -908,5 +913,90 @@ export const getMyEngagementsForPosts = query({
     }
 
     return result;
+  },
+});
+
+export const backfillPointsUsed = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const users = await ctx.db.query("users").collect();
+    let updatedCount = 0;
+
+    for (const user of users) {
+      if (!user.twitterId && !user.twitterUsername && !user.username) continue;
+
+      // Find posts by this user using the same criteria as getMyPosts and setPostStatus
+      const [byId, byUsername, byLocalUsername] = await Promise.all([
+        user.twitterId
+          ? ctx.db
+              .query("posts")
+              .withIndex("by_authorTwitterId_createdAt", (q) =>
+                q.eq("authorTwitterId", user.twitterId!)
+              )
+              .collect()
+          : [],
+        user.twitterUsername
+          ? ctx.db
+              .query("posts")
+              .withIndex("by_authorTwitterId_createdAt", (q) =>
+                q.eq("authorTwitterId", user.twitterUsername!)
+              )
+              .collect()
+          : [],
+        user.username
+          ? ctx.db
+              .query("posts")
+              .withIndex("by_authorTwitterId_createdAt", (q) =>
+                q.eq("authorTwitterId", user.username!)
+              )
+              .collect()
+          : [],
+      ]);
+
+      // Deduplicate by post _id to count exact unique posts associated with this user
+      const seen = new Set<string>();
+      const allPosts = [...byId, ...byUsername, ...byLocalUsername].filter(
+        (p) => {
+          if (seen.has(p._id)) return false;
+          seen.add(p._id);
+          return true;
+        }
+      );
+
+      const postCount = allPosts.length;
+      const pointsUsed = postCount * 10;
+
+      await ctx.db.patch(user._id, {
+        pointsUsed,
+      });
+
+      updatedCount++;
+    }
+
+    return { success: true, updatedUsersCount: updatedCount };
+  },
+});
+
+export const ensureMinimumPoints = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const users = await ctx.db.query("users").collect();
+    let updatedCount = 0;
+
+    for (const user of users) {
+      const availablePoints = (user.totalEngagements || 0) - (user.pointsUsed || 0);
+
+      if (availablePoints < 10) {
+        // We subtract enough from pointsUsed to ensure they have exactly 10 available points
+        // Or if you just want to subtract 10 from pointsUsed:
+        // New pointsUsed = pointsUsed - 10
+        await ctx.db.patch(user._id, {
+          pointsUsed: (user.pointsUsed || 0) - 10,
+        });
+        updatedCount++;
+      }
+    }
+
+    return { success: true, updatedUsersCount: updatedCount };
   },
 });

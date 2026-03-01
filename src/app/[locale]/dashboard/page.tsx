@@ -78,6 +78,8 @@ export default function DashboardPage() {
         <AddPostForm
           hasTwitterLinked={!!currentUser?.twitterId}
           twitterUsername={currentUser?.twitterUsername ?? undefined}
+          totalEngagements={currentUser?.totalEngagements}
+          pointsUsed={currentUser?.pointsUsed}
         />
       </div>
 

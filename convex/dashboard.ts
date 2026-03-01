@@ -250,6 +250,16 @@ export const setPostStatus = mutation({
         };
       }
 
+      const availablePoints = (user.totalEngagements || 0) - (user.pointsUsed || 0);
+      if (availablePoints < 10) {
+        return {
+          error: {
+            code: "INSUFFICIENT_POINTS",
+            message: `You need 10 points to share a post. You currently have ${Math.floor(availablePoints)} points.`,
+          },
+        };
+      }
+
       const post = await ctx.db
         .query("posts")
         .withIndex("by_tweetId", (q) => q.eq("tweetId", tweetId))
@@ -291,6 +301,10 @@ export const setPostStatus = mutation({
         status,
         sharedByClerkId: clerkId,
         dailyDate: today,
+      });
+
+      await ctx.db.patch(user._id, {
+        pointsUsed: (user.pointsUsed || 0) + 10,
       });
 
       return { data: { status, tweetId } };
