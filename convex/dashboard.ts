@@ -175,6 +175,42 @@ export const getMyChartData = query({
   },
 });
 
+export const getMyContributionGraph = query({
+  args: {},
+  handler: async (
+    ctx
+  ): Promise<DashboardResponse<{ date: string; count: number }[]>> => {
+    try {
+      const identity = await ctx.auth.getUserIdentity();
+      if (!identity) return { data: [] };
+
+      const clerkId = identity.subject;
+      const user = await ctx.db
+        .query("users")
+        .withIndex("by_clerkId", (q) => q.eq("clerkId", clerkId))
+        .first();
+
+      if (!user?.twitterId) return { data: [] };
+
+      const dailyEngagements = await ctx.db
+        .query("dailyEngagements")
+        .withIndex("by_twitterUserId", (q) =>
+          q.eq("twitterUserId", user.twitterId!)
+        )
+        .collect();
+
+      return {
+        data: dailyEngagements.map((d) => ({ date: d.date, count: d.count })),
+      };
+    } catch (error) {
+      if (error instanceof ConvexError) {
+        return { error: error.data as { code: string; message: string } };
+      }
+      return { error: { code: "INTERNAL_ERROR", message: "Unexpected error" } };
+    }
+  },
+});
+
 // ─── Mutations ────────────────────────────────────────────────
 
 export const setPostStatus = mutation({

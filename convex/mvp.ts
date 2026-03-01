@@ -413,6 +413,25 @@ export const addEngagements = mutation({
         const weekStr = utcWeekStr(now);
         const monthStr = utcMonthStr(now);
 
+        const dailyEngRecord = await ctx.db
+          .query("dailyEngagements")
+          .withIndex("by_twitterUserId_date", (q) =>
+            q.eq("twitterUserId", eng.twitterUserId).eq("date", todayStr)
+          )
+          .first();
+
+        if (dailyEngRecord) {
+          await ctx.db.patch(dailyEngRecord._id, {
+            count: dailyEngRecord.count + 1,
+          });
+        } else {
+          await ctx.db.insert("dailyEngagements", {
+            twitterUserId: eng.twitterUserId,
+            date: todayStr,
+            count: 1,
+          });
+        }
+
         await ctx.db.patch(user._id, {
           totalEngagements: (user.totalEngagements || 0) + points,
           engagementsToday:
@@ -496,6 +515,25 @@ export const addManualEngagements = mutation({
         const weekStr = utcWeekStr(now);
         const monthStr = utcMonthStr(now);
 
+        const dailyEngRecord = await ctx.db
+          .query("dailyEngagements")
+          .withIndex("by_twitterUserId_date", (q) =>
+            q.eq("twitterUserId", user.twitterId!).eq("date", todayStr)
+          )
+          .first();
+
+        if (dailyEngRecord) {
+          await ctx.db.patch(dailyEngRecord._id, {
+            count: dailyEngRecord.count + 1,
+          });
+        } else {
+          await ctx.db.insert("dailyEngagements", {
+            twitterUserId: user.twitterId,
+            date: todayStr,
+            count: 1,
+          });
+        }
+
         await ctx.db.insert("engagements", {
           postId: post._id,
           twitterUserId: user.twitterId,
@@ -570,6 +608,21 @@ export const removeManualEngagements = mutation({
 
       if (existing) {
         const points = existing.pointsEarned ?? POINTS.comment;
+        
+        const dateStr = utcDateStr(existing.engagedAt);
+        const dailyEngRecord = await ctx.db
+          .query("dailyEngagements")
+          .withIndex("by_twitterUserId_date", (q) =>
+            q.eq("twitterUserId", user.twitterId!).eq("date", dateStr)
+          )
+          .first();
+
+        if (dailyEngRecord) {
+          await ctx.db.patch(dailyEngRecord._id, {
+            count: Math.max(0, dailyEngRecord.count - 1),
+          });
+        }
+
         await ctx.db.delete(existing._id);
         removedCount++;
 
@@ -691,6 +744,21 @@ export const toggleSelfEngagement = mutation({
     if (existing) {
       // ── Remove engagement ──
       const earnedPoints = existing.pointsEarned ?? points;
+      
+      const dateStr = utcDateStr(existing.engagedAt);
+      const dailyEngRecord = await ctx.db
+        .query("dailyEngagements")
+        .withIndex("by_twitterUserId_date", (q) =>
+          q.eq("twitterUserId", user.twitterId!).eq("date", dateStr)
+        )
+        .first();
+
+      if (dailyEngRecord) {
+        await ctx.db.patch(dailyEngRecord._id, {
+          count: Math.max(0, dailyEngRecord.count - 1),
+        });
+      }
+
       await ctx.db.delete(existing._id);
 
       await ctx.db.patch(post._id, {
@@ -713,6 +781,25 @@ export const toggleSelfEngagement = mutation({
       const todayStr = utcDateStr(now);
       const weekStr = utcWeekStr(now);
       const monthStr = utcMonthStr(now);
+
+      const dailyEngRecord = await ctx.db
+        .query("dailyEngagements")
+        .withIndex("by_twitterUserId_date", (q) =>
+          q.eq("twitterUserId", user.twitterId!).eq("date", todayStr)
+        )
+        .first();
+
+      if (dailyEngRecord) {
+        await ctx.db.patch(dailyEngRecord._id, {
+          count: dailyEngRecord.count + 1,
+        });
+      } else {
+        await ctx.db.insert("dailyEngagements", {
+          twitterUserId: user.twitterId!,
+          date: todayStr,
+          count: 1,
+        });
+      }
 
       await ctx.db.insert("engagements", {
         postId,

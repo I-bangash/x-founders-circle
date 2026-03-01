@@ -133,6 +133,14 @@ export default defineSchema({
       "engagementType",
     ]),
 
+  dailyEngagements: defineTable({
+    twitterUserId: v.string(),
+    date: v.string(), // "YYYY-MM-DD" in UTC
+    count: v.number(),
+  })
+    .index("by_twitterUserId", ["twitterUserId"])
+    .index("by_twitterUserId_date", ["twitterUserId", "date"]),
+
   // Organizations table
   organizations: defineTable({
     name: v.optional(v.string()),

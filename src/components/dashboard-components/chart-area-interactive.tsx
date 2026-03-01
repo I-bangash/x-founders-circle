@@ -5,14 +5,6 @@ import * as React from "react";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 
 import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
@@ -77,7 +69,7 @@ function TimeRangeSelector({
         value={value}
         onValueChange={onChange}
         variant="outline"
-        className="hidden *:data-[slot=toggle-group-item]:!px-4 @[767px]/card:flex"
+        className="hidden *:data-[slot=toggle-group-item]:!px-4 @[767px]:flex"
       >
         {TIME_RANGES.map((range) => (
           <ToggleGroupItem key={range.value} value={range.value}>
@@ -87,7 +79,7 @@ function TimeRangeSelector({
       </ToggleGroup>
       <Select value={value} onValueChange={onChange}>
         <SelectTrigger
-          className="flex w-40 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate @[767px]/card:hidden"
+          className="flex w-40 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate @[767px]:hidden"
           size="sm"
           aria-label="Select a value"
         >
@@ -165,20 +157,20 @@ export function ChartAreaInteractive({ data }: ChartAreaInteractiveProps) {
   );
 
   return (
-    <Card className="@container/card">
-      <CardHeader>
-        <CardTitle>Activity Overview</CardTitle>
-        <CardDescription>
-          <span className="hidden @[540px]/card:block">
-            Posts shared and engagements received
-          </span>
-          <span className="@[540px]/card:hidden">Activity</span>
-        </CardDescription>
-        <CardAction>
-          <TimeRangeSelector value={timeRange} onChange={setTimeRange} />
-        </CardAction>
-      </CardHeader>
-      <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+    <div className="bg-card border-border @container flex flex-col rounded-[32px] border p-5 shadow-sm transition-all duration-500 sm:p-6">
+      <div className="mb-6 flex items-start justify-between gap-4">
+        <div className="flex flex-col gap-1.5">
+          <h3 className="text-foreground text-lg font-semibold tracking-tight">Activity Overview</h3>
+          <p className="text-muted-foreground text-sm">
+            <span className="hidden @[540px]:block">
+              Posts shared and engagements received
+            </span>
+            <span className="@[540px]:hidden">Activity</span>
+          </p>
+        </div>
+        <TimeRangeSelector value={timeRange} onChange={setTimeRange} />
+      </div>
+      <div className="w-full">
         {filtered.length === 0 ? (
           <div className="text-muted-foreground flex h-[250px] items-center justify-center text-sm">
             No data yet — share your first post to see activity
@@ -226,7 +218,7 @@ export function ChartAreaInteractive({ data }: ChartAreaInteractiveProps) {
             </AreaChart>
           </ChartContainer>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
