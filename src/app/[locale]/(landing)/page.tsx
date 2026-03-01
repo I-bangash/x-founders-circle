@@ -40,6 +40,11 @@ import useMeasure from "react-use-measure";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 import { api } from "../../../../convex/_generated/api";
@@ -436,7 +441,7 @@ export default function SignalTerminal() {
                   setActiveTab("today");
                   setSelectedDate(undefined);
                 }}
-                className={`rounded-full px-2 py-1 text-[10px] font-medium transition-all sm:px-4 sm:py-1.5 sm:text-sm ${
+                className={`cursor-pointer rounded-full px-2 py-1 text-[10px] font-medium transition-all sm:px-4 sm:py-1.5 sm:text-sm ${
                   activeTab === "today"
                     ? "bg-muted text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
@@ -449,7 +454,7 @@ export default function SignalTerminal() {
                   setActiveTab("all");
                   setSelectedDate(undefined);
                 }}
-                className={`rounded-full px-2 py-1 text-[10px] font-medium transition-all sm:px-4 sm:py-1.5 sm:text-sm ${
+                className={`cursor-pointer rounded-full px-2 py-1 text-[10px] font-medium transition-all sm:px-4 sm:py-1.5 sm:text-sm ${
                   activeTab === "all"
                     ? "bg-muted text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
@@ -467,7 +472,7 @@ export default function SignalTerminal() {
                   if (date) setActiveTab("date");
                   else setActiveTab("today");
                 }}
-                className={`${
+                className={`cursor-pointer ${
                   activeTab === "date"
                     ? "bg-muted text-foreground border-transparent shadow-sm"
                     : "hover:bg-muted/50 text-muted-foreground hover:text-foreground border-transparent bg-transparent"
@@ -490,7 +495,7 @@ export default function SignalTerminal() {
               {!isSearchExpanded ? (
                 <button
                   onClick={() => setIsSearchExpanded(true)}
-                  className="bg-card border-border text-muted-foreground hover:text-foreground flex h-7 w-7 items-center justify-center rounded-full border transition-colors focus:border-blue-500/50 focus:outline-none sm:h-8 sm:w-8"
+                  className="bg-card border-border text-muted-foreground hover:text-foreground flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border transition-colors focus:border-blue-500/50 focus:outline-none sm:h-8 sm:w-8"
                   aria-label="Expand Search"
                 >
                   <Search className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -526,7 +531,7 @@ export default function SignalTerminal() {
             <div className="bg-card border-border flex items-center rounded-full border p-0.5 sm:p-1">
               <button
                 onClick={() => setPostView("list")}
-                className={`rounded-full p-1 transition-all sm:p-1.5 ${
+                className={`cursor-pointer rounded-full p-1 transition-all sm:p-1.5 ${
                   postView === "list"
                     ? "bg-muted text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
@@ -537,7 +542,7 @@ export default function SignalTerminal() {
               </button>
               <button
                 onClick={() => setPostView("grid")}
-                className={`rounded-full p-1 transition-all sm:p-1.5 ${
+                className={`cursor-pointer rounded-full p-1 transition-all sm:p-1.5 ${
                   postView === "grid"
                     ? "bg-muted text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
@@ -552,7 +557,7 @@ export default function SignalTerminal() {
             {mounted && (
               <button
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="bg-card border-border text-muted-foreground hover:text-foreground flex h-6 w-6 items-center justify-center rounded-full border transition-colors focus:border-blue-500/50 focus:outline-none sm:h-8 sm:w-8"
+                className="bg-card border-border text-muted-foreground hover:text-foreground flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border transition-colors focus:border-blue-500/50 focus:outline-none sm:h-8 sm:w-8"
                 aria-label="Toggle Theme"
               >
                 <Sun className="h-3 w-3 sm:h-4 sm:w-4 dark:hidden" />
@@ -564,7 +569,7 @@ export default function SignalTerminal() {
             {!isSearchExpanded && (
               <Link
                 href="/dashboard"
-                className="bg-foreground text-background hover:bg-foreground/90 flex items-center justify-center rounded-full p-1.5 transition-colors sm:px-4 sm:py-1.5"
+                className="bg-foreground text-background hover:bg-foreground/90 flex cursor-pointer items-center justify-center rounded-full p-1.5 transition-colors sm:px-4 sm:py-1.5"
                 aria-label="Dashboard"
               >
                 <LayoutDashboard className="h-4 w-4 sm:hidden" />
@@ -802,7 +807,7 @@ export default function SignalTerminal() {
                   <div className="bg-card border-border flex items-center rounded-full border p-1">
                     <button
                       onClick={() => setMembersView("grid")}
-                      className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
+                      className={`cursor-pointer rounded-full px-3 py-1 text-xs font-medium transition-all ${
                         membersView === "grid"
                           ? "bg-muted text-foreground shadow-sm"
                           : "text-muted-foreground hover:text-foreground"
@@ -812,7 +817,7 @@ export default function SignalTerminal() {
                     </button>
                     <button
                       onClick={() => setMembersView("leaderboard")}
-                      className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
+                      className={`cursor-pointer rounded-full px-3 py-1 text-xs font-medium transition-all ${
                         membersView === "leaderboard"
                           ? "bg-muted text-foreground shadow-sm"
                           : "text-muted-foreground hover:text-foreground"
@@ -1190,7 +1195,7 @@ function PostCard({
             layout === "list" && (
               <button
                 onClick={() => setShowComments(!showComments)}
-                className={`hover:text-foreground flex items-center gap-1.5 text-xs font-medium transition-colors ${
+                className={`hover:text-foreground flex cursor-pointer items-center gap-1.5 text-xs font-medium transition-colors ${
                   showComments ? "text-foreground" : "text-muted-foreground"
                 }`}
               >
@@ -1204,15 +1209,19 @@ function PostCard({
             <span className="text-blue-500">{engagedMembers.length}</span> /{" "}
             {members.length}
           </div> */}
-          <a
-            href={`https://x.com/${post.authorUsername}/status/${post.tweetId}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-foreground transition-colors hover:scale-[1.02] active:scale-[0.98]"
-            title="Open in X"
-          >
-            <ExternalLink className="h-4 w-4" />
-          </a>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <a
+                href={`https://x.com/${post.authorUsername}/status/${post.tweetId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground cursor-pointer transition-colors hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <ExternalLink className="h-4 w-4" />
+              </a>
+            </TooltipTrigger>
+            <TooltipContent>Open in X</TooltipContent>
+          </Tooltip>
         </div>
       </div>
 
@@ -1300,7 +1309,7 @@ function PostCard({
           <div className={`flex ${layout === "grid" ? "gap-1" : "gap-2"}`}>
             <button
               onClick={() => setView("engaged")}
-              className={`rounded-full font-medium transition-all duration-300 ${
+              className={`cursor-pointer rounded-full font-medium transition-all duration-300 ${
                 layout === "grid"
                   ? "px-2 py-1 text-[10px]"
                   : "px-3 py-1.5 text-xs"
@@ -1314,7 +1323,7 @@ function PostCard({
             </button>
             <button
               onClick={() => setView("missing")}
-              className={`rounded-full font-medium transition-all duration-300 ${
+              className={`cursor-pointer rounded-full font-medium transition-all duration-300 ${
                 layout === "grid"
                   ? "px-2 py-1 text-[10px]"
                   : "px-3 py-1.5 text-xs"
@@ -1437,31 +1446,36 @@ function PostCard({
                   : "";
 
             return (
-              <button
-                key={type}
-                onClick={() => handleToggle(type)}
-                disabled={isPending}
-                title={`${label} (+${points} pts)`}
-                className={`group flex items-center justify-center gap-2 py-3.5 text-xs font-medium transition-all duration-150 active:scale-95 disabled:opacity-60 ${hoverColor} ${
-                  isActive ? activeColor : "text-muted-foreground"
-                } ${roundedClass}`}
-              >
-                <motion.span
-                  initial={false}
-                  animate={isActive ? { scale: [1, 1.3, 1] } : { scale: 1 }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="flex items-center justify-center"
-                >
-                  <Icon
-                    className={`${type === "retweet" ? "h-5 w-5" : "h-[18px] w-[18px]"} transition-colors ${isActive && type === "like" ? "fill-rose-500" : ""} ${isActive && type === "bookmark" ? "fill-blue-500" : ""} ${isActive && type === "comment" ? "fill-blue-500" : ""}`}
-                  />
-                </motion.span>
-                {typeCount > 0 && (
-                  <span className="font-['JetBrains_Mono',monospace] text-[11px] leading-none">
-                    {typeCount}
-                  </span>
-                )}
-              </button>
+              <Tooltip key={type}>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => handleToggle(type)}
+                    disabled={isPending}
+                    className={`group flex cursor-pointer items-center justify-center gap-2 py-3.5 text-xs font-medium transition-all duration-150 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 ${hoverColor} ${
+                      isActive ? activeColor : "text-muted-foreground"
+                    } ${roundedClass}`}
+                  >
+                    <motion.span
+                      initial={false}
+                      animate={isActive ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      className="flex items-center justify-center"
+                    >
+                      <Icon
+                        className={`${type === "retweet" ? "h-5 w-5" : "h-[18px] w-[18px]"} transition-colors ${isActive && type === "like" ? "fill-rose-500" : ""} ${isActive && type === "bookmark" ? "fill-blue-500" : ""} ${isActive && type === "comment" ? "fill-blue-500" : ""}`}
+                      />
+                    </motion.span>
+                    {typeCount > 0 && (
+                      <span className="font-['JetBrains_Mono',monospace] text-[11px] leading-none">
+                        {typeCount}
+                      </span>
+                    )}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {label} (+{points} pts)
+                </TooltipContent>
+              </Tooltip>
             );
           })}
         </div>
@@ -1520,7 +1534,7 @@ function Leaderboard({
         <div className="bg-card border-border flex items-center rounded-full border p-1">
           <button
             onClick={() => setTab("global")}
-            className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
+            className={`cursor-pointer rounded-full px-3 py-1 text-xs font-medium transition-all ${
               tab === "global"
                 ? "bg-muted text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground"
@@ -1530,7 +1544,7 @@ function Leaderboard({
           </button>
           <button
             onClick={() => setTab("today")}
-            className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
+            className={`cursor-pointer rounded-full px-3 py-1 text-xs font-medium transition-all ${
               tab === "today"
                 ? "bg-muted text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground"
